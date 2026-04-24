@@ -1,5 +1,7 @@
 from .interface import AgentReport
 from typing import Any
+import json
+
 
 class CEOTemplate:
     """Concrete CEO implementation focusing on Vision and Strategy (Why?)."""
@@ -8,12 +10,56 @@ class CEOTemplate:
     role = "Chief Executive Officer"
     focus = "Why?"
 
+    def __init__(self):
+        """Initialize CEO agent with AI client."""
+        try:
+            from src.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
+            self.ai_client = AIClient()
+            self.system_prompt = get_agent_system_prompt("ceo")
+            self.use_ai = True
+        except Exception as e:
+            print(f"Warning: AI client initialization failed: {e}")
+            print("Falling back to hardcoded analysis.")
+            self.use_ai = False
+
     def analyze(self, state: 'SimulationState') -> AgentReport:
         """CEO analysis - define vision, strategic direction, high-level goals."""
         print("CEO Analyzing: Defining the overarching strategic direction...")
 
-        # In a real implementation, this would involve complex LLM reasoning over all data.
-        # For MVP, we synthesize based on inputs.
+        if self.use_ai:
+            try:
+                from src.ai import build_analysis_prompt
+
+                # Build AI prompt
+                prompt = build_analysis_prompt(
+                    core_prompt=state.core_prompt,
+                    data_corpus=state.data_corpus,
+                    agent_name="ceo"
+                )
+
+                # Call LLM
+                response_data = self.ai_client.complete_json(
+                    prompt=prompt,
+                    system_prompt=self.system_prompt,
+                    temperature=0.7
+                )
+
+                # Parse response into AgentReport
+                return AgentReport(
+                    title=response_data.get("title", "CEO Strategic Vision Report"),
+                    summary=response_data.get("summary", ""),
+                    key_findings=response_data.get("key_findings", []),
+                    recommendations=response_data.get("recommendations", []),
+                    risks=response_data.get("risks", []),
+                    confidence_score=float(response_data.get("confidence_score", 0.75)),
+                    reasoning=response_data.get("reasoning", {})
+                )
+            except Exception as e:
+                print(f"AI analysis failed: {e}")
+                print("Falling back to hardcoded analysis.")
+                # Fall through to hardcoded analysis
+
+        # Hardcoded fallback analysis
         summary = f"The core problem is {state.core_prompt}. The goal is to determine the optimal path forward given the provided Data Corpus."
         key_findings = [f"Core conflict: {state.core_prompt}"]
 
@@ -36,7 +82,7 @@ class CEOTemplate:
             key_findings=key_findings,
             recommendations=recommendations,
             risks=risks,
-            confidence_score=0.75, # High confidence in strategic framing
+            confidence_score=0.75,
             reasoning={
                 "data_used": list(state.data_corpus.keys()),
                 "focus_areas": ["Vision", "Alignment"]
@@ -65,5 +111,3 @@ class CEOTemplate:
         # The CEO's role is to synthesize these conflicts into a single, coherent narrative.
         if cmo_report:
             print("Alignment Check: Marketing strategy seems to align with the proposed vision.")
-
-

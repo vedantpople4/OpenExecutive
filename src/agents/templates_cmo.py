@@ -9,11 +9,56 @@ class CNOTemplate:
     role = "Chief Marketing Officer"
     focus = "How to sell it?"
 
+    def __init__(self):
+        """Initialize CMO agent with AI client."""
+        try:
+            from src.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
+            self.ai_client = AIClient()
+            self.system_prompt = get_agent_system_prompt("cmo")
+            self.use_ai = True
+        except Exception as e:
+            print(f"Warning: AI client initialization failed: {e}")
+            print("Falling back to hardcoded analysis.")
+            self.use_ai = False
+
     def analyze(self, state: 'SimulationState') -> AgentReport:
         """CMO analysis - market reception, go-to-market, customer fit."""
         print("CMO Analyzing: Assessing market reception and go-to-market strategy...")
 
-        # In a real implementation, this would involve persona modeling based on the data corpus.
+        if self.use_ai:
+            try:
+                from src.ai import build_analysis_prompt
+
+                # Build AI prompt
+                prompt = build_analysis_prompt(
+                    core_prompt=state.core_prompt,
+                    data_corpus=state.data_corpus,
+                    agent_name="cmo"
+                )
+
+                # Call LLM
+                response_data = self.ai_client.complete_json(
+                    prompt=prompt,
+                    system_prompt=self.system_prompt,
+                    temperature=0.7
+                )
+
+                # Parse response into AgentReport
+                return AgentReport(
+                    title=response_data.get("title", "CMO Go-to-Market Strategy Report"),
+                    summary=response_data.get("summary", ""),
+                    key_findings=response_data.get("key_findings", []),
+                    recommendations=response_data.get("recommendations", []),
+                    risks=response_data.get("risks", []),
+                    confidence_score=float(response_data.get("confidence_score", 0.7)),
+                    reasoning=response_data.get("reasoning", {})
+                )
+            except Exception as e:
+                print(f"AI analysis failed: {e}")
+                print("Falling back to hardcoded analysis.")
+                # Fall through to hardcoded analysis
+
+        # Hardcoded fallback analysis
         summary = f"The market for {state.core_prompt} is defined by current trends and potential customer segments in the Data Corpus."
         key_findings = []
 
@@ -39,7 +84,7 @@ class CNOTemplate:
             key_findings=key_findings,
             recommendations=recommendations,
             risks=risks,
-            confidence_score=0.7, # High confidence in market framing
+            confidence_score=0.7,
             reasoning={
                 "data_used": list(state.data_corpus.keys()),
                 "focus_areas": ["Marketing", "Customer Fit"]

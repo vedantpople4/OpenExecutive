@@ -9,11 +9,56 @@ class CFOTemplate:
     role = "Chief Financial Officer"
     focus = "How much?"
 
+    def __init__(self):
+        """Initialize CFO agent with AI client."""
+        try:
+            from src.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
+            self.ai_client = AIClient()
+            self.system_prompt = get_agent_system_prompt("cfo")
+            self.use_ai = True
+        except Exception as e:
+            print(f"Warning: AI client initialization failed: {e}")
+            print("Falling back to hardcoded analysis.")
+            self.use_ai = False
+
     def analyze(self, state: 'SimulationState') -> AgentReport:
         """CFO analysis - financial modeling, risk/reward, ROI, budget constraints."""
         print("CFO Analyzing: Conducting financial modeling and ROI assessment...")
 
-        # In a real implementation, this would involve deep financial calculations.
+        if self.use_ai:
+            try:
+                from src.ai import build_analysis_prompt
+
+                # Build AI prompt
+                prompt = build_analysis_prompt(
+                    core_prompt=state.core_prompt,
+                    data_corpus=state.data_corpus,
+                    agent_name="cfo"
+                )
+
+                # Call LLM
+                response_data = self.ai_client.complete_json(
+                    prompt=prompt,
+                    system_prompt=self.system_prompt,
+                    temperature=0.7
+                )
+
+                # Parse response into AgentReport
+                return AgentReport(
+                    title=response_data.get("title", "CFO Financial Viability Report"),
+                    summary=response_data.get("summary", ""),
+                    key_findings=response_data.get("key_findings", []),
+                    recommendations=response_data.get("recommendations", []),
+                    risks=response_data.get("risks", []),
+                    confidence_score=float(response_data.get("confidence_score", 0.65)),
+                    reasoning=response_data.get("reasoning", {})
+                )
+            except Exception as e:
+                print(f"AI analysis failed: {e}")
+                print("Falling back to hardcoded analysis.")
+                # Fall through to hardcoded analysis
+
+        # Hardcoded fallback analysis
         summary = f"The potential opportunity is {state.core_prompt}. Financial viability depends on aligning projected costs with the Data Corpus."
         key_findings = [f"Financial viability hinges on cost projections from data sources."]
 
@@ -36,7 +81,7 @@ class CFOTemplate:
             key_findings=key_findings,
             recommendations=recommendations,
             risks=risks,
-            confidence_score=0.65, # Moderate confidence, requires cross-referencing
+            confidence_score=0.65,
             reasoning={
                 "data_used": list(state.data_corpus.keys()),
                 "focus_areas": ["Budget", "ROI"]

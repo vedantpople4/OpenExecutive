@@ -1,13 +1,37 @@
 #!/usr/bin/env python3
 """Entry point for Executive Board Simulation CLI."""
 
+import os
 import sys
 from pathlib import Path
 from typing import Any
 
 
+def validate_settings() -> None:
+    """Validate that settings.json exists and is properly configured."""
+    settings_path = "settings.json"
+    if not Path(settings_path).exists():
+        print(f"Error: settings.json not found in current directory.")
+        print("\nPlease create a settings.json file with your AI configuration.")
+        print("Example settings.json:")
+        print('''
+{
+  "ai": {
+    "base_url": "http://localhost:11434/v1",
+    "model": "llama3",
+    "temperature": 0.7,
+    "max_tokens": 4096
+  }
+}
+''')
+        sys.exit(1)
+
+
 def run_simulation(prompt: str, output_path: str | None = None, data_dir: str = "data") -> None:
     """Run a simulation with the given prompt."""
+    # Validate settings first
+    validate_settings()
+
     # Add this directory to path so imports work
     sys.path.insert(0, str(Path(__file__).parent.parent))
 
