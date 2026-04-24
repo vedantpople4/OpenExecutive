@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Distribution / packaging
+dist/
+build/
+
+# Test coverage
+htmlcov/
+.coverage
+*.cover.*
+
+# Environment
+.env
+.env.local
+
+# Data directory (optional - keep if you want version control)
+data/*.md
+data/*.pdf
+data/*.txt
+!data/.gitkeep
+
+# Jupyter Notebook
+.ipynb_checkpoints

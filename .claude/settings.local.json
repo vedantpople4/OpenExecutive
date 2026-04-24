@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/vedantpople/Documents/OpenExec/*.py)",
+      "Bash(pip install:*)",
+      "Bash(find:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)"
+    ]
+  }
+}
