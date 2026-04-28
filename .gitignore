@@ -34,3 +34,5 @@ data/*.txt
 
 # Jupyter Notebook
 .ipynb_checkpoints
+
+*.md

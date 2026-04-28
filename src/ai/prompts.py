@@ -127,12 +127,10 @@ def build_analysis_prompt(
             )
             prompt_parts.append(f"\n### {filename}\n{truncated_content}")
 
-    prompt_parts.append(
-        f"\n## Instructions",
-        f"Analyze this business problem from your perspective as the {agent_name.upper()}. ",
-        f"Consider the supporting data if provided. ",
-        f"Provide specific, actionable insights based on your expertise.",
-    )
+    prompt_parts.append("\n## Instructions")
+    prompt_parts.append(f"Analyze this business problem from your perspective as the {agent_name.upper()}.")
+    prompt_parts.append(f"Consider the supporting data if provided.")
+    prompt_parts.append(f"Provide specific, actionable insights based on your expertise.")
 
     return "\n".join(prompt_parts)
 
@@ -178,11 +176,9 @@ def build_review_prompt(
             for risk in report["risks"]:
                 prompt_parts.append(f"- {risk}")
 
-    prompt_parts.append(
-        f"\n## Instructions",
-        f"Review these reports from your {agent_name.upper()} perspective. ",
-        f"Identify any conflicts, alignment issues, or areas that need clarification. ",
-        f"Consider how your expertise relates to their findings.",
-    )
+    prompt_parts.append("\n## Instructions")
+    prompt_parts.append(f"Review these reports from your {agent_name.upper()} perspective.")
+    prompt_parts.append(f"Identify any conflicts, alignment issues, or areas that need clarification.")
+    prompt_parts.append(f"Consider how your expertise relates to their findings.")
 
     return "\n".join(prompt_parts)

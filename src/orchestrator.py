@@ -122,8 +122,21 @@ class Orchestrator(BaseOrchestrator):
         final_report = {
             "executive_summary": f"Executive Board Analysis for: {self.state.core_prompt}",
             "decision_point": self.state.decision_point,
-            "agent_reports": {}
+            "agent_reports": {},
+            "data_sources": {
+                "sources_accessed": [],
+                "sources_failed": [],
+                "all_available_sources": [],
+                "access_success_rate": 0.0,
+                "timestamp": ""
+            }
         }
+
+        # Collect data sources from all agents
+        all_sources_accessed = set()
+        all_sources_failed = set()
+        all_available_sources = set()
+        data_timestamps = []
 
         for name, report in self.state.agent_outputs.items():
             print(f"Synthesizing {name}'s view...")
@@ -136,11 +149,48 @@ class Orchestrator(BaseOrchestrator):
                 "confidence_score": report.confidence_score
             }
 
+            # Collect data sources from agent reasoning
+            if hasattr(report, 'reasoning') and report.reasoning:
+                if report.reasoning.get('real_time_data_used'):
+                    # Collect sources from reasoning
+                    if 'sources_accessed' in report.reasoning:
+                        all_sources_accessed.update(report.reasoning['sources_accessed'])
+                    if 'sources_failed' in report.reasoning:
+                        all_sources_failed.update(report.reasoning['sources_failed'])
+                    if 'all_available_sources' in report.reasoning:
+                        all_available_sources.update(report.reasoning['all_available_sources'])
+                    if 'data_timestamp' in report.reasoning:
+                        data_timestamps.append(report.reasoning['data_timestamp'])
+
         # Add synthesized recommendations
         final_report["synthesized_recommendations"] = self._synthesize_recommendations()
         final_report["overall_risk_assessment"] = self._synthesize_risks()
 
+        # Add data sources summary
+        final_report["data_sources"] = {
+            "sources_accessed": list(all_sources_accessed),
+            "sources_failed": list(all_sources_failed),
+            "all_available_sources": list(all_available_sources),
+            "access_success_rate": self._calculate_success_rate(all_sources_accessed, all_sources_failed),
+            "timestamp": data_timestamps[0] if data_timestamps else "Unknown"
+        }
+
         return final_report
+
+    def _calculate_success_rate(self, accessed: set, failed: set) -> float:
+        """Calculate data access success rate.
+
+        Args:
+            accessed: Set of successfully accessed sources
+            failed: Set of failed sources
+
+        Returns:
+            Success rate as percentage (0.0 to 1.0)
+        """
+        total = len(accessed) + len(failed)
+        if total == 0:
+            return 0.0
+        return len(accessed) / total
 
     def _synthesize_recommendations(self) -> list[str]:
         """Synthesize recommendations from all agents."""

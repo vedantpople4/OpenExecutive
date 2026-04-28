@@ -6,6 +6,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+# Import the action item extraction utility
+from src.utils import extract_action_items
+
 
 def validate_settings() -> None:
     """Validate that settings.json exists and is properly configured."""
@@ -125,11 +128,50 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
                 f.write(f"- {rec}\n")
             f.write("\n")
 
+        # Extract action items from recommendations
+        f.write("## Action Items\n\n")
+        action_items = extract_action_items(results)
+        if action_items:
+            for item in action_items:
+                priority = item.get('priority', 'MEDIUM')
+                task = item.get('task', 'No task specified')
+                owner = item.get('owner', 'Unassigned')
+                due_date = item.get('due_date', 'TBD')
+                f.write(f"- [{priority}] {task} (Owner: {owner}, Due: {due_date})\n")
+        else:
+            f.write("No action items identified.\n")
+        f.write("\n")
+
         if results.get('overall_risk_assessment'):
             f.write("## Overall Risk Assessment\n\n")
             for risk in results['overall_risk_assessment']:
                 f.write(f"- {risk}\n")
             f.write("\n")
+
+        if results.get('data_sources'):
+            f.write("## Data Sources\n\n")
+            data_sources = results['data_sources']
+
+            f.write(f"**Data Fetch Timestamp:** {data_sources.get('timestamp', 'Unknown')}\n\n")
+            f.write(f"**Access Success Rate:** {data_sources.get('access_success_rate', 0):.1%}\n\n")
+
+            if data_sources.get('sources_accessed'):
+                f.write("### Successfully Accessed Sources\n\n")
+                for source in data_sources['sources_accessed']:
+                    f.write(f"- {source}\n")
+                f.write("\n")
+
+            if data_sources.get('sources_failed'):
+                f.write("### Failed to Access Sources\n\n")
+                for source in data_sources['sources_failed']:
+                    f.write(f"- {source}\n")
+                f.write("\n")
+
+            if data_sources.get('all_available_sources'):
+                f.write("### All Available Data Sources\n\n")
+                for source in data_sources['all_available_sources']:
+                    f.write(f"- {source}\n")
+                f.write("\n")
 
 
 def main() -> int:
