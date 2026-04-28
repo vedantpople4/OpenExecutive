@@ -40,6 +40,8 @@ def run_simulation(prompt: str, output_path: str | None = None, data_dir: str = 
 
     from src.agents import register_default_agents, registry
     from src.orchestrator import Orchestrator, SimulationState
+    from src.utils import extract_action_items
+    from src.decision_tracker import decision_tracker
 
     output_path = output_path or "board_report.md"
 
@@ -77,6 +79,13 @@ def run_simulation(prompt: str, output_path: str | None = None, data_dir: str = 
         # Write results to output file
         write_report(final_results, output_path)
         print(f"\n✓ Report written to: {output_path}")
+
+        # Extract action items
+        action_items = extract_action_items(final_results)
+
+        # Log decision
+        decision_file = decision_tracker.log_decision(prompt, final_results, action_items)
+        print(f"✓ Decision logged to: {decision_file}")
 
     except Exception as e:
         print(f"\n✗ Simulation failed: {e}")
@@ -178,15 +187,30 @@ def main() -> int:
     """Main entry point."""
     if len(sys.argv) < 2:
         print("Usage: python -m openexec run --prompt \"YOUR PROMPT\"")
+        print("       python -m openexec discuss")  # Add discuss option
         return 1
 
     # Parse simple arguments
     args = sys.argv[1:]
 
     # Check for command
+    if args[0] == "discuss":
+        # Start interactive discussion mode
+        try:
+            from src.interactive import InteractiveDiscussion
+            # For now, we'll need to load the last simulation results
+            # In a real implementation, we'd load from a history file
+            print("Loading interactive discussion mode...")
+            print("Note: This would load the last simulation results in a full implementation.")
+            return 0
+        except ImportError as e:
+            print(f"Error: Could not load interactive mode - {e}")
+            return 1
+
     if args[0] != "run":
-        print("Error: Only 'run' command is supported")
+        print("Error: Only 'run' and 'discuss' commands are supported")
         print("Usage: python -m openexec run --prompt \"YOUR PROMPT\"")
+        print("       python -m openexec discuss")
         return 1
 
     # Remove the "run" command from args
@@ -215,6 +239,7 @@ def main() -> int:
         print("Usage: python -m openexec run --prompt \"YOUR PROMPT\"")
         print("       python -m openexec run --prompt \"...\" --output report.md")
         print("       python -m openexec run --prompt \"...\" --data-dir ./data")
+        print("       python -m openexec discuss")
         return 1
 
     run_simulation(prompt, output_path, data_dir)
