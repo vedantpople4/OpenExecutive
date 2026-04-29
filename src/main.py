@@ -9,6 +9,11 @@ from typing import Any
 # Import the action item extraction utility
 from src.utils import extract_action_items
 
+# Priority 3: Memory & Learning imports
+from src.memory import memory_system
+from src.feedback import feedback_system
+from src.knowledge_base import knowledge_base
+
 
 def validate_settings() -> None:
     """Validate that settings.json exists and is properly configured."""
@@ -30,7 +35,8 @@ def validate_settings() -> None:
         sys.exit(1)
 
 
-def run_simulation(prompt: str, output_path: str | None = None, data_dir: str = "data") -> None:
+def run_simulation(prompt: str, output_path: str | None = None, data_dir: str = "data",
+                   summary_path: str | None = None, export_format: str | None = None) -> None:
     """Run a simulation with the given prompt."""
     # Validate settings first
     validate_settings()
@@ -40,6 +46,15 @@ def run_simulation(prompt: str, output_path: str | None = None, data_dir: str = 
 
     from src.agents import register_default_agents, registry
     from src.orchestrator import Orchestrator, SimulationState
+    from src.utils import extract_action_items
+    from src.decision_tracker import decision_tracker
+    from src.summary import write_executive_summary
+    from src.risk_analyzer import quantify_risks
+    from src.export import (
+        export_action_items_json,
+        export_action_items_csv,
+        export_action_items_markdown
+    )
 
     output_path = output_path or "board_report.md"
 
@@ -71,12 +86,55 @@ def run_simulation(prompt: str, output_path: str | None = None, data_dir: str = 
     orchestrator = Orchestrator(registry)
     orchestrator.initialize(state)
 
+    # Priority 3: Inject memory context into simulation
+    memory_context = memory_system.get_memory_context(prompt)
+    if memory_context:
+        print("\n📚 Memory context loaded from past decisions")
+        state.data_corpus["memory_context.md"] = memory_context
+
     try:
         final_results = orchestrator.run()
+
+        # Priority 3: Store conversation in memory
+        memory_system.store_conversation(prompt, final_results)
+        print("✓ Conversation stored in memory")
+
+        # Quantify risks
+        final_results = quantify_risks(final_results)
 
         # Write results to output file
         write_report(final_results, output_path)
         print(f"\n✓ Report written to: {output_path}")
+
+        # Extract action items
+        action_items = extract_action_items(final_results)
+
+        # Generate executive summary if requested
+        if summary_path:
+            write_executive_summary(final_results, summary_path)
+            print(f"✓ Executive summary written to: {summary_path}")
+
+        # Export action items if requested
+        if export_format:
+            if export_format == "json":
+                export_path = output_path.replace('.md', '_actions.json')
+                export_action_items_json(action_items, export_path)
+            elif export_format == "csv":
+                export_path = output_path.replace('.md', '_actions.csv')
+                export_action_items_csv(action_items, export_path)
+            elif export_format == "checklist":
+                export_path = output_path.replace('.md', '_checklist.md')
+                export_action_items_markdown(action_items, export_path)
+            else:
+                print(f"Warning: Unknown export format '{export_format}'")
+                export_path = None
+
+            if export_path:
+                print(f"✓ Action items exported to: {export_path}")
+
+        # Log decision
+        decision_file = decision_tracker.log_decision(prompt, final_results, action_items)
+        print(f"✓ Decision logged to: {decision_file}")
 
     except Exception as e:
         print(f"\n✗ Simulation failed: {e}")
@@ -148,6 +206,11 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
                 f.write(f"- {risk}\n")
             f.write("\n")
 
+        if results.get('risk_matrix'):
+            f.write("## Risk Quantification\n\n")
+            f.write(results['risk_matrix'])
+            f.write("\n")
+
         if results.get('data_sources'):
             f.write("## Data Sources\n\n")
             data_sources = results['data_sources']
@@ -177,16 +240,141 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
 def main() -> int:
     """Main entry point."""
     if len(sys.argv) < 2:
-        print("Usage: python -m openexec run --prompt \"YOUR PROMPT\"")
+        print("OpenExec - Executive Board Simulation System")
+        print()
+        print("Usage:")
+        print("  python -m openexec run --prompt \"YOUR PROMPT\"")
+        print("  python -m openexec discuss")
+        print("  python -m openexec history")
+        print("  python -m openexec search \"query\"")
+        print("  python -m openexec feedback <decision_id>")
+        print("  python -m openexec performance")
+        print("  python -m openexec kb <command> [args]")
+        print()
+        print("Options:")
+        print("  --prompt, -p       Decision prompt")
+        print("  --output, -o       Output file (default: board_report.md)")
+        print("  --summary          Generate executive summary")
+        print("  --export           Export format (json|csv|checklist)")
         return 1
 
     # Parse simple arguments
     args = sys.argv[1:]
 
     # Check for command
+    if args[0] == "discuss":
+        # Start interactive discussion mode
+        try:
+            from src.interactive import InteractiveDiscussion
+            print("Loading interactive discussion mode...")
+            print("Note: This would load the last simulation results in a full implementation.")
+            return 0
+        except ImportError as e:
+            print(f"Error: Could not load interactive mode - {e}")
+            return 1
+
+    # Priority 3: Memory commands
+    if args[0] == "history":
+        # Show conversation history
+        history = memory_system.get_conversation_history(limit=10)
+        print("\n📚 Recent Decision History\n")
+        for i, conv in enumerate(history, 1):
+            timestamp = conv["timestamp"]
+            prompt = conv["prompt"]
+            print(f"{i}. {timestamp}")
+            print(f"   {prompt[:80]}...")
+            print()
+        return 0
+
+    if args[0] == "search":
+        # Search memory
+        if len(args) < 2:
+            print('Usage: python -m openexec search "query"')
+            return 1
+        query = args[1]
+        results = memory_system.search_memory(query)
+        print(f"\n🔍 Search results for: {query}\n")
+        for i, conv in enumerate(results, 1):
+            print(f"{i}. {conv['timestamp']}")
+            print(f"   {conv['prompt'][:80]}...")
+            print()
+        return 0
+
+    # Priority 3: Feedback commands
+    if args[0] == "feedback":
+        # Collect feedback on a decision
+        if len(args) < 3:
+            print("Usage: python -m openexec feedback <decision_id>")
+            return 1
+        decision_id = args[2]
+        print(f"\n📝 Feedback for decision: {decision_id}")
+        print("This would open an interactive feedback collection in a full implementation.")
+        return 0
+
+    if args[0] == "performance":
+        # Show agent performance
+        performance = feedback_system.get_all_agent_performance()
+        print("\n📊 Agent Performance Metrics\n")
+        for agent, scores in performance.items():
+            print(f"{agent.upper()}:")
+            print(f"  Average Rating: {scores['average_rating']:.1f}/5.0")
+            print(f"  Total Ratings: {scores['total_ratings']}")
+            print(f"  Success Rate: {scores['successful_outcomes']}/{scores['total_feedback']}")
+            print()
+        return 0
+
+    # Priority 3: Knowledge base commands
+    if args[0] == "kb":
+        # Knowledge base management
+        if len(args) < 2:
+            print("Usage: python -m openexec kb <command> [args]")
+            print("Commands: list, ingest <file>, search <query>")
+            return 1
+
+        kb_command = args[1]
+
+        if kb_command == "list":
+            docs = knowledge_base.list_documents()
+            print(f"\n📚 Knowledge Base ({len(docs)} documents)\n")
+            for doc in docs:
+                title = doc.get('title') or doc.get('filename', 'Unknown')
+                print(f"- {title} ({doc['category']})")
+            return 0
+
+        if kb_command == "ingest":
+            if len(args) < 3:
+                print("Usage: python -m openexec kb ingest <file> [category]")
+                return 1
+            file_path = args[2]
+            category = args[3] if len(args) > 3 else "general"
+            try:
+                doc_id = knowledge_base.ingest_document(file_path, category)
+                print(f"✓ Document ingested: {doc_id}")
+                return 0
+            except Exception as e:
+                print(f"✗ Failed to ingest: {e}")
+                return 1
+
+        if kb_command == "search":
+            if len(args) < 3:
+                print("Usage: python -m openexec kb search <query>")
+                return 1
+            query = args[2]
+            results = knowledge_base.retrieve_relevant(query)
+            print(f"\n🔍 KB Search results for: {query}\n")
+            for i, result in enumerate(results, 1):
+                print(f"{i}. {result['doc_title']} (Score: {result['score']})")
+                print(f"   {result['chunk'][:100]}...")
+                print()
+            return 0
+
+        print(f"Unknown kb command: {kb_command}")
+        return 1
+
     if args[0] != "run":
-        print("Error: Only 'run' command is supported")
+        print("Error: Only 'run' and 'discuss' commands are supported")
         print("Usage: python -m openexec run --prompt \"YOUR PROMPT\"")
+        print("       python -m openexec discuss")
         return 1
 
     # Remove the "run" command from args
@@ -195,6 +383,8 @@ def main() -> int:
     prompt = None
     output_path = None
     data_dir = "data"
+    summary_path = None
+    export_format = None
 
     for arg in args:
         if arg.startswith("--prompt="):
@@ -209,15 +399,22 @@ def main() -> int:
             data_dir = arg.split("=", 1)[-1]
         elif arg.startswith("-d="):
             data_dir = arg.split("=", 1)[-1]
+        elif arg.startswith("--summary="):
+            summary_path = arg.split("=", 1)[-1]
+        elif arg.startswith("--export="):
+            export_format = arg.split("=", 1)[-1]
 
     # If no prompt given, show help
     if not prompt:
         print("Usage: python -m openexec run --prompt \"YOUR PROMPT\"")
         print("       python -m openexec run --prompt \"...\" --output report.md")
         print("       python -m openexec run --prompt \"...\" --data-dir ./data")
+        print("       python -m openexec run --prompt \"...\" --summary summary.md")
+        print("       python -m openexec run --prompt \"...\" --export json|csv|checklist")
+        print("       python -m openexec discuss")
         return 1
 
-    run_simulation(prompt, output_path, data_dir)
+    run_simulation(prompt, output_path, data_dir, summary_path, export_format)
     return 0
 
 

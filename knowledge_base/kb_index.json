@@ -1,0 +1,29 @@
+{
+  "documents": [
+    {
+      "id": "a2c6c261fc24",
+      "filename": "company_background.md",
+      "category": "company",
+      "ingested_at": "2026-04-28T20:28:03.196945",
+      "size": 3037,
+      "metadata": {}
+    },
+    {
+      "id": "6dca3f1f3530",
+      "filename": "team_structure.md",
+      "category": "team",
+      "ingested_at": "2026-04-28T20:41:56.845939",
+      "size": 5421,
+      "metadata": {}
+    }
+  ],
+  "categories": {
+    "company": [
+      "a2c6c261fc24"
+    ],
+    "team": [
+      "6dca3f1f3530"
+    ]
+  },
+  "last_updated": "2026-04-28T20:41:56.846213"
+}
