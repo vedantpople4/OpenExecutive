@@ -1,0 +1,21 @@
+{
+  "conversations": [
+    {
+      "id": "5a5852844b50",
+      "timestamp": "2026-04-28T18:57:20.379358",
+      "prompt": "We are an AI startup in fintech space. Should we buy GPU assets to strengthen our position or focus ..."
+    },
+    {
+      "id": "9ccdd0561efd",
+      "timestamp": "2026-04-28T20:33:57.935828",
+      "prompt": "Should we now consider buying GPUs after achieving product-market fit?"
+    },
+    {
+      "id": "d0a88cf741ac",
+      "timestamp": "2026-04-28T21:07:41.235339",
+      "prompt": "Based on our previous GPU decision, should we now invest in cloud infrastructure instead?"
+    }
+  ],
+  "decisions": [],
+  "last_updated": "2026-04-28T21:07:41.236212"
+}

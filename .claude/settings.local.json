@@ -9,7 +9,9 @@
       "WebSearch",
       "WebFetch(domain:techcrunch.com)",
       "WebFetch(domain:www.theverge.com)",
-      "WebFetch(domain:news.ycombinator.com)"
+      "WebFetch(domain:news.ycombinator.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
