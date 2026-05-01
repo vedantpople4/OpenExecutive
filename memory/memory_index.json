@@ -14,8 +14,18 @@
       "id": "d0a88cf741ac",
       "timestamp": "2026-04-28T21:07:41.235339",
       "prompt": "Based on our previous GPU decision, should we now invest in cloud infrastructure instead?"
+    },
+    {
+      "id": "73d49ec7da1b",
+      "timestamp": "2026-04-30T21:13:30.987134",
+      "prompt": "Should we expand to European markets?"
+    },
+    {
+      "id": "73d49ec7da1b",
+      "timestamp": "2026-04-30T21:21:12.587776",
+      "prompt": "Should we expand to European markets?"
     }
   ],
   "decisions": [],
-  "last_updated": "2026-04-28T21:07:41.236212"
+  "last_updated": "2026-04-30T21:21:12.588383"
 }
