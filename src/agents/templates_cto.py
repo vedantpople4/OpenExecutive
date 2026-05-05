@@ -19,7 +19,7 @@ class CTOTemplate:
             self.system_prompt = get_agent_system_prompt("cto")
             self.data_fetcher = RealTimeDataFetcher()
             self.use_ai = True
-            self.use_real_time_data = True
+            self.use_real_time_data = False
         except Exception as e:
             print(f"Warning: AI client initialization failed: {e}")
             print("Falling back to hardcoded analysis.")
@@ -61,46 +61,38 @@ class CTOTemplate:
             try:
                 from src.ai import build_analysis_prompt
 
-                # Build AI prompt with real-time context
+                from src.ai import build_analysis_prompt
+
                 base_prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
                     agent_name="cto"
                 )
 
-                # Add real-time context if available
                 if real_time_context:
-                    enhanced_prompt = f"{base_prompt}\n\n{real_time_context}\n\n## Instructions\n" \
-                                     f"Consider the current technology trends and infrastructure developments above " \
-                                     f"when assessing technical feasibility. How do these recent technology " \
-                                     f"advancements impact your technical recommendations?"
+                    enhanced_prompt = (
+                        f"{base_prompt}\n\n{real_time_context}\n\n"
+                        "## Additional Context\n"
+                        "Consider current technology trends and infrastructure developments above "
+                        "when assessing technical feasibility."
+                    )
                 else:
                     enhanced_prompt = base_prompt
 
-                # Call LLM
-                response_data = self.ai_client.complete_json(
+                response_data = self.ai_client.complete_json_with_retry(
                     prompt=enhanced_prompt,
                     system_prompt=self.system_prompt,
                     temperature=0.7
                 )
 
-                # Add real-time data info to reasoning
                 reasoning = response_data.get("reasoning", {})
                 if real_time_context:
                     reasoning["real_time_data_used"] = True
                     reasoning["data_timestamp"] = context.get("timestamp", "unknown")
                     reasoning.update(sources_summary)
+                response_data["reasoning"] = reasoning
 
-                # Parse response into AgentReport
-                return AgentReport(
-                    title=response_data.get("title", "CTO Technical Feasibility Report"),
-                    summary=response_data.get("summary", ""),
-                    key_findings=response_data.get("key_findings", []),
-                    recommendations=response_data.get("recommendations", []),
-                    risks=response_data.get("risks", []),
-                    confidence_score=float(response_data.get("confidence_score", 0.8)),
-                    reasoning=reasoning
-                )
+                return AgentReport.from_llm_response("cto", response_data)
             except Exception as e:
                 print(f"AI analysis failed: {e}")
                 print("Falling back to hardcoded analysis.")
@@ -152,15 +144,15 @@ class CTOTemplate:
             key_findings=key_findings,
             recommendations=recommendations,
             risks=risks,
-            confidence_score=0.8,
+            alignment_score=0.8,
             reasoning=reasoning
         )
         return report
 
 
     def review_others(self, reports: dict[str, AgentReport]) -> None:
-        """CTO reviews other agents for technical alignment."""
-        print("CTO Reviewing: Checking financial and market implications of technical choices.")
+        """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_review()."""
+        pass
 
         # Cross-check with CFO's budget concerns and CMO's market needs.
         cfo_report = reports.get("cfo")

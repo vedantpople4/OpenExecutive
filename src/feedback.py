@@ -204,7 +204,7 @@ class FeedbackSystem:
 
         for agent_name, report in results.get('agent_reports', {}).items():
             prompt_lines.append(f"## {agent_name.upper()}")
-            prompt_lines.append(f"Confidence Score: {report.get('confidence_score', 0):.0%}")
+            prompt_lines.append(f"Alignment Score: {report.get('alignment_score', 0):.0%}")
             prompt_lines.append("")
 
             if report.get('recommendations'):

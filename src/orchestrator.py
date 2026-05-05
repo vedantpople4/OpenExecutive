@@ -1,3 +1,4 @@
+from src.agents.interface import AgentReport
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Dict
@@ -14,6 +15,10 @@ class SimulationState:
     phase: str = ""
     agent_outputs: Dict[str, Any] = field(default_factory=dict)
     errors: list[str] = field(default_factory=list)
+    # Deliberation state
+    deliberation_round: int = 0
+    challenges: Dict[str, list[str]] = field(default_factory=dict)  # agent_name -> questions
+    deliberation_outputs: Dict[int, Dict[str, Any]] = field(default_factory=dict)
 
 
 class BaseOrchestrator(ABC):
@@ -96,20 +101,20 @@ class Orchestrator(BaseOrchestrator):
         print("\n--- Analysis Complete. Reports Collected ---")
 
     def run_review(self) -> None:
-        """Phase 3: Cross-Functional Review - Manage feedback loops."""
+        """Deprecated: deliberation now runs via run_deliberation(). Forwarding for compatibility."""
+        self.run_deliberation()
+
+    def run_deliberation(self) -> None:
+        """Phase 3: Multi-round deliberation — board meeting workflow."""
         if not self.state or not self.registry.list_names():
             raise ValueError("Simulation not initialized or no agents registered.")
 
-        print("\n--- Phase 3: CROSS-FUNCTIONAL REVIEW ---")
+        from .orchestrator_deliberation import DeliberationOrchestrator
 
-        # Run the review step based on agent templates
-        for name in self.registry.list_names():
-            agent = self.registry.get(name)
-            if agent and hasattr(agent, 'review_others'):
-                print(f"Agent {name} reviewing others...")
-                agent.review_others(self.state.agent_outputs)
-
-        print("\n--- Review Complete. Cross-functional feedback integrated ---")
+        print("\n--- Phase 3: DELIBERATION ---")
+        delib = DeliberationOrchestrator(self.state, self.registry)
+        delib.run_deliberation()
+        print("\n--- Deliberation Rounds Complete ---")
 
     def run_synthesis(self) -> Dict[str, Any]:
         """Phase 4: Synthesis - Draft the final document."""
@@ -119,7 +124,7 @@ class Orchestrator(BaseOrchestrator):
         print("\n--- Phase 4: SYNTHESIS ---")
 
         # Synthesize all reports into a final document
-        final_report = {
+        final_report: Dict[str, Any] = {
             "executive_summary": f"Executive Board Analysis for: {self.state.core_prompt}",
             "decision_point": self.state.decision_point,
             "agent_reports": {},
@@ -140,18 +145,32 @@ class Orchestrator(BaseOrchestrator):
 
         for name, report in self.state.agent_outputs.items():
             print(f"Synthesizing {name}'s view...")
-            final_report["agent_reports"][name] = {
+            report_dict: Dict[str, Any] = {
                 "title": report.title,
                 "summary": report.summary,
                 "key_findings": report.key_findings,
                 "recommendations": report.recommendations,
                 "risks": report.risks,
-                "confidence_score": report.confidence_score
+                "alignment_score": report.alignment_score,
             }
+            # Add verdict based on agent role
+            role_specific = report.get_role_specific_fields()
+            if role_specific:
+                report_dict.update(role_specific)
+            # Prioritize final-round deliberation report over blind Phase-2 report
+            delib_reports = self.state.deliberation_outputs.get(4, {}).get(name)
+            if delib_reports and hasattr(delib_reports, "get_role_specific_fields"):
+                delib_dict = self._report_to_dict(delib_reports)
+                # Only override if the deliberation output has meaningful content
+                if delib_dict.get("summary"):
+                    report_dict.update(delib_dict)
+            final_report["agent_reports"][name] = report_dict
 
             # Collect data sources from agent reasoning
-            if hasattr(report, 'reasoning') and report.reasoning:
-                if report.reasoning.get('real_time_data_used'):
+            if (hasattr(report, 'reasoning')
+                    and isinstance(report.reasoning, dict)
+                    and report.reasoning
+                    and report.reasoning.get('real_time_data_used')):
                     # Collect sources from reasoning
                     if 'sources_accessed' in report.reasoning:
                         all_sources_accessed.update(report.reasoning['sources_accessed'])
@@ -161,6 +180,23 @@ class Orchestrator(BaseOrchestrator):
                         all_available_sources.update(report.reasoning['all_available_sources'])
                     if 'data_timestamp' in report.reasoning:
                         data_timestamps.append(report.reasoning['data_timestamp'])
+
+        # Inject board decision from deliberation round 5 if available
+        ceo_r5 = self.state.deliberation_outputs.get(5, {}).get("ceo")
+        if ceo_r5 and hasattr(ceo_r5, "board_decision") and ceo_r5.board_decision:
+            final_report["board_decision"] = ceo_r5.board_decision
+
+        # Inject full deliberation transcript (all rounds visible)
+        if self.state.deliberation_outputs:
+            final_report["deliberation_rounds"] = {}
+            for rnd, outputs in self.state.deliberation_outputs.items():
+                if rnd == 0:
+                    continue  # Skip blind Phase-2 reports — already in agent_reports
+                final_report["deliberation_rounds"][rnd] = {
+                    name: self._report_to_dict(report)
+                    for name, report in outputs.items()
+                    if isinstance(report, AgentReport)
+                }
 
         # Add synthesized recommendations
         final_report["synthesized_recommendations"] = self._synthesize_recommendations()
@@ -176,6 +212,19 @@ class Orchestrator(BaseOrchestrator):
         }
 
         return final_report
+
+    def _report_to_dict(self, report: AgentReport) -> Dict[str, Any]:
+        """Convert an AgentReport to a JSON-serialisable dict."""
+        return {
+            "title": report.title,
+            "summary": report.summary,
+            "key_findings": report.key_findings,
+            "recommendations": report.recommendations,
+            "risks": report.risks,
+            "alignment_score": report.alignment_score,
+            "round_number": report.round_number,
+            ** report.get_role_specific_fields(),
+        }
 
     def _calculate_success_rate(self, accessed: set, failed: set) -> float:
         """Calculate data access success rate.

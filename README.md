@@ -1,546 +1,481 @@
-# OpenExec - Executive Board Simulation System
+# OpenExec — Executive Board Simulation System
 
-An AI-powered multi-agent simulation system that acts as an executive board. Specialized AI agents analyze business decisions from distinct perspectives (CEO, CFO, CTO, CMO) and synthesize insights into actionable recommendations.
+> Your AI-powered executive board meeting. Four specialized AI agents debate your business decision, revise positions through a real multi-round deliberation, and deliver a synthesized board decision with explicit consensus, dissent, and committed action items.
 
-## 🎯 Overview
+---
 
-OpenExec transforms complex business decisions into structured, multi-perspective analysis. When presented with a core problem, four specialized AI agents conduct deep analysis from their domain expertise, cross-review each other's findings, and produce comprehensive reports with actionable recommendations.
+## TL;DR
 
-### Key Capabilities
-
-- **Multi-Agent Analysis**: CEO, CFO, CTO, and CMO personas analyze from distinct business perspectives
-- **Real-Time Data**: Fetches current market intelligence from multiple web sources
-- **Decision Intelligence**: Action items, risk quantification, and executive summaries
-- **Memory & Learning**: Persistent memory across sessions, learns from feedback
-- **Custom Knowledge Base**: RAG over your proprietary company data
-- **Multi-Format Export**: JSON, CSV, Markdown for different workflows
-
-## 🚀 Quick Start
-
-### Installation
+Give OpenExec a business question:
 
 ```bash
-# Clone the repository
-git clone <repository-url>
+openexec run "Buy vs lease equipment?"
+```
+
+Get back a structured board report with: a CEO board decision, a 5-round deliberation transcript showing how executives challenged and revised each other, individual analyses from CEO/CFO/CTO/CMO, prioritized action items, and quantified risks.
+
+---
+
+## What Problem Does It Solve?
+
+Business decisions get made by one person thinking in one direction. OpenExec forces structured disagreement from four distinct perspectives — and makes those perspectives *talk to each other* until a real decision emerges. It's not four parallel monologues. It's an actual board meeting where positions evolve under pressure.
+
+If you run the same decision through OpenExec twice for the same question vs a competitor, you don't get a generic list of pros and cons — you get an explicit board decision that names who agrees, who disagrees, what changed their mind, and what happens if conditions change.
+
+---
+
+## 🎯 Project Summary
+
+**OpenExec** is a multi-agent simulation framework where four AI "executives" (CEO, CFO, CTO, CMO) independently analyze a business decision, then enter a structured multi-round deliberation that mirrors a real board meeting. Each agent sees the others' work, challenges it, revises their own position, and the CEO produces a final board decision.
+
+### The Core Difference: Real Deliberation vs Parallel Analysis
+
+Traditional multi-agent systems run each agent independently and concatenate the results. OpenExec runs an actual 5-round deliberation loop:
+
+| Round | Who Speaks | What Happens |
+|-------|-----------|--------------|
+| 1 | CEO | Frames the board. Names top 3 conflicts. Directs questions at CFO/CTO/CMO. |
+| 2 | CFO + CTO | Respond to CEO's questions. Cross-reference each other's position for agreements and conflicts. |
+| 3 | CMO | Reads all prior rounds. Raises market-side challenges back at CFO and CTO. |
+| 4 | CFO + CTO + CMO | Revise their positions based on challenges received. Confirms or updates recommendations. |
+| 5 | CEO | Synthesizes all rounds into a **board decision** with consensus points, dissent points, final priority actions, and contingencies. |
+
+The output isn't a stack of reports — it's a decision with accountability assigned to it.
+
+---
+
+## 🧠 Ideology & Design Philosophy
+
+**"Dissent is a feature, not a bug."**
+
+Most AI business tools are built to be agreeable — they tell you what you want to hear. OpenExec is built around productive conflict. The goal is to surface *the real disagreement* between financial prudence and technical ambition, between market timing and operational capacity. The board decision is better when CFO's skepticism forced CTO to defend their recommendation, and when CMO's customer data made CFO revise their cost model.
+
+**"Simulate the meeting, not the report."**
+
+The report is a byproduct of the meeting. OpenExec's architecture is designed around the deliberation process first. Phase 1-2 generate the raw analysis. Phase 3 is the actual product — it transforms independent monologues into a synthesized decision.
+
+**"Be honest about uncertainty."** Every agent has an `alignment_score` (0.0-1.0). In OpenExec, 0.5 is a valid score when data is thin. Agents are explicitly told: do not inflate your confidence.
+
+**"Context compounds over time."**
+
+OpenExec remembers every decision it has ever made. New simulations inject past decisions as context. The longer you use it, the more history it has to reason from — including patterns in what was decided, what was implemented, and what the outcome was (if you provide feedback).
+
+---
+
+## 🏗️ Architecture
+
+```
+User prompt
+    │
+    ▼
+┌─────────────────────────────────────────────────────────┐
+│  cli.py                                                  │
+│  Typer-based CLI. Validates settings, runs orchestrator. │
+└───────────────────────────┬─────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│  orchestrator.py — Orchestrator                         │
+│  Runs 4 phases in sequence. Holds SimulationState.      │
+│  - Phase 1: Inception (CEO sets the stage)             │
+│  - Phase 2: Analysis (CFO/CTO/CMO work alone)           │
+│  - Phase 3: Deliberation (DeliberationOrchestrator)    │
+│  - Phase 4: Synthesis (compile final report)            │
+└───────────────────────────┬─────────────────────────────┘
+                            │
+           ┌────────────────┴────────────────┐
+           ▼                                 ▼
+┌──────────────────────┐          ┌──────────────────────────┐
+│ DeliberationOrchestrator │       │ agent_outputs (Phase 2) │
+│ (orchestrator_deliberation.py)   │ CEO/CFO/CTO/CMO reports │
+│ Runs 5-round board loop.        │ stored as AgentReport   │
+│ Calls build_deliberation_prompt  │ objects                 │
+│ for each round.                  └──────────────────────────┘
+└────────────┬──────────────┘
+             │
+    ┌────────┴─────────┐
+    │ 4 template agents│
+    │ ceo/cfo/cto/cmo  │
+    │ (agents/templates_*.py)│
+    └────────┬─────────┘
+             │        ┌──────────────────────┐
+             └───────►│ prompts.py           │
+                      │ - AGENT_SYSTEM_PROMPTS│
+                      │ - DELIBERATION_MODIFIERS│
+                      │ - build_deliberation_prompt()
+                      └───────────────────────┘
+                                         │ 
+                               ┌──────────▼──────────┐
+                               │ AIClient (client.py)│
+                               │ 4-layer JSON parser │
+                               └──────────┬──────────┘
+                                         │
+                               ┌─────────▼──────────────┐
+                               │ Local LLM (Ollama)     │
+                               │ base_url + model from │
+                               │ settings.json          │
+                               └────────────────────────┘
+```
+
+### Key Files
+
+| File | Role |
+|------|------|
+| `src/cli.py` | CLI entry point via Typer. Config loading, simulation runner, all subcommands. |
+| `src/orchestrator.py` | Orchestrator class. Manages SimulationState. Runs Phase 1-4 pipeline. |
+| `src/orchestrator_deliberation.py` | `DeliberationOrchestrator` class. Runs the 5-round board meeting. |
+| `src/ai/prompts.py` | All prompt engineering: agent personas, decision routing, deliberation prompts. |
+| `src/ai/client.py` | `AIClient`. Sends prompts to Ollama. 4-layer JSON parsing pipeline with self-correction. |
+| `src/agents/interface.py` | `AgentReport` dataclass — every field any agent can return. |
+| `src/agents/templates_ceo.py` | CEO persona, AI analysis, deliberation invocation. |
+| `src/agents/templates_cfo.py` | CFO persona, financial analysis, AI invocation. |
+| `src/agents/templates_cto.py` | CTO persona, technical analysis, AI invocation. |
+| `src/agents/templates_cmo.py` | CMO persona, market analysis, AI invocation. |
+| `src/main.py` | `write_report()` — renders the final markdown. Injects board decision + deliberation transcript. |
+| `src/decision_tracker.py` | Logs every decision to `decisions/decision_YYYYMMDD_HHMMSS.json`. |
+| `src/memory.py` | Multi-session persistent memory. Injects past decisions as context for new simulations. |
+| `src/feedback.py` | Feedback system. Records agent recommendation ratings and tracks outcomes over time. |
+| `src/knowledge_base.py` | RAG-style document ingestion. Lets you feed the system your own PDFs and docs. |
+| `src/risk_analyzer.py` | Scans agent risks, scores them (probability × impact), generates visual risk matrix. |
+| `src/export.py` | Multi-format export: JSON, CSV, Markdown checklist from extracted action items. |
+| `src/ai/__init__.py` | Module bootstrap: exports `AIClient`, prompt builders, deliberation constants. |
+
+---
+
+## ⚙️ Setup
+
+### Prerequisites
+
+- **Python 3.10+**
+- **Ollama** running locally (`ollama serve`)
+
+### 1. Clone & Virtual Environment
+
+```bash
+git clone <repo-url>
 cd OpenExec
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+python3 -m venv venv
+source venv/bin/activate          # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Configuration
+### 2. Configure the AI Provider
 
-Create a `settings.json` file in the project root:
+Create `settings.json` in the project root:
 
 ```json
 {
   "ai": {
-    "base_url": "http://localhost:11434/v1",
-    "model": "llama3",
+    "base_url": "http://localhost:1234/v1",
+    "model": "google/gemma-4-e2b",
     "temperature": 0.7,
-    "max_tokens": 4096
+    "max_tokens": 4096,
+    "provider": "openai_compatible",
+    "timeout": 120
+  },
+  "agents": {
+    "enabled": ["ceo", "cfo", "cto", "cmo"],
+    "analysis_depth": "medium",
+    "confidence_threshold": 0.6,
+    "max_interactions": 10
+  },
+  "simulation": {
+    "phases": [
+      {"name": "inception", "weight": 0.1},
+      {"name": "analysis", "weight": 0.5},
+      {"name": "review", "weight": 0.25},
+      {"name": "synthesis", "weight": 0.1}
+    ]
   }
 }
 ```
 
+> **Models tested:** `google/gemma-4-e2b` (fast), `llama3` (balanced). Any OpenAI-compatible Ollama model works. The deliberation prompts are ~1200 tokens — make sure your model context window is ≥ 4096 tokens.
+
+### 3. Company Data (Optional but Recommended)
+
+Drop files into the `data/` directory. They get automatically loaded and fed into every agent's analysis:
+
+```
+data/
+├── company_background.md   # Overview, mission, product
+├── team_structure.md        # Org, roles, capacity
+└── case_studies.md          # Reference decisions and outcomes
+```
+
+---
+
+## 🚀 Usage
+
 ### First Simulation
 
 ```bash
-python -m openexec run --prompt "Should we invest in GPU infrastructure or focus on MVP development?"
+openexec run "Should we buy or lease new equipment?"
 ```
 
-## 📋 Features
+This runs the full pipeline and produces `board_report.md`, action item exports, and logs the decision.
 
-### Priority 1: Decision Intelligence ✅
-
-#### Action Item Extraction
-Automatically extracts prioritized action items from agent recommendations with owner assignment and deadlines.
+### Full Command Reference
 
 ```bash
-python -m openexec run --prompt "..." --export csv
-```
+# Basic
+openexec run "Should we expand to European markets?"
 
-#### Interactive Follow-up Mode
-Engage in deeper discussions about specific recommendations and challenge assumptions.
+# Custom output
+openexec run "Hire more engineers?" -o report.md
 
-```bash
-python -m openexec discuss
-```
-
-#### Decision Tracking
-Comprehensive logging of all decisions with full context and action items.
-
-```bash
-# Decisions automatically stored in decisions/ directory
-ls decisions/
-```
-
-### Priority 2: Actionable Outputs ✅
-
-#### Executive Summary Generation
-One-page summaries perfect for investor presentations and board meetings.
-
-```bash
-python -m openexec run --prompt "..." --summary exec_summary.md
-```
-
-#### Risk Quantification
-Probability and impact scoring with visual risk matrix.
-
-```
-Risk Matrix:
-            IMPACT →
-            Low   Med   High  Critical
-PROBABILITY ↑ High  .     .     [H]   [C]
-              Med    .     [M]   [H]   [C]
-              Low    [L]   [M]   [H]   .
-```
-
-#### Multi-Format Export
-Export action items in formats suitable for different workflows:
-
-```bash
-# JSON for APIs
-python -m openexec run --prompt "..." --export json
-
-# CSV for spreadsheets
-python -m openexec run --prompt "..." --export csv
-
-# Markdown checklist for task managers
-python -m openexec run --prompt "..." --export checklist
-```
-
-### Priority 3: Memory & Learning ✅
-
-#### Multi-Session Memory
-Persistent memory across sessions with automatic context injection.
-
-```bash
-# View decision history
-python -m openexec history
-
-# Search past decisions
-python -m openexec search "GPU investment"
-```
-
-#### Feedback Loop
-Rate agent recommendations and track learning over time.
-
-```bash
-# View agent performance
-python -m openexec performance
-
-# Provide feedback on decisions
-python -m openexec feedback <decision_id>
-```
-
-#### Custom Knowledge Base
-Ingest your company documents for RAG-powered analysis.
-
-```bash
-# List knowledge base
-python -m openexec kb list
-
-# Ingest documents
-python -m openexec kb ingest data/company_background.md company
-
-# Search knowledge base
-python -m openexec kb search "team structure"
-```
-
-## 🛠️ Usage
-
-### Basic Simulation
-
-```bash
-python -m openexec run --prompt "YOUR DECISION QUESTION"
-```
-
-### Advanced Options
-
-```bash
-# Custom output file
-python -m openexec run --prompt "..." --output my_report.md
-
-# Generate executive summary
-python -m openexec run --prompt "..." --summary summary.md
+# With executive summary
+openexec run "Series A now or wait?" -s summary.md
 
 # Export action items
-python -m openexec run --prompt "..." --export csv
+openexec run "Buy vs lease equipment?" -e csv   # or json, checklist
 
-# Use custom data directory
-python -m openexec run --prompt "..." --data-dir ./my_data
+# Custom data directory
+openexec run "Build vs buy?" -d ./company_data
 
-# Combine options
-python -m openexec run --prompt "..." --output report.md --summary exec.md --export json
+# Disable memory context
+openexec run "New decision" --no-memory
 ```
 
-### Memory & Knowledge Commands
+### Other Commands
 
 ```bash
-# View recent decisions
-python -m openexec history
-
-# Search memory
-python -m openexec search "query"
-
-# Manage knowledge base
-python -m openexec kb list
-python -m openexec kb ingest <file> [category]
-python -m openexec kb search "query"
-
-# View agent performance
-python -m openexec performance
+openexec history                 # List past decisions
+openexec search "GPU investment"  # Search memory
+openexec performance              # Agent rating metrics
+openexec kb ingest doc.pdf finance  # Add to knowledge base
+openexec kb list                  # List KB documents
+openexec kb search "market timing"  # Search KB
+openexec batch prompts.txt        # Run multiple simulations
 ```
 
-## 📊 Output Structure
+---
 
-### Main Report
+## 📊 Workflow: What Happens Inside
+
+### Phase 1 — Inception (CEO)
+
+CEO reads the prompt and sets the strategic frame: *"Here is what we're deciding, here is the core tension, here is what matters most."*
+
+### Phase 2 — Analysis (CFO, CTO, CMO)
+
+Each works alone, blind to the others. They return structured reports:
+
+```python
+@dataclass
+class AgentReport:
+    title: str
+    summary: str
+    key_findings: list[str]
+    recommendations: list[str]
+    risks: list[str]
+    alignment_score: float          # 0.0–1.0, be honest
+
+    # Role-specific fields
+    verdict: str                    # CEO: strategic, CFO: financial, etc.
+
+    # CFO-specific
+    capex_vs_opex: str
+    runway_impact_6mo: str
+    series_a_signal: str
+
+    # CTO-specific
+    technical_verdict: str          # Green / Yellow / Red
+    build_cost_order_of_magnitude: str
+    moat_impact: str
+
+    # CMO-specific
+    market_verdict: str
+    pricing_impact: str
+    customer_segment_view: str
+
+    # Deliberation fields
+    agreements: list[str]
+    conflicts: list[str]
+    required_changes: list[str]
+    revised_recommendations: list[str]
+    round_number: int
+    challenged_by: list[str]
+
+    board_decision: dict[str, Any]  # CEO only — set in round 5
 ```
+
+### Phase 3 — Deliberation (5 Rounds)
+
+Managed by `DeliberationOrchestrator`. Each round invokes the relevant agents with a context-rich prompt compiled from all prior outputs. Challenges are consolidated: CEO round-1 challenges flow to CFO/CTO/CMO for round 2 responses; CMO round-3 challenges flow to round 4 revisions.
+
+The system prompt for deliberation includes a modifier to put agents in "board meeting mode":
+
+```python
+DELIBERATION_MODIFIERS = {
+    "ceo": "You are in an active board deliberation... "
+           "Direct your questions at named roles.",
+    "cfo": "Respond to challenges directly. Cite a number. "
+           "State explicitly when you change your recommendation.",
+    "cto": "State feasibility color: Green/Yellow/Red. "
+           "Do not use 'complexity' as a shield — quantify it.",
+    "cmo": "Name the customer segment. Be specific about pricing impact.",
+}
+```
+
+### Phase 4 — Synthesis
+
+Combines Phase 2 outputs, deliberation rounds 1-5, and the CEO's board decision into `board_report.md`. Injects the board decision near the top (before individual reports), followed by the full deliberation transcript, then individual reports.
+
+---
+
+## 📄 Output Structure
+
+A `board_report.md` looks like this:
+
+```markdown
 # Executive Board Simulation Report
 
 ## Executive Summary
-[High-level decision overview]
+[One-line overview]
 
-## Decision Point
-[Specific decision required]
+## Board Decision                          ← from CEO Round 5
+[One-paragraph statement of board position]
 
-## Individual Agent Reports
-### CEO Report
-[Strategic vision and recommendations]
-### CFO Report
-[Financial analysis and ROI assessment]
-### CTO Report
-[Technical feasibility and architecture]
-### CMO Report
-[Market strategy and go-to-market]
+### Consensus Points
+- [Specific agreement across all four execs]
 
-## Synthesized Recommendations
-[Consolidated recommendations from all agents]
+### Final Priority Actions
+- [Action] | Owner: CTO | Timeframe: 2 Weeks
+
+### Dissenting Points
+- CFO: [disagreement]
+- CTO: [disagreement]
+
+### Contingencies
+- If [condition], then [revisit or change action]
+
+## Deliberation Transcript                ← all 5 rounds visible
+### Round 1
+**CEO**: [frames the board, names 3 conflicts, directs questions]
+
+### Round 2
+**CFO**: [responds, agrees/conflicts with CTO]
+**CTO**: [responds, agrees/conflicts with CFO]
+
+### Round 3
+**CMO**: [responds, raises market challenges]
+
+### Round 4
+**CFO**: [revised recommendation + what changed]
+**CTO**: [revised recommendation + what changed]
+**CMO**: [revised recommendation + what changed]
+
+### Round 5
+**CEO**: [synthesizes — the board_decision JSON was produced here]
+
+## Individual Agent Reports               ← Phase 2 blind analysis
+[CEO/CFO/CTO/CMO: title, summary, key findings, recommendations, risks]
 
 ## Action Items
-- [HIGH] Task description (Owner: CEO, Due: TBD)
-- [MEDIUM] Task description (Owner: CFO, Due: TBD)
+- [HIGH/MEDIUM/LOW] [Task] | Owner: CFO | Due: TBD
+
+## Overall Risk Assessment
+- [CEO] [risk description]
 
 ## Risk Quantification
-[Risk matrix and quantified risks]
-
-## Data Sources
-[Web sources accessed and success rates]
+[Probability × Impact matrix + scored risks]
 ```
 
-### Executive Summary
-```
-# Executive Summary
+---
 
-**Decision:** [Question]
+## 🛠️ Tech Stack
 
-## Top Recommendations
-1. [CEO] Recommendation 1
-2. [CFO] Recommendation 2
-3. [CTO] Recommendation 3
-4. [CMO] Recommendation 4
-5. [CEO] Recommendation 5
+| Layer | Technology | Role |
+|-------|-----------|------|
+| **Runtime** | Python 3.10+ | Core language |
+| **CLI Framework** | [Typer](https://typer.tiangolo.com/) | Clean CLI with rich formatting |
+| **LLM Backend** | [Ollama](https://ollama.ai/) | Local AI inference (OpenAI-compatible API) |
+| **LLM Models** | `google/gemma-4-e2b`, `llama3` (any OpenAI-compatible) | Language model |
+| **Parsers** | `json5` | Relaxed JSON parsing (handles LLM sloppiness) |
+| **Config** | `python-dotenv`, `pyyaml` | Settings and env management |
+| **Output** | `markdown`, `requests` | Report generation, API calls |
+| **Dev** | `pytest`, `black`, `ruff` | Testing and linting |
 
-## Critical Risks
-1. Risk description
-2. Risk description
-3. Risk description
+### LLM Client Design
 
-## Agent Confidence
-- CEO: 85%
-- CFO: 85%
-- CTO: 85%
-- CMO: 92%
+The `AIClient` in `src/ai/client.py` uses a 4-layer JSON robustness pipeline:
 
-## Data Sources
-- Access Rate: 67%
-- Timestamp: 2026-04-28 19:38:17
-```
+1. **Preprocess** — Strip markdown fences, bracket-matching to find the JSON span, remove BOM/\x00
+2. **Structural fixes** — Fix trailing commas, unescaped `\n`/`\r` inside strings, unquoted keys
+3. **json5 fallback** — Try `json5.loads()` for relaxed JSON parsing
+4. **Self-correction** — If all layers fail, re-call the LLM with a correction prompt (temp=0) asking it to return just the JSON
 
-## 🏗️ Architecture
+This pipeline was developed iteratively across multiple simulation runs. On an early run, the CFO returned `alignment_score: "0.50"` (string instead of float) and the CMO returned newlines inside a string value. The 4-layer pipeline handles all of these without crashing the simulation.
 
-### Agent System
-```
-src/agents.py
-├── BaseAgent (abstract)
-├── CEO Agent (strategic vision)
-├── CFO Agent (financial analysis)
-├── CTO Agent (technical feasibility)
-└── CMO Agent (market strategy)
-```
+---
 
-### Workflow
-```
-1. INCEPTION → CEO defines strategic direction
-2. ANALYSIS → All agents conduct deep analysis
-3. REVIEW → Cross-functional review and conflict detection
-4. SYNTHESIS → Consolidated recommendations
-```
+## 🔮 Future Work
 
-### Data Flow
-```
-User Prompt → Orchestrator → Agent Registry → Individual Agents
-                                    ↓
-                            Data Corpus (company data + memory + KB)
-                                    ↓
-                            Cross-Functional Review
-                                    ↓
-                            Synthesis & Report Generation
-```
+### Priority 4 — Automation
+- **Scheduled analysis**: Run simulations on a cron schedule against tracked metrics
+- **Trigger-based analysis**: Re-run deliberation when key metrics change (e.g., runway crosses a threshold)
+- **Continuous monitoring dashboard**: Real-time view of open decisions and pending action items
+
+### Priority 5 — Deeper Analysis
+- **Real-time market data**: Full web fetching in the deliberation loop (currently disabled)
+- **Financial modeling engine**: CFO gets a spreadsheet-grade model, not just narrative estimates
+- **Market sizing & TAM analysis**: Automated total addressable market from initial inputs
+- **Technical architecture diagrams**: CTO output includes generated system diagrams
+- **Voting mechanism**: Weighted voting among agents with abstention tracking
+
+### Contributing
+
+Open to:
+- **New agent personas**: COO (operations), CHRO (people), CLO (legal risk)
+- **Real-time data source integrations**: FRED API for macro data, company financial APIs, news feeds
+- **Improved deliberation prompts**: Prompt engineering to get more specific disagreements surfaced
+- **Better risk modeling**: Monte Carlo simulation over the quantified risks
+- **Export integrations**: Notion, Linear, Jira, Slack output formats
+
+If you want to contribute:
+1. Fork the repo
+2. `black` format before committing
+3. `ruff check .` passes clean
+4. Run `openexec run "Your test scenario?"` and verify the board_report.md looks right
+
+---
 
 ## 📁 Project Structure
 
 ```
 OpenExec/
 ├── src/
-│   ├── __main__.py           # CLI entry point
-│   ├── main.py               # Main CLI logic
-│   ├── agents.py             # Agent definitions
-│   ├── orchestrator.py       # Workflow orchestration
-│   ├── utils.py              # Action item extraction
-│   ├── interactive.py        # Interactive discussion mode
-│   ├── decision_tracker.py   # Decision logging
-│   ├── summary.py            # Executive summary generation
-│   ├── risk_analyzer.py     # Risk quantification
-│   ├── export.py             # Multi-format export
-│   ├── memory.py             # Memory system (Priority 3)
-│   ├── feedback.py           # Feedback system (Priority 3)
-│   └── knowledge_base.py     # Knowledge base (Priority 3)
-├── data/
-│   ├── company_background.md # Company information
-│   ├── team_structure.md     # Team details
-│   └── case_studies.md       # Reference cases
-├── memory/                   # Persistent memory
-│   ├── conversations/        # Stored simulations
-│   ├── embeddings/          # Vector embeddings
-│   └── memory_index.json    # Memory index
-├── knowledge_base/           # Custom knowledge
-│   ├── chunks/              # Document chunks
-│   ├── documents/           # Original documents
-│   └── kb_index.json       # KB index
-├── feedback/                 # Learning system
-│   ├── feedback_log.json    # Feedback entries
-│   └── agent_scores.json   # Performance metrics
-├── decisions/                # Decision logs
-├── settings.json             # AI configuration
-├── requirements.txt          # Python dependencies
-└── README.md                # This file
+│   ├── __main__.py              # Module entry point
+│   ├── cli.py                   # Typer CLI with all subcommands
+│   ├── main.py                  # write_report() — renders board_report.md
+│   ├── orchestrator.py          # Orchestrator + SimulationState
+│   ├── orchestrator_deliberation.py  # 5-round DeliberationOrchestrator
+│   ├── agents/
+│   │   ├── __init__.py          # AgentRegistry + register_default_agents()
+│   │   ├── interface.py         # AgentReport dataclass
+│   │   ├── templates_ceo.py      # CEO persona + analysis
+│   │   ├── templates_cfo.py      # CFO persona + analysis
+│   │   ├── templates_cto.py     # CTO persona + analysis
+│   │   └── templates_cmo.py      # CMO persona + analysis
+│   ├── ai/
+│   │   ├── __init__.py          # Exports AIClient, prompt builders
+│   │   ├── client.py            # 4-layer JSON LLM client
+│   │   └── prompts.py           # System prompts, routing, deliberation prompts
+│   ├── decision_tracker.py      # Logs to decisions/decision_*.json
+│   ├── memory.py                 # Multi-session persistent memory
+│   ├── feedback.py              # Agent rating + learning loop
+│   ├── knowledge_base.py        # RAG document ingestion
+│   ├── risk_analyzer.py          # Risk scoring + visual matrix
+│   ├── export.py                # JSON/CSV/markdown action item export
+│   ├── summary.py               # Executive summary generator
+│   └── utils.py                 # Action item extraction
+├── data/                        # Company data files
+├── decisions/                   # Decision logs (auto-generated)
+├── memory/                      # Memory index + conversation history
+├── knowledge_base/              # Ingested KB documents + chunks
+├── feedback/                    # Agent performance scores
+├── graphify-out/               # Code knowledge graph (AST-only)
+├── settings.json                # AI provider configuration
+└── requirements.txt             # Python dependencies
 ```
-
-## 🔧 Configuration
-
-### AI Settings
-Configure your AI provider in `settings.json`:
-
-```json
-{
-  "ai": {
-    "base_url": "http://localhost:11434/v1",  # Ollama
-    "model": "llama3",                        # Model name
-    "temperature": 0.7,                      # Creativity (0-1)
-    "max_tokens": 4096                       # Response length
-  }
-}
-```
-
-### Data Sources
-Web data sources configured in agent definitions:
-
-- TechCrunch (AI & Fintech)
-- VentureBeat (AI)
-- Hacker News
-- Custom sources can be added
-
-### Company Data
-Place company-specific data in `data/` directory:
-
-- `company_background.md` - Company overview
-- `team_structure.md` - Team information
-- `case_studies.md` - Reference cases
-- Custom documents as needed
-
-## 🎓 Use Cases
-
-### Strategic Planning
-```bash
-python -m openexec run --prompt "Should we expand to European markets?"
-```
-
-### Investment Decisions
-```bash
-python -m openexec run --prompt "Should we raise Series A now or wait?"
-```
-
-### Technology Choices
-```bash
-python -m openexec run --prompt "Should we build or buy our analytics platform?"
-```
-
-### Market Entry
-```bash
-python -m openexec run --prompt "Should we target enterprise or SMB customers?"
-```
-
-### Resource Allocation
-```bash
-python -m openexec run --prompt "How should we allocate our $2M budget?"
-```
-
-## 📈 Agent Roles
-
-### CEO (Chief Executive Officer)
-- **Focus**: Strategic vision and overall direction
-- **Perspective**: "Why are we doing this?"
-- **Output**: High-level strategy and market positioning
-
-### CFO (Chief Financial Officer)
-- **Focus**: Financial modeling and ROI assessment
-- **Perspective**: "How much will this cost and return?"
-- **Output**: Budget analysis, risk quantification, financial projections
-
-### CTO (Chief Technology Officer)
-- **Focus**: Technical feasibility and architecture
-- **Perspective**: "How do we build this?"
-- **Output**: Technical recommendations, scalability analysis, implementation roadmap
-
-### CMO (Chief Marketing Officer)
-- **Focus**: Market reception and go-to-market strategy
-- **Perspective**: "How do we sell this?"
-- **Output**: Market analysis, customer acquisition strategy, competitive positioning
-
-## 🔍 Advanced Features
-
-### Memory Context
-The system automatically references past decisions in new simulations:
-
-```bash
-# First decision
-python -m openexec run --prompt "Should we buy GPUs?"
-
-# Later decision references the first
-python -m openexec run --prompt "Based on our GPU decision, should we invest in cloud?"
-# Output: "📚 Memory context loaded from past decisions"
-```
-
-### Knowledge Base Integration
-Add your company documents for personalized analysis:
-
-```bash
-# Ingest company documents
-python -m openexec kb ingest data/pitch_deck.md pitch
-python -m openexec kb ingest data/financials.xlsx financials
-
-# Analysis now uses your data
-python -m openexec run --prompt "Should we expand our team?"
-```
-
-### Agent Learning
-Provide feedback to improve agent recommendations:
-
-```bash
-# View current performance
-python -m openexec performance
-
-# After implementing recommendations, provide feedback
-python -m openexec feedback decision_20260428_185720
-```
-
-## 🚧 Development
-
-### Adding New Agents
-Create new agent in `src/agents.py`:
-
-```python
-class COOAgent(BaseAgent):
-    def __init__(self):
-        super().__init__(
-            name="COO",
-            role="Chief Operations Officer",
-            focus="Operational efficiency and execution"
-        )
-```
-
-### Extending Data Sources
-Add new web sources to agent fetch methods:
-
-```python
-def fetch_market_data(self):
-    sources = [
-        "https://your-source.com/feed",
-        # Add more sources
-    ]
-```
-
-### Custom Export Formats
-Add new export functions in `src/export.py`:
-
-```python
-def export_action_items_custom(action_items, output_path):
-    # Your custom export logic
-    pass
-```
-
-## 🗺️ Roadmap
-
-### Completed ✅
-- Priority 1: Decision Intelligence
-- Priority 2: Actionable Outputs
-- Priority 3: Memory & Learning
-
-### Planned 📋
-- Priority 4: Automation
-  - Scheduled analysis
-  - Trigger-based analysis
-  - Continuous monitoring dashboard
-
-- Priority 5: Deeper Analysis
-  - Financial modeling engine
-  - Market sizing & TAM analysis
-  - Technical architecture diagrams
-
-## 🤝 Contributing
-
-Contributions welcome! Areas for contribution:
-
-- Additional agent personas (COO, CHRO, CLO)
-- Enhanced web data sources
-- Improved memory embeddings
-- Additional export formats
-- Performance optimizations
-
-## 📝 License
-
-[Your License Here]
-
-## 🆘 Support
-
-For issues and questions:
-- Check existing documentation
-- Review `settings.json` configuration
-- Verify AI provider connectivity
-- Check data directory structure
-
-## 🎯 Best Practices
-
-1. **Specific Prompts**: Use clear, specific decision questions
-2. **Data Preparation**: Keep company data current in `data/` directory
-3. **Regular Feedback**: Provide feedback to improve agent learning
-4. **Memory Management**: Review and clean memory periodically
-5. **Knowledge Base**: Maintain updated company documents
-
-## 📊 Performance Tips
-
-- Use appropriate AI model for your hardware
-- Limit data sources for faster execution
-- Export only needed formats
-- Clean memory directory periodically
-- Use executive summaries for quick reviews
-
----
-
-**OpenExec** - Transform complex decisions into actionable intelligence with AI-powered executive board simulation.

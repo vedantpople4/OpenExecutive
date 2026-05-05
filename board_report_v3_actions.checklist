@@ -1,0 +1,13 @@
+# Action Items
+
+- [ ] Review and prioritize tasks
+
+- [ ] [HIGH] Immediately initiate a joint CFO/CTO review to model the 3-year TCO (Total Cost of Ownership) for owning vs. leasing the required compute resources | Owner: CEO/CFO | Timeframe: 1 Week (Owner: CEO, Due: TBD)
+- [ ] [HIGH] Commit to purchasing foundational, high-demand infrastructure assets immediately, even if it strains immediate cash flow slightly; negotiate flexible payment terms with vendors | Owner: CFO | Timeframe: Next 30 Days (Owner: CEO, Due: TBD)
+- [ ] [HIGH] Require immediate input on the total purchase price and lease structure. | Impact: N/A | Owner: CFO (Owner: CFO, Due: TBD)
+- [ ] [HIGH] Do not proceed with a commitment until TCO is calculated against projected scaling needs. | Impact: Runway risk remains unknown | Owner: CFO (Owner: CFO, Due: TBD)
+- [ ] [MEDIUM] Adopt a hybrid strategy: Start with cloud/leasing for immediate scalability and flexibility | Complexity: Low | Lead: Cloud Engineer | Est: 1 week (Owner: CTO, Due: TBD)
+- [ ] [MEDIUM] Define the 5-year scale scenario first. If 10x growth requires dedicated, specialized hardware clusters (e.g., custom ASICs or specific GPU farms), plan to buy infrastructure later | Complexity: High | Lead: CTO/CFO | Est: 2 weeks (Owner: CTO, Due: TBD)
+- [ ] [MEDIUM] Buy the necessary core compute infrastructure immediately to secure long-term cost predictability and performance SLAs | Segment: Both | Owner: CMO (Owner: CMO, Due: TBD)
+- [ ] [MEDIUM] Negotiate flexible leasing options only for non-core, highly variable components (e.g., specific testing environments) | Segment: Banks/HedgeFunds | Owner: CFO/CMO (Owner: CMO, Due: TBD)
+- [ ] [MEDIUM] Define the 5-year scale scenario first. If 10x growth requires dedicated, specialized hardware clusters (e.g., custom ASICs or specific GPU farms), plan to buy infrastructure later | Complexity: High | Lead: CTO/CFO | Est: 2 weeks (Owner: CTO, Due: TBD)

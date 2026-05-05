@@ -29,30 +29,19 @@ class CNOTemplate:
             try:
                 from src.ai import build_analysis_prompt
 
-                # Build AI prompt
                 prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
                     agent_name="cmo"
                 )
 
-                # Call LLM
-                response_data = self.ai_client.complete_json(
+                response_data = self.ai_client.complete_json_with_retry(
                     prompt=prompt,
                     system_prompt=self.system_prompt,
                     temperature=0.7
                 )
 
-                # Parse response into AgentReport
-                return AgentReport(
-                    title=response_data.get("title", "CMO Go-to-Market Strategy Report"),
-                    summary=response_data.get("summary", ""),
-                    key_findings=response_data.get("key_findings", []),
-                    recommendations=response_data.get("recommendations", []),
-                    risks=response_data.get("risks", []),
-                    confidence_score=float(response_data.get("confidence_score", 0.7)),
-                    reasoning=response_data.get("reasoning", {})
-                )
+                return AgentReport.from_llm_response("cmo", response_data)
             except Exception as e:
                 print(f"AI analysis failed: {e}")
                 print("Falling back to hardcoded analysis.")
@@ -84,7 +73,7 @@ class CNOTemplate:
             key_findings=key_findings,
             recommendations=recommendations,
             risks=risks,
-            confidence_score=0.7,
+            alignment_score=0.7,
             reasoning={
                 "data_used": list(state.data_corpus.keys()),
                 "focus_areas": ["Marketing", "Customer Fit"]
@@ -94,8 +83,8 @@ class CNOTemplate:
 
 
     def review_others(self, reports: dict[str, AgentReport]) -> None:
-        """CMO reviews other agents for market alignment."""
-        print("CMO Reviewing: Checking technical and financial constraints against market goals.")
+        """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_review()."""
+        pass
 
         # Check CTO's feasibility and CFO's budget against the marketing strategy.
         cto_report = reports.get("cto")

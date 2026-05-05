@@ -29,30 +29,19 @@ class CFOTemplate:
             try:
                 from src.ai import build_analysis_prompt
 
-                # Build AI prompt
                 prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
                     agent_name="cfo"
                 )
 
-                # Call LLM
-                response_data = self.ai_client.complete_json(
+                response_data = self.ai_client.complete_json_with_retry(
                     prompt=prompt,
                     system_prompt=self.system_prompt,
                     temperature=0.7
                 )
 
-                # Parse response into AgentReport
-                return AgentReport(
-                    title=response_data.get("title", "CFO Financial Viability Report"),
-                    summary=response_data.get("summary", ""),
-                    key_findings=response_data.get("key_findings", []),
-                    recommendations=response_data.get("recommendations", []),
-                    risks=response_data.get("risks", []),
-                    confidence_score=float(response_data.get("confidence_score", 0.65)),
-                    reasoning=response_data.get("reasoning", {})
-                )
+                return AgentReport.from_llm_response("cfo", response_data)
             except Exception as e:
                 print(f"AI analysis failed: {e}")
                 print("Falling back to hardcoded analysis.")
@@ -81,7 +70,7 @@ class CFOTemplate:
             key_findings=key_findings,
             recommendations=recommendations,
             risks=risks,
-            confidence_score=0.65,
+            alignment_score=0.65,
             reasoning={
                 "data_used": list(state.data_corpus.keys()),
                 "focus_areas": ["Budget", "ROI"]
@@ -91,7 +80,8 @@ class CFOTemplate:
 
 
     def review_others(self, reports: dict[str, AgentReport]) -> None:
-        """CFO reviews other agents for financial feasibility."""
+        """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_review()."""
+        pass
         print("CFO Reviewing: Checking technical and market risks against budget.")
 
         # Check CTO's feasibility and CMO's market risk against financial constraints.

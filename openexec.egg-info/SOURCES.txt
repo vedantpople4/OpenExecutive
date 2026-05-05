@@ -8,5 +8,16 @@ openexec.egg-info/requires.txt
 openexec.egg-info/top_level.txt
 src/__init__.py
 src/__main__.py
+src/cli.py
+src/decision_tracker.py
+src/export.py
+src/feedback.py
+src/interactive.py
+src/knowledge_base.py
 src/main.py
+src/main_patch.py
+src/memory.py
 src/orchestrator.py
+src/risk_analyzer.py
+src/summary.py
+src/utils.py
