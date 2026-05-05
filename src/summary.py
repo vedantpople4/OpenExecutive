@@ -44,7 +44,7 @@ def generate_executive_summary(results: Dict[str, Any]) -> str:
     lines.append("")
     agent_reports = results.get('agent_reports', {})
     for agent_name, report in agent_reports.items():
-        confidence = report.get('confidence_score', 0)
+        confidence = report.get('alignment_score', 0)
         lines.append(f"- **{agent_name.upper()}:** {confidence:.0%}")
     lines.append("")
 

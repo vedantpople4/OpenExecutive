@@ -11,7 +11,9 @@
       "WebFetch(domain:www.theverge.com)",
       "WebFetch(domain:news.ycombinator.com)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(grep:*)",
+      "Bash(./venv/bin/python src/main.py run --prompt \"Buy vs lease equipment?\" --output /tmp/board_report_deliberation.md)"
     ]
   }
 }

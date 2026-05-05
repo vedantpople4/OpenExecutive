@@ -152,6 +152,83 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
         if results.get('decision_point'):
             f.write(f"## Decision Point\n\n{results['decision_point']}\n\n")
 
+        # Board Decision (from CEO round-5 synthesis)
+        if results.get('board_decision'):
+            bd = results['board_decision']
+            f.write("## Board Decision\n\n")
+            if bd.get('summary'):
+                f.write(f"{bd['summary']}\n\n")
+            if bd.get('consensus_points'):
+                f.write("### Consensus Points\n\n")
+                for pt in bd['consensus_points']:
+                    f.write(f"- {pt}\n")
+                f.write("\n")
+            if bd.get('final_priority_actions'):
+                f.write("### Final Priority Actions\n\n")
+                for action in bd['final_priority_actions']:
+                    f.write(f"- {action}\n")
+                f.write("\n")
+            if bd.get('dissent_points'):
+                f.write("### Dissenting Points\n\n")
+                for d in bd['dissent_points']:
+                    f.write(f"- {d}\n")
+                f.write("\n")
+            if bd.get('dissenting_opinions'):
+                f.write("### Dissenting Opinions\n\n")
+                for d in bd['dissenting_opinions']:
+                    f.write(f"- {d}\n")
+                f.write("\n")
+            if bd.get('contingencies'):
+                f.write("### Contingencies\n\n")
+                for c in bd['contingencies']:
+                    f.write(f"- {c}\n")
+                f.write("\n")
+
+        # Deliberation Transcript (rounds 1-5)
+        if results.get('deliberation_rounds'):
+            f.write("## Deliberation Transcript\n\n")
+            for round_num in sorted(results['deliberation_rounds'].keys()):
+                round_reports = results['deliberation_rounds'][round_num]
+                f.write(f"### Round {round_num}\n\n")
+                for agent, report in round_reports.items():
+                    f.write(f"**{agent.upper()}**  ")
+                    if report.get('round_number'):
+                        f.write(f"(Round {report['round_number']})")
+                    f.write("\n\n")
+                    if report.get('summary'):
+                        f.write(f"{report['summary']}\n\n")
+                    if report.get('agreements'):
+                        f.write("**Agreements:**\n")
+                        for a in report['agreements']:
+                            f.write(f"- {a}\n")
+                        f.write("\n")
+                    if report.get('conflicts'):
+                        f.write("**Conflicts:**\n")
+                        for c in report['conflicts']:
+                            f.write(f"- {c}\n")
+                        f.write("\n")
+                    if report.get('required_changes'):
+                        f.write("**Required Changes:**\n")
+                        for ch in report['required_changes']:
+                            f.write(f"- {ch}\n")
+                        f.write("\n")
+                    if report.get('revised_recommendations'):
+                        f.write("**Revised Recommendations:**\n")
+                        for rev in report['revised_recommendations']:
+                            f.write(f"- {rev}\n")
+                        f.write("\n")
+                    if report.get('key_findings'):
+                        f.write("**Key Findings:**\n")
+                        for find in report['key_findings']:
+                            f.write(f"- {find}\n")
+                        f.write("\n")
+                    if report.get('risks'):
+                        f.write("**Risks:**\n")
+                        for risk in report['risks']:
+                            f.write(f"- {risk}\n")
+                        f.write("\n")
+                f.write("---\n\n")
+
         f.write("## Individual Agent Reports\n\n")
 
         for agent_name, report in results.get('agent_reports', {}).items():
@@ -177,7 +254,7 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
                     f.write(f"- {risk}\n")
                 f.write("\n")
 
-            f.write(f"**Confidence Score:** {report['confidence_score']:.2f}\n\n")
+            f.write(f"**Alignment Score:** {report['alignment_score']:.2f}\n\n")
             f.write("---\n\n")
 
         if results.get('synthesized_recommendations'):

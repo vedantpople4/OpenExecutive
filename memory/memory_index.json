@@ -14,8 +14,48 @@
       "id": "d0a88cf741ac",
       "timestamp": "2026-04-28T21:07:41.235339",
       "prompt": "Based on our previous GPU decision, should we now invest in cloud infrastructure instead?"
+    },
+    {
+      "id": "73d49ec7da1b",
+      "timestamp": "2026-04-30T21:13:30.987134",
+      "prompt": "Should we expand to European markets?"
+    },
+    {
+      "id": "73d49ec7da1b",
+      "timestamp": "2026-04-30T21:21:12.587776",
+      "prompt": "Should we expand to European markets?"
+    },
+    {
+      "id": "258386f7b359",
+      "timestamp": "2026-04-30T21:32:15.744058",
+      "prompt": "Buy vs lease equipment?"
+    },
+    {
+      "id": "258386f7b359",
+      "timestamp": "2026-05-01T21:22:38.739287",
+      "prompt": "Buy vs lease equipment?"
+    },
+    {
+      "id": "258386f7b359",
+      "timestamp": "2026-05-02T13:27:54.756098",
+      "prompt": "Buy vs lease equipment?"
+    },
+    {
+      "id": "258386f7b359",
+      "timestamp": "2026-05-03T18:56:44.268423",
+      "prompt": "Buy vs lease equipment?"
+    },
+    {
+      "id": "258386f7b359",
+      "timestamp": "2026-05-03T19:19:33.007399",
+      "prompt": "Buy vs lease equipment?"
+    },
+    {
+      "id": "258386f7b359",
+      "timestamp": "2026-05-03T19:40:34.615148",
+      "prompt": "Buy vs lease equipment?"
     }
   ],
   "decisions": [],
-  "last_updated": "2026-04-28T21:07:41.236212"
+  "last_updated": "2026-05-03T19:40:34.616682"
 }

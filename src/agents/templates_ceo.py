@@ -20,7 +20,7 @@ class CEOTemplate:
             self.system_prompt = get_agent_system_prompt("ceo")
             self.data_fetcher = RealTimeDataFetcher()
             self.use_ai = True
-            self.use_real_time_data = True
+            self.use_real_time_data = False
         except Exception as e:
             print(f"Warning: AI client initialization failed: {e}")
             print("Falling back to hardcoded analysis.")
@@ -62,46 +62,36 @@ class CEOTemplate:
             try:
                 from src.ai import build_analysis_prompt
 
-                # Build AI prompt with real-time context
                 base_prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
                     agent_name="ceo"
                 )
 
-                # Add real-time context if available
                 if real_time_context:
-                    enhanced_prompt = f"{base_prompt}\n\n{real_time_context}\n\n## Instructions\n" \
-                                     f"Consider the current market trends and recent developments above " \
-                                     f"when formulating your strategic analysis. How do these current " \
-                                     f"market conditions impact your recommendations?"
+                    enhanced_prompt = (
+                        f"{base_prompt}\n\n{real_time_context}\n\n"
+                        "## Additional Context\n"
+                        "Consider current market trends and recent developments above "
+                        "when formulating your strategic analysis."
+                    )
                 else:
                     enhanced_prompt = base_prompt
 
-                # Call LLM
-                response_data = self.ai_client.complete_json(
+                response_data = self.ai_client.complete_json_with_retry(
                     prompt=enhanced_prompt,
                     system_prompt=self.system_prompt,
                     temperature=0.7
                 )
 
-                # Add real-time data info to reasoning
                 reasoning = response_data.get("reasoning", {})
                 if real_time_context:
                     reasoning["real_time_data_used"] = True
                     reasoning["data_timestamp"] = context.get("timestamp", "unknown")
                     reasoning.update(sources_summary)
+                response_data["reasoning"] = reasoning
 
-                # Parse response into AgentReport
-                return AgentReport(
-                    title=response_data.get("title", "CEO Strategic Vision Report"),
-                    summary=response_data.get("summary", ""),
-                    key_findings=response_data.get("key_findings", []),
-                    recommendations=response_data.get("recommendations", []),
-                    risks=response_data.get("risks", []),
-                    confidence_score=float(response_data.get("confidence_score", 0.75)),
-                    reasoning=reasoning
-                )
+                return AgentReport.from_llm_response("ceo", response_data)
             except Exception as e:
                 print(f"AI analysis failed: {e}")
                 print("Falling back to hardcoded analysis.")
@@ -147,44 +137,18 @@ class CEOTemplate:
             reasoning["sources_failed"] = sources_summary.get("sources_failed", [])
             reasoning["all_available_sources"] = sources_summary.get("all_available_sources", [])
 
-        reasoning = {
-            "data_used": list(state.data_corpus.keys()),
-            "focus_areas": ["Vision", "Alignment"]
-        }
-
-        if real_time_context:
-            reasoning["real_time_data_used"] = True
-            reasoning["data_sources"] = ["TechCrunch", "Hacker News", "VentureBeat"]
-
         report = AgentReport(
             title="CEO Strategic Vision Report",
             summary=summary,
             key_findings=key_findings,
             recommendations=recommendations,
             risks=risks,
-            confidence_score=0.75,
+            alignment_score=0.75,
             reasoning=reasoning
         )
         return report
 
 
     def review_others(self, reports: dict[str, AgentReport]) -> None:
-        """CEO reviews other agents for strategic coherence."""
-        print("CEO Reviewing: Cross-functional alignment...")
-
-        # High-level check for conflicts between Vision (CEO) and Feasibility/Market (others)
-        cfo_report = reports.get("cfo")
-        cto_report = reports.get("cto")
-        cmo_report = reports.get("cmo")
-
-        if cfo_report and cto_report:
-            if hasattr(cfo_report, 'risks') and hasattr(cto_report, 'risks'):
-                print("Conflict Check: Financial risk vs. Technical feasibility.")
-                # Placeholder for deeper conflict resolution logic
-                pass
-        elif not cfo_report or not cto_report:
-             print("Warning: Missing financial or technical reports; strategic view is incomplete.")
-
-        # The CEO's role is to synthesize these conflicts into a single, coherent narrative.
-        if cmo_report:
-            print("Alignment Check: Marketing strategy seems to align with the proposed vision.")
+        """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_review()."""
+        pass

@@ -67,7 +67,7 @@ class MemorySystem:
         for agent_name, report in results.get('agent_reports', {}).items():
             conversation_data["agent_summaries"][agent_name] = {
                 "title": report.get('title', ''),
-                "confidence_score": report.get('confidence_score', 0),
+                "alignment_score": report.get('alignment_score', 0),
                 "key_findings": report.get('key_findings', []),
                 "recommendations": report.get('recommendations', [])
             }
