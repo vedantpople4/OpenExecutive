@@ -70,7 +70,8 @@ User prompt
     ▼
 ┌─────────────────────────────────────────────────────────┐
 │  cli.py                                                  │
-│  Typer-based CLI. Validates settings, runs orchestrator. │
+│  Typer-based CLI. Validates settings, runs orchestrator.│
+│  Supports: --assume (counterfactual), --weight (optim) │
 └───────────────────────────┬─────────────────────────────┘
                             │
                             ▼
@@ -81,10 +82,11 @@ User prompt
 │  - Phase 2: Analysis (CFO/CTO/CMO work alone)           │
 │  - Phase 3: Deliberation (DeliberationOrchestrator)    │
 │  - Phase 4: Synthesis (compile final report)            │
+│  Emits events to EventStore for auditability           │
 └───────────────────────────┬─────────────────────────────┘
                             │
-           ┌────────────────┴────────────────┐
-           ▼                                 ▼
+            ┌────────────────┴────────────────┐
+            ▼                                 ▼
 ┌──────────────────────┐          ┌──────────────────────────┐
 │ DeliberationOrchestrator │       │ agent_outputs (Phase 2) │
 │ (orchestrator_deliberation.py)   │ CEO/CFO/CTO/CMO reports │
@@ -92,53 +94,74 @@ User prompt
 │ Calls build_deliberation_prompt  │ objects                 │
 │ for each round.                  └──────────────────────────┘
 └────────────┬──────────────┘
-             │
-    ┌────────┴─────────┐
-    │ 4 template agents│
-    │ ceo/cfo/cto/cmo  │
-    │ (agents/templates_*.py)│
-    └────────┬─────────┘
-             │        ┌──────────────────────┐
-             └───────►│ prompts.py           │
-                      │ - AGENT_SYSTEM_PROMPTS│
-                      │ - DELIBERATION_MODIFIERS│
-                      │ - build_deliberation_prompt()
-                      └───────────────────────┘
-                                         │ 
-                               ┌──────────▼──────────┐
-                               │ AIClient (client.py)│
-                               │ 4-layer JSON parser │
-                               └──────────┬──────────┘
-                                         │
-                               ┌─────────▼──────────────┐
-                               │ Local LLM (Ollama)     │
-                               │ base_url + model from │
-                               │ settings.json          │
-                               └────────────────────────┘
+              │
+     ┌────────┴─────────┐
+     │ 4 template agents│
+     │ ceo/cfo/cto/cmo  │
+     │ (agents/templates_*.py)│
+     └────────┬─────────┘
+              │        ┌──────────────────────┐
+              └───────►│ prompts.py           │
+                       │ - AGENT_SYSTEM_PROMPTS│
+                       │ - DELIBERATION_MODIFIERS│
+                       │ - build_deliberation_prompt()
+                       │ - build_analysis_prompt() │
+                       └───────────────────────┘
+                                          │
+                                ┌─────────▼──────────────┐
+                                │  ai/client.py           │
+                                │  Delegates to provider  │
+                                │  4-layer JSON pipeline  │
+                                └─────────┬──────────────┘
+                                          │
+                                ┌─────────▼──────────────┐
+                                │ BaseProvider Interface  │
+                                │ (abstract_provider.py) │
+                                └─────────┬──────────────┘
+                                          │
+                         ┌────────────────┴────────────────┐
+                         ▼                                 ▼
+              ┌──────────────────────┐        ┌──────────────────────────┐
+              │ OllamaProvider       │        │ Future: OpenAIProvider   │
+              │ (ollama_provider.py) │        │ (not yet implemented)    │
+              │ Local Ollama API     │        └──────────────────────────┘
+              └──────────────────────┘
+
+Event Sourcing Layer:
+┌─────────────────────────────────────────────────────────┐
+│  events.py — Event type definitions                    │
+│  event_store.py — Append-only event persistence        │
+│  Events: simulation_initialized, agent_report_generated │
+│  deliberation_round_completed, synthesis_completed, etc │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ### Key Files
 
 | File | Role |
 |------|------|
-| `src/cli.py` | CLI entry point via Typer. Config loading, simulation runner, all subcommands. |
-| `src/orchestrator.py` | Orchestrator class. Manages SimulationState. Runs Phase 1-4 pipeline. |
+| `src/cli.py` | CLI entry point via Typer. Config loading, simulation runner, all subcommands. Supports `--assume` and `--weight` flags. |
+| `src/orchestrator.py` | Orchestrator class. Manages SimulationState. Runs Phase 1-4 pipeline. Emits events to EventStore. |
 | `src/orchestrator_deliberation.py` | `DeliberationOrchestrator` class. Runs the 5-round board meeting. |
-| `src/ai/prompts.py` | All prompt engineering: agent personas, decision routing, deliberation prompts. |
-| `src/ai/client.py` | `AIClient`. Sends prompts to Ollama. 4-layer JSON parsing pipeline with self-correction. |
+| `src/ai/abstract_provider.py` | `BaseProvider` abstract class defining the LLM provider interface. |
+| `src/ai/ollama_provider.py` | `OllamaProvider` implementation for local Ollama API. Includes 4-layer JSON parsing pipeline. |
+| `src/ai/client.py` | `AIClient`. Delegates to BaseProvider. Owns 4-layer JSON robustness pipeline as fallback. |
+| `src/ai/prompts.py` | All prompt engineering: agent personas, decision routing, deliberation prompts. `build_analysis_prompt()` supports counterfactual assumptions. |
 | `src/agents/interface.py` | `AgentReport` dataclass — every field any agent can return. |
 | `src/agents/templates_ceo.py` | CEO persona, AI analysis, deliberation invocation. |
 | `src/agents/templates_cfo.py` | CFO persona, financial analysis, AI invocation. |
 | `src/agents/templates_cto.py` | CTO persona, technical analysis, AI invocation. |
 | `src/agents/templates_cmo.py` | CMO persona, market analysis, AI invocation. |
 | `src/main.py` | `write_report()` — renders the final markdown. Injects board decision + deliberation transcript. |
+| `src/events.py` | Event type definitions for event sourcing (SimulationInitialized, AgentReportGenerated, DeliberationRoundCompleted, etc.). |
+| `src/event_store.py` | `EventStore` class for event persistence, state reconstruction, and event replay. |
 | `src/decision_tracker.py` | Logs every decision to `decisions/decision_YYYYMMDD_HHMMSS.json`. |
 | `src/memory.py` | Multi-session persistent memory. Injects past decisions as context for new simulations. |
 | `src/feedback.py` | Feedback system. Records agent recommendation ratings and tracks outcomes over time. |
 | `src/knowledge_base.py` | RAG-style document ingestion. Lets you feed the system your own PDFs and docs. |
 | `src/risk_analyzer.py` | Scans agent risks, scores them (probability × impact), generates visual risk matrix. |
 | `src/export.py` | Multi-format export: JSON, CSV, Markdown checklist from extracted action items. |
-| `src/ai/__init__.py` | Module bootstrap: exports `AIClient`, prompt builders, deliberation constants. |
+| `src/utils.py` | Utility functions including `sanitize_prompt()` for prompt injection defense. |
 
 ---
 
@@ -166,7 +189,7 @@ Create `settings.json` in the project root:
 ```json
 {
   "ai": {
-    "base_url": "http://localhost:1234/v1",
+    "base_url": "http://localhost:11434/v1",
     "model": "google/gemma-4-e2b",
     "temperature": 0.7,
     "max_tokens": 4096,
@@ -215,6 +238,36 @@ openexec run "Should we buy or lease new equipment?"
 
 This runs the full pipeline and produces `board_report.md`, action item exports, and logs the decision.
 
+### Counterfactual Analysis
+
+Run simulations with hypothetical conditions:
+
+```bash
+# Assume market growth is 2%
+openexec run "Should we expand to Europe?" --assume market_growth=2%
+
+# Multiple assumptions
+openexec run "Build new server?" --assume budget=100k --assume competitor_exists=false
+
+# Combined with other options
+openexec run "Buy vs lease equipment?" -o report.md --assume market_growth=3%
+```
+
+### Multi-Objective Optimization
+
+Weight agent recommendations by priority:
+
+```bash
+# CFO's recommendations weighted 50%, CTO's 30%
+openexec run "Build vs buy?" --weight cfo=0.5 --weight cto=0.3
+
+# Higher CTO priority for technical decisions
+openexec run "Migrate to Kubernetes?" --weight cto=0.6 --weight cfo=0.4
+
+# Combined with counterfactual assumptions
+openexec run "Series A now?" --assume runway=18mo --weight ceo=0.4 --weight cfo=0.3 --weight cto=0.3
+```
+
 ### Full Command Reference
 
 ```bash
@@ -235,6 +288,15 @@ openexec run "Build vs buy?" -d ./company_data
 
 # Disable memory context
 openexec run "New decision" --no-memory
+
+# Counterfactual analysis (what-if scenarios)
+openexec run "Should we expand?" --assume market_growth=2% --assume competitor_exists=false
+
+# Multi-objective optimization (weighted agent priorities)
+openexec run "Build new infrastructure?" --weight cto=0.6 --weight cfo=0.4
+
+# Combined flags
+openexec run "GPU investment?" --assume budget=500k --weight cfo=0.5 --weight cto=0.5 -o gpu_report.md
 ```
 
 ### Other Commands
@@ -384,6 +446,22 @@ A `board_report.md` looks like this:
 
 ---
 
+## 🔐 Security: Input Sanitization
+
+All user prompts are sanitized before processing to mitigate prompt injection attacks:
+
+```python
+# src/utils.py - sanitize_prompt()
+- Removes null bytes and control characters
+- Filters common injection patterns (ignore instructions, new instructions:, etc.)
+- Strips markdown image links that could inject context
+- Normalizes whitespace
+```
+
+The sanitization runs automatically in the CLI pipeline before any prompt reaches the LLM.
+
+---
+
 ## 🛠️ Tech Stack
 
 | Layer | Technology | Role |
@@ -399,14 +477,65 @@ A `board_report.md` looks like this:
 
 ### LLM Client Design
 
-The `AIClient` in `src/ai/client.py` uses a 4-layer JSON robustness pipeline:
+The `AIClient` in `src/ai/client.py` uses a provider abstraction pattern:
 
-1. **Preprocess** — Strip markdown fences, bracket-matching to find the JSON span, remove BOM/\x00
-2. **Structural fixes** — Fix trailing commas, unescaped `\n`/`\r` inside strings, unquoted keys
-3. **json5 fallback** — Try `json5.loads()` for relaxed JSON parsing
-4. **Self-correction** — If all layers fail, re-call the LLM with a correction prompt (temp=0) asking it to return just the JSON
+1. **BaseProvider Interface** (`src/ai/abstract_provider.py`) — Abstract base class defining `complete()` and `complete_json()` methods
+2. **OllamaProvider** (`src/ai/ollama_provider.py`) — Concrete implementation for local Ollama API
+3. **4-layer JSON robustness pipeline** — Shared logic for handling malformed LLM output:
+   - **Preprocess** — Strip markdown fences, bracket-matching to find JSON span, remove BOM/\x00
+   - **Structural fixes** — Fix trailing commas, unescaped `\n`/`\r` inside strings, unquoted keys
+   - **json5 fallback** — Try `json5.loads()` for relaxed JSON parsing
+   - **Self-correction** — If all layers fail, re-call the LLM with a correction prompt (temp=0)
 
-This pipeline was developed iteratively across multiple simulation runs. On an early run, the CFO returned `alignment_score: "0.50"` (string instead of float) and the CMO returned newlines inside a string value. The 4-layer pipeline handles all of these without crashing the simulation.
+The provider pattern allows for future implementations (OpenAI, Anthropic, etc.) without changing the rest of the codebase.
+
+---
+
+## 📁 Project Structure
+
+```
+OpenExec/
+├── src/
+│   ├── __main__.py              # Module entry point
+│   ├── cli.py                   # Typer CLI with all subcommands
+│   │                           # Supports --assume, --weight, --no-memory
+│   ├── main.py                  # write_report() — renders board_report.md
+│   ├── orchestrator.py          # Orchestrator + SimulationState
+│   │                           # Emits events to EventStore
+│   ├── orchestrator_deliberation.py  # 5-round DeliberationOrchestrator
+│   ├── events.py                # Event type definitions (event sourcing)
+│   ├── event_store.py           # Append-only event persistence + replay
+│   ├── agents/
+│   │   ├── __init__.py          # AgentRegistry + register_default_agents()
+│   │   ├── interface.py         # AgentReport dataclass
+│   │   ├── templates_ceo.py      # CEO persona + analysis
+│   │   ├── templates_cfo.py      # CFO persona + analysis
+│   │   ├── templates_cto.py     # CTO persona + analysis
+│   │   └── templates_cmo.py      # CMO persona + analysis
+│   ├── ai/
+│   │   ├── __init__.py          # Exports AIClient, prompt builders
+│   │   ├── abstract_provider.py # BaseProvider abstract class
+│   │   ├── ollama_provider.py   # OllamaProvider implementation
+│   │   ├── client.py            # 4-layer JSON LLM client (delegates to provider)
+│   │   └── prompts.py           # System prompts, routing, deliberation prompts
+│   │                           # build_analysis_prompt() supports assumptions
+│   ├── decision_tracker.py      # Logs to decisions/decision_*.json
+│   ├── memory.py                 # Multi-session persistent memory
+│   ├── feedback.py              # Agent rating + learning loop
+│   ├── knowledge_base.py        # RAG document ingestion
+│   ├── risk_analyzer.py          # Risk scoring + visual matrix
+│   ├── export.py                # JSON/CSV/markdown action item export
+│   ├── summary.py               # Executive summary generator
+│   └── utils.py                 # Action item extraction + sanitize_prompt()
+├── data/                        # Company data files
+├── decisions/                   # Decision logs (auto-generated)
+├── memory/                      # Memory index + conversation history
+├── knowledge_base/              # Ingested KB documents + chunks
+├── feedback/                    # Agent performance scores
+├── graphify-out/               # Code knowledge graph (AST-only)
+├── settings.json                # AI provider configuration
+└── requirements.txt             # Python dependencies
+```
 
 ---
 
@@ -423,6 +552,7 @@ This pipeline was developed iteratively across multiple simulation runs. On an e
 - **Market sizing & TAM analysis**: Automated total addressable market from initial inputs
 - **Technical architecture diagrams**: CTO output includes generated system diagrams
 - **Voting mechanism**: Weighted voting among agents with abstention tracking
+- **Additional providers**: OpenAI, Anthropic provider implementations
 
 ### Contributing
 
@@ -438,44 +568,3 @@ If you want to contribute:
 2. `black` format before committing
 3. `ruff check .` passes clean
 4. Run `openexec run "Your test scenario?"` and verify the board_report.md looks right
-
----
-
-## 📁 Project Structure
-
-```
-OpenExec/
-├── src/
-│   ├── __main__.py              # Module entry point
-│   ├── cli.py                   # Typer CLI with all subcommands
-│   ├── main.py                  # write_report() — renders board_report.md
-│   ├── orchestrator.py          # Orchestrator + SimulationState
-│   ├── orchestrator_deliberation.py  # 5-round DeliberationOrchestrator
-│   ├── agents/
-│   │   ├── __init__.py          # AgentRegistry + register_default_agents()
-│   │   ├── interface.py         # AgentReport dataclass
-│   │   ├── templates_ceo.py      # CEO persona + analysis
-│   │   ├── templates_cfo.py      # CFO persona + analysis
-│   │   ├── templates_cto.py     # CTO persona + analysis
-│   │   └── templates_cmo.py      # CMO persona + analysis
-│   ├── ai/
-│   │   ├── __init__.py          # Exports AIClient, prompt builders
-│   │   ├── client.py            # 4-layer JSON LLM client
-│   │   └── prompts.py           # System prompts, routing, deliberation prompts
-│   ├── decision_tracker.py      # Logs to decisions/decision_*.json
-│   ├── memory.py                 # Multi-session persistent memory
-│   ├── feedback.py              # Agent rating + learning loop
-│   ├── knowledge_base.py        # RAG document ingestion
-│   ├── risk_analyzer.py          # Risk scoring + visual matrix
-│   ├── export.py                # JSON/CSV/markdown action item export
-│   ├── summary.py               # Executive summary generator
-│   └── utils.py                 # Action item extraction
-├── data/                        # Company data files
-├── decisions/                   # Decision logs (auto-generated)
-├── memory/                      # Memory index + conversation history
-├── knowledge_base/              # Ingested KB documents + chunks
-├── feedback/                    # Agent performance scores
-├── graphify-out/               # Code knowledge graph (AST-only)
-├── settings.json                # AI provider configuration
-└── requirements.txt             # Python dependencies
-```

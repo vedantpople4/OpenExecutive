@@ -65,7 +65,8 @@ class CEOTemplate:
                 base_prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
-                    agent_name="ceo"
+                    agent_name="ceo",
+                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None
                 )
 
                 if real_time_context:

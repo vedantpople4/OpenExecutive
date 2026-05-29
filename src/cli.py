@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 # Import OpenExec modules
 from src.agents import register_default_agents, registry
 from src.orchestrator import Orchestrator, SimulationState
-from src.utils import extract_action_items
+from src.utils import extract_action_items, sanitize_prompt
 from src.main import write_report
 from src.decision_tracker import decision_tracker
 from src.summary import write_executive_summary
@@ -133,6 +133,16 @@ def run(
         "-d", "--data-dir",
         help="Data directory path"
     ),
+    assume: Optional[List[str]] = typer.Option(
+        None,
+        "-a", "--assume",
+        help="Counterfactual assumptions (format: key=value). Can be used multiple times."
+    ),
+    weight: Optional[List[str]] = typer.Option(
+        None,
+        "-w", "--weight",
+        help="Agent weight for multi-objective optimization (format: agent=weight, e.g., cfo=0.5). Can be used multiple times."
+    ),
     no_memory: bool = typer.Option(
         False,
         "--no-memory",
@@ -176,6 +186,12 @@ def run(
         console.print("\n[bold]Examples:[/bold]")
         console.print("  openexec run \"Should we buy GPUs?\"")
         console.print("  cat prompt.txt | openexec run -")
+        raise typer.Exit(1)
+
+    # Sanitize prompt to prevent prompt injection attacks
+    prompt = sanitize_prompt(prompt)
+    if not prompt:
+        console.print("[red]Error:[/red] Prompt was empty after sanitization")
         raise typer.Exit(1)
 
     # Load configuration
@@ -232,6 +248,31 @@ def run(
         decision_point=f"Decision required for: {prompt}",
         status="initialized"
     )
+
+    # Parse assumptions
+    if assume:
+        for item in assume:
+            if "=" in item:
+                key, value = item.split("=", 1)
+                state.assumptions[key.strip()] = value.strip()
+                console.print(f"[cyan]📌 Assumption: {key.strip()} = {value.strip()}[/cyan]")
+        console.print("[cyan]📌 Counterfactual mode enabled[/cyan]")
+
+    # Parse agent weights for multi-objective optimization
+    if weight:
+        for item in weight:
+            if "=" in item:
+                key, value = item.split("=", 1)
+                try:
+                    weight_val = float(value.strip())
+                    if 0.0 <= weight_val <= 1.0:
+                        state.agent_weights[key.strip().lower()] = weight_val
+                        console.print(f"[cyan]⚖️ Weight: {key.strip()} = {weight_val}[/cyan]")
+                    else:
+                        console.print(f"[yellow]⚠️ Weight must be between 0.0 and 1.0: {item}[/yellow]")
+                except ValueError:
+                    console.print(f"[yellow]⚠️ Invalid weight value: {item}[/yellow]")
+        console.print("[cyan]⚖️ Multi-objective optimization enabled[/cyan]")
 
     # Load data corpus
     try:

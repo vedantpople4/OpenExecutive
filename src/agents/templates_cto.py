@@ -61,12 +61,11 @@ class CTOTemplate:
             try:
                 from src.ai import build_analysis_prompt
 
-                from src.ai import build_analysis_prompt
-
                 base_prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
-                    agent_name="cto"
+                    agent_name="cto",
+                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None
                 )
 
                 if real_time_context:
