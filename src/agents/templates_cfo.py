@@ -32,7 +32,8 @@ class CFOTemplate:
                 prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
-                    agent_name="cfo"
+                    agent_name="cfo",
+                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None
                 )
 
                 response_data = self.ai_client.complete_json_with_retry(

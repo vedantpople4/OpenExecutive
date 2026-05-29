@@ -262,15 +262,17 @@ def build_analysis_prompt(
     core_prompt: str,
     data_corpus: Dict[str, str] | None = None,
     agent_name: str = "agent",
+    assumptions: Dict[str, str] | None = None,
 ) -> str:
     """Build the user-side prompt injected into each agent's LLM call.
 
-    Includes decision-type routing and supporting data.
+    Includes decision-type routing, supporting data, and counterfactual assumptions.
 
     Args:
         core_prompt: The core business problem or question.
         data_corpus: Optional dictionary of supporting documents (filename -> content).
         agent_name: Name of the agent for context.
+        assumptions: Optional dictionary of counterfactual assumptions.
 
     Returns:
         Formatted prompt string.
@@ -285,6 +287,12 @@ def build_analysis_prompt(
         f"## Decision Type: {decision_type.upper()}",
         guidance,
     ]
+
+    if assumptions:
+        parts.append("\n## Counterfactual Assumptions")
+        parts.append("The following assumptions are being made for this analysis:")
+        for key, value in assumptions.items():
+            parts.append(f"- **{key}**: {value}")
 
     if data_corpus:
         parts.append("\n## Supporting Data")

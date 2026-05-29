@@ -1,3 +1,55 @@
+import re
+from typing import Any
+
+
+def sanitize_prompt(prompt: str, max_length: int = 10000) -> str:
+    """Sanitize user prompts to mitigate prompt injection attacks.
+
+    Args:
+        prompt: The raw user input prompt
+        max_length: Maximum allowed prompt length (default: 10000 chars)
+
+    Returns:
+        Sanitized prompt string safe for injection into prompts
+
+    Note:
+        This is a defense-in-depth measure. The LLM itself should also be
+        instructed to ignore attempts to override its instructions.
+    """
+    if not prompt:
+        return ""
+
+    # Truncate to max length
+    prompt = prompt[:max_length]
+
+    # Remove null bytes and other control characters
+    prompt = prompt.replace('\x00', '')
+
+    # Remove common injection patterns (case-insensitive)
+    injection_patterns = [
+        r'\bignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?|directions?)\b',
+        r'\bforget\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?)\b',
+        r'\bdisregard\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?)\b',
+        r'\bnew\s+instructions?:',
+        r'\boverride\s+(your\s+)?(system|default|original)\s+(instructions?|behavior|prompt)\b',
+        r'<\s*script',
+        r'javascript:',
+        r'on\w+\s*=',  # Event handlers like onclick=, onerror=
+    ]
+
+    for pattern in injection_patterns:
+        prompt = re.sub(pattern, '[FILTERED]', prompt, flags=re.IGNORECASE)
+
+    # Escape potential markdown/image links that could be used for context injection
+    prompt = re.sub(r'!\[.*?\]\(.*?\)', '[Image removed]', prompt)
+    prompt = re.sub(r'\[.*?\]\(.*?\)', lambda m: m.group(0) if not m.group(0).startswith('[') else m.group(0), prompt)
+
+    # Normalize whitespace
+    prompt = re.sub(r'\s+', ' ', prompt).strip()
+
+    return prompt
+
+
 def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
     """Extract action items from the simulation results.
 
