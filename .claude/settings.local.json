@@ -16,7 +16,8 @@
       "Bash(./venv/bin/python src/main.py run --prompt \"Buy vs lease equipment?\" --output /tmp/board_report_deliberation.md)",
       "Bash(curl -s http://localhost:1234/v1/models)",
       "Bash(curl -v -X POST http://localhost:1234/v1/chat/completions -H 'Content-Type: application/json' -d '{ *)",
-      "Bash(git reset *)"
+      "Bash(git reset *)",
+      "Bash(git push *)"
     ]
   }
 }
