@@ -562,10 +562,14 @@ def build_deliberation_prompt(
         parts.extend([
             "\n## Output Schema",
             "Return JSON with these fields:",
+            "- **title** (str): Brief subject line for this round",
+            "- **summary** (str): One paragraph. Your position after hearing CEO framing and the other exec.",
+            "- **key_findings** (list[str]): 3-5 observations. Format: [insight]. [why it matters].",
+            "- **recommendations** (list[str]): Action items. Format: [action] | Owner: [role] | Timeframe: [when]",
+            "- **risks** (list[str]): Concerns. Format: [risk]. [consequence]. [mitigation].",
             "- **agreements** (list[str]): Where you align with the other exec. Be specific.",
             "- **conflicts** (list[str]): Where you still disagree with the other exec's view.",
             "- **required_changes** (list[str]): What must change in the other exec's recommendations before you can align.",
-            "- **summary** (str): One paragraph. Your position after hearing CEO framing and the other exec.",
             "- **round_number**: 2",
             f"- **{role_info.get('verdict_key', 'verdict')}** (str): Your updated verdict after this round.",
             role_info.get("additional", ""),
@@ -611,12 +615,16 @@ def build_deliberation_prompt(
         parts.extend([
             "\n## Output Schema",
             "Return JSON with these fields:",
+            "- **title** (str): Brief subject line for this round",
+            "- **summary** (str): One paragraph. Your position after reviewing all prior reports.",
+            "- **key_findings** (list[str]): 3-5 market/customer observations. Format: [insight]. [why it matters].",
+            "- **recommendations** (list[str]): Action items. Format: [action] | Owner: [role] | Timeframe: [when]",
+            "- **risks** (list[str]): Concerns. Format: [risk]. [consequence]. [mitigation].",
             "- **agreements** (list[str]): Where you align with CFO and/or CTO. Get specific.",
             "- **conflicts** (list[str]): Where you still disagree. Name the executive.",
             "- **required_changes** (list[str]): What must change in CFO's or CTO's recommendations.",
             "- **challenges_for_cfo** (list[str]): 1-2 questions for CFO that your customer data raises.",
             "- **challenges_for_cto** (list[str]): 1-2 questions for CTO about technical delivery risk.",
-            "- **summary** (str): One paragraph.",
             "- **market_verdict** (str): Updated market verdict after this round.",
             "- **round_number**: 3",
             "Return JSON only. No markdown fences.",
@@ -668,6 +676,11 @@ def build_deliberation_prompt(
         parts.extend([
             "\n## Output Schema",
             "Return JSON with these fields:",
+            "- **title** (str): Brief subject line for this round",
+            "- **summary** (str): Final paragraph. Position after full deliberation.",
+            "- **key_findings** (list[str]): 3-5 key observations after hearing all challenges.",
+            "- **recommendations** (list[str]): Final recommendations. Format: [action] | Owner: [role] | Timeframe: [when]",
+            "- **risks** (list[str]): Final risk assessment. Format: [risk]. [consequence]. [mitigation].",
             "- **challenged_by** (list[str]): List all executives who challenged you this round. "
              "Name them.",
             "- **revised_recommendations** (list[str]): Confirm or replace your prior recommendations. "
@@ -676,7 +689,6 @@ def build_deliberation_prompt(
             "- **conflicts** (list[str]): Residual conflicts that remain unresolved. "
              "Be honest — unresolved is fine.",
             "- **required_changes** (list[str]): Any prerequisite for your support of the final decision.",
-            "- **summary** (str): Final paragraph. Position after full deliberation.",
             schema_for_agent.get(agent_name, ""),
             "- **round_number**: 4",
             "Return JSON only. No markdown fences.",

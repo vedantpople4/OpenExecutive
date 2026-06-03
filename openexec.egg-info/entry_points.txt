@@ -1,2 +1,0 @@
-[console_scripts]
-openexec = openexec.main:main

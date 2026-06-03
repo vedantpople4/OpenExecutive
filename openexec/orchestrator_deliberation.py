@@ -1,6 +1,7 @@
 """Deliberation orchestration — multi-round board meeting workflow."""
 
 from typing import Any, Dict
+from tqdm import tqdm
 
 from src.agents.interface import AgentReport
 
@@ -52,19 +53,17 @@ class DeliberationOrchestrator:
             if isinstance(report, AgentReport)
         }
 
-        for round_num in range(1, 6):
-            print(f"\n{'='*50}")
-            print(f"DELIBERATION ROUND {round_num}")
-            print(f"{'='*50}")
-
+        # Simple progress counter without complex bar formatting
+        total_rounds = 5
+        for round_num in range(1, total_rounds + 1):
+            print(f"\n[bold]Progress: Round {round_num}/{total_rounds} ({round_num*100//total_rounds}%)[/bold]")
             if round_num == 5:
                 self._run_ceo_synthesis()
             else:
                 self._run_delegation_round(round_num)
-
             self.state.deliberation_round = round_num
 
-        print("\n--- All deliberation rounds complete ---")
+        print("\n[green]✓ All deliberation rounds complete[/green]")
 
     # ------------------------------------------------------------------
     # Round delegation

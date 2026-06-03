@@ -5,6 +5,19 @@ import re
 from typing import Any, Dict, Optional
 
 
+_CORRECTION_SYSTEM = (
+    "You are a JSON correction assistant. Your output must be ONLY valid JSON "
+    "— no markdown, no explanation, no commentary."
+)
+
+_CORRECTION_USER = (
+    "The following text was supposed to be valid JSON but had errors. "
+    "Fix all syntax errors and return ONLY the corrected JSON object.\n\n"
+    "Broken input:\n{broken_text}\n\n"
+    "Corrected JSON:"
+)
+
+
 class OllamaProvider(BaseProvider):
     """Provider for Ollama-compatible LLMs (e.g., Ollama with local models like llama3, gemma, etc.).
 
@@ -15,23 +28,27 @@ class OllamaProvider(BaseProvider):
         self.ai_config = ai_config
         self.base_url = ai_config.get("base_url", "http://localhost:11434")
         self.base_url = self.base_url.rstrip('/')
+        self._json5 = None
 
     def complete(self, prompt: str, system_prompt: Optional[str] = None, max_tokens: Optional[int] = None, temperature: Optional[float] = None) -> str:
-        """Complete a prompt using the Ollama API."""
+        """Complete a prompt using the OpenAI-compatible API (LM Studio, Ollama with API compat, etc.)."""
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
-        
+
         payload = {
             "model": self.ai_config.get("model", "llama3"),
             "messages": messages,
-            "max_tokens": max_tokens or self.ai_config.get("max_tokens", 0),
+            "max_tokens": max_tokens if max_tokens is not None else self.ai_config.get("max_tokens", 4096),
             "temperature": temperature if temperature is not None else self.ai_config.get("temperature", 0.7),
         }
         
-        url = f"{self.base_url}/api/generate"
+        url = f"{self.base_url}/chat/completions"
         headers = {"Content-Type": "application/json"}
+        api_key = self.ai_config.get("api_key")
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
         
         try:
             response = requests.post(
@@ -40,13 +57,21 @@ class OllamaProvider(BaseProvider):
             )
             response.raise_for_status()
             result = response.json()
-            content = result.get('response', '')
+            message = result["choices"][0]["message"]
+            content = message.get("content") or message.get("reasoning_content", "")
             return content
         except requests.exceptions.RequestException as e:
-            raise RuntimeError(f"Ollama API call failed: {e}")
+            raise RuntimeError(f"LLM API call failed: {e}")
 
     def complete_json(self, prompt: str, system_prompt: Optional[str] = None, max_tokens: Optional[int] = None, temperature: Optional[float] = None) -> Dict[str, Any]:
         """Complete a prompt and parse the response as JSON."""
+        # Suppress extended thinking for models like Gemma that output reasoning
+        no_thinking_suffix = "\n\nIMPORTANT: Respond immediately with JSON only. No explanations, no thinking process, no markdown fences. Return ONLY valid JSON."
+        if system_prompt:
+            system_prompt = system_prompt + no_thinking_suffix
+        else:
+            system_prompt = "You are a helpful assistant. Respond immediately with JSON only. No explanations, no thinking process, no markdown fences. Return ONLY valid JSON."
+        
         raw_response = self.complete(
             prompt=prompt, 
             system_prompt=system_prompt, 
@@ -57,6 +82,14 @@ class OllamaProvider(BaseProvider):
 
     def complete_json_with_retry(self, prompt: str, system_prompt: Optional[str] = None, max_tokens: Optional[int] = None, temperature: Optional[float] = None, max_attempts: int = 2) -> Dict[str, Any]:
         """Complete a prompt with retry logic for JSON extraction."""
+        no_thinking_suffix = "\n\nIMPORTANT: Output your response as valid JSON only. Do not wrap it in markdown code fences. Do not include any text outside the JSON object. Respond immediately with no thinking."
+        
+        # Suppress extended thinking
+        if system_prompt:
+            system_prompt = system_prompt + no_thinking_suffix
+        else:
+            system_prompt = "Respond immediately with JSON only. No explanations, no thinking process, no markdown fences."
+        
         enhanced_prompt = prompt + "\n\nIMPORTANT: Output your response as valid JSON only. Do not wrap it in markdown code fences. Do not include any text outside the JSON object."
         raw_response = self.complete(
             prompt=enhanced_prompt, 
@@ -223,7 +256,7 @@ class OllamaProvider(BaseProvider):
         broken_text: str,
         system_prompt: Optional[str] = None,
     ) -> str:
-        """Layer 4: Send broken JSON back to Ollama for correction."""
+        """Layer 4: Send broken JSON back to LLM for correction."""
         user_prompt = _CORRECTION_USER.format(broken_text=broken_text[:1500])
 
         messages = [{"role": "user", "content": user_prompt}]
@@ -239,8 +272,11 @@ class OllamaProvider(BaseProvider):
             "temperature": 0.0,  # Use 0 temp for correction — deterministic
         }
 
-        url = f"{self.base_url}/api/generate"
+        url = f"{self.base_url}/chat/completions"
         headers = {"Content-Type": "application/json"}
+        api_key = self.ai_config.get("api_key")
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
         
         try:
             response = requests.post(
@@ -249,7 +285,7 @@ class OllamaProvider(BaseProvider):
             )
             response.raise_for_status()
             result = response.json()
-            content = result.get('response', '')
+            content = result["choices"][0]["message"]["content"]
             # Strip fences from corrected response too
             content = re.sub(r'^```(?:json)?\s*', '', content, flags=re.MULTILINE)
             content = re.sub(r'\s*```\s*$', '', content)

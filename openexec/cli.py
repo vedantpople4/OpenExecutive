@@ -228,14 +228,17 @@ def run(
     settings_path = Path("settings.json")
     if not settings_path.exists():
         console.print("[red]Error: settings.json not found[/red]")
-        console.print("\nPlease create a settings.json with your AI configuration:")
+        console.print("\n[bold]Next step:[/bold] Run 'openexec setup' to create configuration.")
+        console.print("Or manually create settings.json with your AI provider settings.")
+        console.print("\n[gray]Example settings:[/gray]")
         console.print(Panel('''
 {
   "ai": {
     "base_url": "http://localhost:11434/v1",
     "model": "llama3",
     "temperature": 0.7,
-    "max_tokens": 4096
+    "max_tokens": 4096,
+    "provider": "openai_compatible"
   }
 }
         ''', border_style="yellow"))
@@ -347,6 +350,93 @@ def run(
         import traceback
         traceback.print_exc()
         raise typer.Exit(1)
+
+
+# ==============================
+# Setup Command
+# ==============================
+
+@app.command()
+def setup():
+    """Create or update settings.json for AI provider configuration."""
+    console.print("[bold]OpenExec Setup Wizard[/bold]\n")
+    console.print("This will create a settings.json file in the current directory.")
+    console.print("Press Enter to accept defaults or type your own values.\n")
+
+    # Default settings
+    defaults = {
+        "ai": {
+            "base_url": "http://localhost:11434/v1",
+            "model": "llama3",
+            "temperature": 0.7,
+            "max_tokens": 4096,
+            "provider": "openai_compatible",
+            "timeout": 120
+        },
+        "agents": {
+            "enabled": ["ceo", "cfo", "cto", "cmo"],
+            "analysis_depth": "medium",
+            "confidence_threshold": 0.6,
+            "max_interactions": 10
+        },
+        "output": {
+            "format": "markdown",
+            "include_sections": [
+                "executive_summary",
+                "individual_reports",
+                "synthesized_recommendations",
+                "risk_assessment"
+            ]
+        },
+        "simulation": {
+            "phases": [
+                {"name": "inception", "weight": 0.1},
+                {"name": "analysis", "weight": 0.5},
+                {"name": "review", "weight": 0.25},
+                {"name": "synthesis", "weight": 0.1}
+            ]
+        }
+    }
+
+    settings = {}
+
+    # Ask for AI settings
+    console.print("[cyan]=== AI Provider Settings ===[/cyan]")
+    console.print(f"Base URL (default: {defaults['ai']['base_url']}):")
+    settings["ai"] = defaults["ai"].copy()
+    url = console.input()
+    if url.strip():
+        settings["ai"]["base_url"] = url.strip()
+
+    console.print(f"Model (default: {defaults['ai']['model']}):")
+    model = console.input()
+    if model.strip():
+        settings["ai"]["model"] = model.strip()
+
+    console.print(f"Temperature (default: {defaults['ai']['temperature']}):")
+    temp = console.input()
+    if temp.strip():
+        settings["ai"]["temperature"] = float(temp)
+
+    console.print(f"Max Tokens (default: {defaults['ai']['max_tokens']}):")
+    tokens = console.input()
+    if tokens.strip():
+        settings["ai"]["max_tokens"] = int(tokens)
+
+    console.print("\n[cyan]=== Agent Settings ===[/cyan]")
+    console.print(f"Enabled Agents (default: {', '.join(defaults['agents']['enabled'])}):")
+    agents = console.input()
+    if agents.strip():
+        settings["agents"] = defaults["agents"].copy()
+        settings["agents"]["enabled"] = [a.strip().lower() for a in agents.split(",")]
+
+    # Save settings.json
+    settings_path = Path("settings.json")
+    with open(settings_path, "w") as f:
+        json.dump(settings, f, indent=2)
+
+    console.print(f"\n[green]✓ Settings saved to {settings_path}[/green]")
+    console.print("\n[yellow]Next step:[/yellow] Run 'openexec run \"Your decision here\"'")
 
 
 # ==============================

@@ -152,6 +152,17 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
         if results.get('decision_point'):
             f.write(f"## Decision Point\n\n{results['decision_point']}\n\n")
 
+        # Agent Weight Legend (inline explanation)
+        if results.get('agent_weights') and any(w > 1.0 for w in results['agent_weights'].values()):
+            f.write("## Executive Weights\n\n")
+            f.write("Agents with weights >1.0 have higher influence on final decision.\n\n")
+            f.write("| Agent | Weight | Effect |\n")
+            f.write("|-------|--------|--------|\n")
+            for agent, weight in results['agent_weights'].items():
+                if weight > 1.0:
+                    f.write(f"| {agent.upper()} | {weight}x | Recommendations weighted {weight:.1f}x |\n")
+            f.write("\n")
+
         # Board Decision (from CEO round-5 synthesis)
         if results.get('board_decision'):
             bd = results['board_decision']
@@ -254,7 +265,14 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
                     f.write(f"- {risk}\n")
                 f.write("\n")
 
-            f.write(f"**Alignment Score:** {report['alignment_score']:.2f}\n\n")
+            score = report['alignment_score']
+            if score >= 0.8:
+                interpretation = "High confidence (data is solid)"
+            elif score >= 0.5:
+                interpretation = "Moderate confidence (some uncertainty)"
+            else:
+                interpretation = "Low confidence (thin data, high uncertainty)"
+            f.write(f"**Alignment Score:** {score:.2f} — {interpretation}\n\n")
             f.write("---\n\n")
 
         if results.get('synthesized_recommendations'):
