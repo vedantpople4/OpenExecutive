@@ -54,8 +54,38 @@
       "id": "258386f7b359",
       "timestamp": "2026-05-03T19:40:34.615148",
       "prompt": "Buy vs lease equipment?"
+    },
+    {
+      "id": "dba04d6a4dfc",
+      "timestamp": "2026-05-29T20:27:12.590461",
+      "prompt": "Should we buy or lease new servers for our data center?"
+    },
+    {
+      "id": "dba04d6a4dfc",
+      "timestamp": "2026-05-30T15:29:34.093825",
+      "prompt": "Should we buy or lease new servers for our data center?"
+    },
+    {
+      "id": "76f669af1676",
+      "timestamp": "2026-05-31T16:41:16.718405",
+      "prompt": "Should we invest in GPU infrastructure for AI workloads?"
+    },
+    {
+      "id": "76f669af1676",
+      "timestamp": "2026-05-31T16:57:34.901624",
+      "prompt": "Should we invest in GPU infrastructure for AI workloads?"
+    },
+    {
+      "id": "76f669af1676",
+      "timestamp": "2026-05-31T17:53:59.407939",
+      "prompt": "Should we invest in GPU infrastructure for AI workloads?"
+    },
+    {
+      "id": "b17e3e594613",
+      "timestamp": "2026-05-31T18:19:38.039881",
+      "prompt": "Should we invest in GPU infrastructure?"
     }
   ],
   "decisions": [],
-  "last_updated": "2026-05-03T19:40:34.616682"
+  "last_updated": "2026-05-31T18:19:38.041077"
 }

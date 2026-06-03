@@ -2765,5 +2765,540 @@
       }
     },
     "file_path": "decisions/decision_20260503_194034.json"
+  },
+  {
+    "timestamp": "20260529_202712",
+    "prompt": "Should we buy or lease new servers for our data center?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Should we buy or lease new servers for our data center?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Should we buy or lease new servers for our data center?",
+            "Data from 'case_studies.md' suggests: # Executive Case Studies Library\n\n## Overview\nThis library contains relevant case studies for CXO-le..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260529_202712.json"
+  },
+  {
+    "timestamp": "20260530_152934",
+    "prompt": "Should we buy or lease new servers for our data center?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Should we buy or lease new servers for our data center?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Should we buy or lease new servers for our data center?",
+            "Data from 'case_studies.md' suggests: # Executive Case Studies Library\n\n## Overview\nThis library contains relevant case studies for CXO-le..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260530_152934.json"
+  },
+  {
+    "timestamp": "20260531_164116",
+    "prompt": "Should we invest in GPU infrastructure for AI workloads?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Should we invest in GPU infrastructure for AI workloads?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Should we invest in GPU infrastructure for AI workloads?",
+            "Data from 'case_studies.md' suggests: # Executive Case Studies Library\n\n## Overview\nThis library contains relevant case studies for CXO-le..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260531_164116.json"
+  },
+  {
+    "timestamp": "20260531_165734",
+    "prompt": "Should we invest in GPU infrastructure for AI workloads?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Should we invest in GPU infrastructure for AI workloads?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Should we invest in GPU infrastructure for AI workloads?",
+            "Data from 'case_studies.md' suggests: # Executive Case Studies Library\n\n## Overview\nThis library contains relevant case studies for CXO-le..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260531_165734.json"
+  },
+  {
+    "timestamp": "20260531_175359",
+    "prompt": "Should we invest in GPU infrastructure for AI workloads?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Should we invest in GPU infrastructure for AI workloads?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Should we invest in GPU infrastructure for AI workloads?",
+            "Data from 'case_studies.md' suggests: # Executive Case Studies Library\n\n## Overview\nThis library contains relevant case studies for CXO-le..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260531_175359.json"
   }
 ]

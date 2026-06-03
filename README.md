@@ -184,7 +184,13 @@ pip install -r requirements.txt
 
 ### 2. Configure the AI Provider
 
-Create `settings.json` in the project root:
+First-time setup uses the setup wizard:
+
+```bash
+openexec setup
+```
+
+This creates `settings.json` in the project root with default values you can customize:
 
 ```json
 {
@@ -201,6 +207,15 @@ Create `settings.json` in the project root:
     "analysis_depth": "medium",
     "confidence_threshold": 0.6,
     "max_interactions": 10
+  },
+  "output": {
+    "format": "markdown",
+    "include_sections": [
+      "executive_summary",
+      "individual_reports",
+      "synthesized_recommendations",
+      "risk_assessment"
+    ]
   },
   "simulation": {
     "phases": [
@@ -487,7 +502,41 @@ The `AIClient` in `src/ai/client.py` uses a provider abstraction pattern:
    - **json5 fallback** — Try `json5.loads()` for relaxed JSON parsing
    - **Self-correction** — If all layers fail, re-call the LLM with a correction prompt (temp=0)
 
+The `json5` library is included because LLMs often output sloppy JSON (trailing commas, unquoted keys). It's a relaxation of strict JSON that makes robust parsing possible.
+
 The provider pattern allows for future implementations (OpenAI, Anthropic, etc.) without changing the rest of the codebase.
+
+---
+
+## 📊 Understanding Agent Scores
+
+### Alignment Score
+
+Each agent report includes an `alignment_score` (0.0–1.0) indicating confidence in the analysis. Be honest about uncertainty:
+
+| Score | Interpretation | Meaning |
+|-------|---------------|---------|
+| ≥ 0.8 | **High confidence** | Data is solid, clear reasoning |
+| 0.5–0.8 | **Moderate confidence** | Some uncertainty, reasonable assumptions |
+| < 0.5 | **Low confidence** | Thin data, high uncertainty |
+
+The score is based on data availability, not correctness. An agent should not inflate their confidence—0.5 is a valid, honest score when information is incomplete.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Role |
+|-------|-----------|------|
+| **Runtime** | Python 3.10+ | Core language |
+| **CLI Framework** | [Typer](https://typer.tiangolo.com/) | Clean CLI with rich formatting |
+| **LLM Backend** | [Ollama](https://ollama.ai/) | Local AI inference (OpenAI-compatible API) |
+| **LLM Models** | `google/gemma-4-e2b`, `llama3` (any OpenAI-compatible) | Language model |
+| **Parsers** | `json5` | Relaxed JSON parsing (handles LLM sloppiness) |
+| **Config** | `python-dotenv`, `pyyaml` | Settings and env management |
+| **Output** | `markdown`, `requests` | Report generation, API calls |
+| **Dev** | `pytest`, `black`, `ruff` | Testing and linting |
+| **Progress** | `tqdm` | Progress bars for long-running simulations |
 
 ---
 
