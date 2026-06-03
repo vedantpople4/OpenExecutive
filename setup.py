@@ -25,12 +25,11 @@ setup(
     long_description=get_readme(),
     long_description_content_type="text/markdown",
     python_requires=">=3.9",
-    packages=["openexec"],
-    package_dir={"openexec": "src"},
+    packages=["."],
     install_requires=get_requirements(),
     entry_points={
         "console_scripts": [
-            "openexec=openexec.main:main",
+            "openexec=openexec.cli:main",
         ],
     },
 )

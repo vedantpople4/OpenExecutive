@@ -172,7 +172,15 @@ Event Sourcing Layer:
 - **Python 3.10+**
 - **Ollama** running locally (`ollama serve`)
 
-### 1. Clone & Virtual Environment
+### Installation
+
+**Option 1: Install via pip (recommended)**
+
+```bash
+pip install -e .
+```
+
+**Option 2: Clone and install manually**
 
 ```bash
 git clone <repo-url>
@@ -180,6 +188,7 @@ cd OpenExec
 python3 -m venv venv
 source venv/bin/activate          # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
+pip install -e .
 ```
 
 ### 2. Configure the AI Provider
@@ -617,3 +626,134 @@ If you want to contribute:
 2. `black` format before committing
 3. `ruff check .` passes clean
 4. Run `openexec run "Your test scenario?"` and verify the board_report.md looks right
+
+---
+
+## 📖 CLI Quick Reference
+
+### Core Commands
+
+```bash
+openexec <command> --help
+```
+
+#### `run` - Run Board Simulation
+
+```bash
+openexec run "Your business question"
+```
+
+Options:
+- `-o, --output FILE` - Save report to file
+- `-s, --summary FILE` - Generate executive summary
+- `-e, --export FORMAT` - Export action items (json/csv/checklist)
+- `-d, --data-dir DIR` - Custom data directory
+- `-a, --assume KEY=VALUE` - Counterfactual assumptions
+- `--weight AGENT=VALUE` - Agent priority weights
+- `--no-memory` - Disable memory context
+
+Examples:
+```bash
+# Basic run
+openexec run "Buy vs lease GPU infrastructure?"
+
+# With custom output
+openexec run "Series A timing?" -o decision.md
+
+# With assumptions
+openexec run "Expand to EU?" --assume market_growth=2% --assume budget=1M
+
+# Weighted decision
+openexec run "Kubernetes migration?" --weight cto=0.6 --weight cfo=0.4
+
+# Full example
+openexec run "GPU investment?" --assume budget=500k --weight cfo=0.5 --weight cto=0.5 -o report.md -e checklist
+```
+
+#### `setup` - Configure AI Provider
+
+```bash
+openexec setup
+```
+
+Creates `settings.json` with default configuration.
+
+#### `history` - View Past Decisions
+
+```bash
+openexec history
+```
+
+Lists all simulated decisions with timestamps.
+
+#### `search` - Search Memory
+
+```bash
+openexec search "GPU investment"
+```
+
+Searches past decisions and memory.
+
+#### `performance` - View Agent Metrics
+
+```bash
+openexec performance
+```
+
+Shows agent rating history and outcomes.
+
+#### `feedback` - Provide Feedback
+
+```bash
+openexec feedback --decision-id ID --rating 5
+```
+
+Record simulation outcomes for future learning.
+
+#### `kb-*` - Knowledge Base Commands
+
+```bash
+openexec kb list                    # List documents
+openexec kb ingest doc.pdf finance  # Add to KB
+openexec kb search "market timing"  # Search KB
+openexec kb categories              # List categories
+openexec kb stats                   # Show KB stats
+```
+
+#### `config` - Configuration Management
+
+```bash
+openexec config show              # Show current settings
+openexec config init              # Initialize config
+openexec config set KEY VALUE     # Set config value
+openexec config get KEY           # Get config value
+```
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Install
+pip install -e .
+
+# 2. Setup AI provider
+openexec setup
+
+# 3. Run your first simulation
+openexec run "Should we invest in AI infrastructure?"
+
+# 4. Check the decision log
+openexec history
+```
+
+---
+
+## 📄 Example Data
+
+The `data/` directory includes sample files:
+
+- `company_background.md` - Company overview and mission
+- `team_structure.md` - Organizational structure
+- `case_studies.md` - Past decisions and outcomes
+- `industry_context.md` - Market analysis
