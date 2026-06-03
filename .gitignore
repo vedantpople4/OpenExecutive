@@ -1,39 +1,40 @@
-# Byte-compiled / optimized / DLL files
+# Python cache
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyc
 
 # Virtual environments
 venv/
-env/
 .venv/
+env/
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+*.sublime-*
 
-# Distribution / packaging
+# Build/dist
 dist/
 build/
+*.egg-info/
 
-# Test coverage
-htmlcov/
-.coverage
-*.cover.*
+# Test artifacts
+test_report.md
+test_*.md
+test_*.csv
+*_actions.csv
+*_actions.checklist
 
-# Environment
-.env
-.env.local
+# Logs
+*.log
+logs/
 
-# Data directory (optional - keep if you want version control)
-data/*.md
-data/*.pdf
-data/*.txt
-!data/.gitkeep
+# OS
+.DS_Store
+Thumbs.db
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-*.md
-*.env
+# Local config
+.settings.local.json
