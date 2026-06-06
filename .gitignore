@@ -39,24 +39,4 @@ Thumbs.db
 # Local config
 .settings.local.json
 
-# Claude / AI working state
-.claude/
-
-# Knowledge graph output
-graphify-out/
-
-# Coverage reports
-htmlcov/
-.coverage
-
-# Runtime memory and knowledge base
-memory/conversations/*.json
-knowledge_base/chunks/
-knowledge_base/index
-
-# Generated decision outputs
-decisions/decision_*.json
-
-# Generated reports
-acquisition_*.md
-board_report*.md
+decisions/
