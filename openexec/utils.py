@@ -32,13 +32,17 @@ def sanitize_prompt(prompt: str, max_length: int = 10000) -> str:
         r'\bdisregard\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?)\b',
         r'\bnew\s+instructions?:',
         r'\boverride\s+(your\s+)?(system|default|original)\s+(instructions?|behavior|prompt)\b',
-        r'<\s*script',
+        r'<\s*script\b[^>]*>.*?<\s*/\s*script\s*>',  # Full <script>...</script> tags
+        r'<\s*script\b[^>]*>',  # Opening <script> tag
         r'javascript:',
         r'on\w+\s*=',  # Event handlers like onclick=, onerror=
     ]
 
     for pattern in injection_patterns:
-        prompt = re.sub(pattern, '[FILTERED]', prompt, flags=re.IGNORECASE)
+        if 'script' in pattern.lower():
+            prompt = re.sub(pattern, '[FILTERED]', prompt, flags=re.IGNORECASE | re.DOTALL)
+        else:
+            prompt = re.sub(pattern, '[FILTERED]', prompt, flags=re.IGNORECASE)
 
     # Escape potential markdown/image links that could be used for context injection
     prompt = re.sub(r'!\[.*?\]\(.*?\)', '[Image removed]', prompt)
@@ -68,7 +72,7 @@ def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
         # Format: "[OWNER] Task description"
         if rec.startswith('[') and ']' in rec:
             end_bracket = rec.find(']')
-            owner = rec[1:end_bracket]
+            owner = rec[1:end_bracket].upper()
             task = rec[end_bracket+2:].strip()
 
             # Determine priority based on owner

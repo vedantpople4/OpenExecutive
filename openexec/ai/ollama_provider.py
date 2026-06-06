@@ -1,4 +1,4 @@
-from src.ai.abstract_provider import BaseProvider
+from openexec.ai.abstract_provider import BaseProvider
 import requests
 import json
 import re
@@ -50,18 +50,31 @@ class OllamaProvider(BaseProvider):
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
         
-        try:
-            response = requests.post(
-                url, json=payload, headers=headers,
-                timeout=self.ai_config.get("timeout", 120)
-            )
-            response.raise_for_status()
-            result = response.json()
-            message = result["choices"][0]["message"]
-            content = message.get("content") or message.get("reasoning_content", "")
-            return content
-        except requests.exceptions.RequestException as e:
-            raise RuntimeError(f"LLM API call failed: {e}")
+        max_retries = self.ai_config.get("max_retries", 2)
+        timeout = self.ai_config.get("timeout", 120)
+        last_error = None
+        for attempt in range(max_retries + 1):
+            try:
+                response = requests.post(
+                    url, json=payload, headers=headers,
+                    timeout=timeout
+                )
+                response.raise_for_status()
+                result = response.json()
+                message = result["choices"][0]["message"]
+                content = message.get("content") or message.get("reasoning_content", "")
+                return content
+            except requests.exceptions.Timeout as e:
+                last_error = e
+                if attempt < max_retries:
+                    wait = 2 ** attempt
+                    import time
+                    time.sleep(wait)
+                    continue
+                break
+            except requests.exceptions.RequestException as e:
+                raise RuntimeError(f"LLM API call failed: {e}")
+        raise RuntimeError(f"LLM API timed out after {max_retries + 1} attempts (timeout={timeout}s each). Consider using a faster model or increasing timeout.")
 
     def complete_json(self, prompt: str, system_prompt: Optional[str] = None, max_tokens: Optional[int] = None, temperature: Optional[float] = None) -> Dict[str, Any]:
         """Complete a prompt and parse the response as JSON."""
@@ -152,11 +165,11 @@ class OllamaProvider(BaseProvider):
         """Layer 1: Sanitize raw LLM output before parsing."""
         text = text.strip()
 
-        # Strip markdown code fences
+        # Strip markdown code fences from anywhere in text
         text = re.sub(r'^```(?:json)?\s*', '', text, flags=re.MULTILINE)
-        text = re.sub(r'\s*```\s*$', '', text)
+        text = re.sub(r'\n?```\s*$', '', text, flags=re.MULTILINE)
 
-        # Extract the outermost JSON object/array using bracket matching
+        # Extract the outermost JSON object/array using string-aware bracket matching
         start = -1
         for i, ch in enumerate(text):
             if ch in ('{', '['):
@@ -165,21 +178,33 @@ class OllamaProvider(BaseProvider):
 
         if start >= 0:
             depth = 0
+            in_string = False
+            escape_next = False
             for i in range(start, len(text)):
                 ch = text[i]
-                if ch in ('{', '['):
-                    depth += 1
-                elif ch in ('}', ']'):
-                    depth -= 1
-                    if depth == 0:
-                        text = text[start:i+1]
-                        break
+                if escape_next:
+                    escape_next = False
+                    continue
+                if ch == '\\':
+                    escape_next = True
+                    continue
+                if ch == '"':
+                    in_string = not in_string
+                    continue
+                if not in_string:
+                    if ch in ('{', '['):
+                        depth += 1
+                    elif ch in ('}', ']'):
+                        depth -= 1
+                        if depth == 0:
+                            text = text[start:i+1]
+                            break
 
         # Remove BOM and null bytes
         text = text.replace('\ufeff', '').replace('\x00', '')
         # Collapse lone \r (carriage return without following \n) which breaks JSON
         text = text.replace('\r', '\\r')
-        
+
         # Remove any remaining control characters except \n and \t
         text = re.sub(r'[\x00-\x09\x0b\x0c\x0e-\x1f]', '', text)
 

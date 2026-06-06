@@ -1,7 +1,7 @@
 """Setup script for OpenExec."""
 
 from pathlib import Path
-from setuptools import setup
+from setuptools import setup, find_packages
 
 this_dir = Path(__file__).resolve().parent
 
@@ -25,7 +25,7 @@ setup(
     long_description=get_readme(),
     long_description_content_type="text/markdown",
     python_requires=">=3.9",
-    packages=["."],
+    packages=find_packages(),
     install_requires=get_requirements(),
     entry_points={
         "console_scripts": [
