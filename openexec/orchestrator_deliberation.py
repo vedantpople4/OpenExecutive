@@ -3,7 +3,7 @@
 from typing import Any, Dict
 from tqdm import tqdm
 
-from src.agents.interface import AgentReport
+from openexec.agents.interface import AgentReport
 
 
 # ------------------------------------------------------------------
@@ -41,7 +41,7 @@ class DeliberationOrchestrator:
 
     def run_deliberation(self) -> None:
         """Run all 5 deliberation rounds and store results in state."""
-        from src.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
+        from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
 
         self._init_ai_clients()
 
@@ -71,7 +71,7 @@ class DeliberationOrchestrator:
 
     def _run_delegation_round(self, round_num: int) -> None:
         """Call each agent listed in PHASE_ROUNDS[round_num] for this round."""
-        from src.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
+        from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
 
         agents = PHASE_ROUNDS.get(round_num, ())
         round_outputs: Dict[str, AgentReport] = {}
@@ -95,8 +95,8 @@ class DeliberationOrchestrator:
 
     def _run_ceo_synthesis(self) -> None:
         """Run CEO's round-5 synthesis to produce board_decision."""
-        from src.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
-        from src.ai.prompts import get_agent_system_prompt
+        from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
+        from openexec.ai.prompts import get_agent_system_prompt
 
         print("  -> CEO synthesising board decision...")
         try:
@@ -118,8 +118,8 @@ class DeliberationOrchestrator:
         Falls back to a hardcoded stub if the AI call fails so the loop
         never crashes a running simulation on a single bad round.
         """
-        from src.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
-        from src.ai.client import AIClient
+        from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
+        from openexec.ai.client import AIClient
 
         client = self._get_ai_client(agent_name)
         deliberation_prompt = build_deliberation_prompt(
@@ -153,8 +153,8 @@ class DeliberationOrchestrator:
     # ------------------------------------------------------------------
 
     def _get_system_prompt(self, agent_name: str) -> str:
-        from src.ai.prompts import get_agent_system_prompt
-        from src.ai import DELIBERATION_MODIFIERS
+        from openexec.ai.prompts import get_agent_system_prompt
+        from openexec.ai import DELIBERATION_MODIFIERS
         base = get_agent_system_prompt(agent_name)
         modifier = DELIBERATION_MODIFIERS.get(agent_name, "")
         return base + modifier
@@ -182,7 +182,7 @@ class DeliberationOrchestrator:
 
     def _get_ai_client(self, agent_name: str) -> "AIClient":
         if agent_name not in self._ai_clients:
-            from src.ai.client import AIClient
+            from openexec.ai.client import AIClient
             self._ai_clients[agent_name] = AIClient()
         return self._ai_clients[agent_name]
 

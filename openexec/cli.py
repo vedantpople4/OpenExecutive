@@ -14,21 +14,21 @@ from rich.panel import Panel
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import OpenExec modules
-from src.agents import register_default_agents, registry
-from src.orchestrator import Orchestrator, SimulationState
-from src.utils import extract_action_items, sanitize_prompt
-from src.main import write_report
-from src.decision_tracker import decision_tracker
-from src.summary import write_executive_summary
-from src.risk_analyzer import quantify_risks
-from src.export import (
+from openexec.agents import register_default_agents, registry
+from openexec.orchestrator import Orchestrator, SimulationState
+from openexec.utils import extract_action_items, sanitize_prompt
+from openexec.main import write_report
+from openexec.decision_tracker import decision_tracker
+from openexec.summary import write_executive_summary
+from openexec.risk_analyzer import quantify_risks
+from openexec.export import (
     export_action_items_json,
     export_action_items_csv,
     export_action_items_markdown
 )
-from src.memory import memory_system
-from src.feedback import feedback_system
-from src.knowledge_base import knowledge_base
+from openexec.memory import memory_system
+from openexec.feedback import feedback_system
+from openexec.knowledge_base import knowledge_base
 
 app = typer.Typer(
     name="openexec",
@@ -244,6 +244,13 @@ def run(
         ''', border_style="yellow"))
         raise typer.Exit(1)
 
+    # Validate output directory exists
+    output_dir = Path(output).parent
+    if not output_dir.exists():
+        console.print(f"[red]Error: Output directory does not exist: {output_dir}[/red]")
+        console.print(f"[gray]Create it with: mkdir -p {output_dir}[/gray]")
+        raise typer.Exit(1)
+
     # Setup
     register_default_agents()
     state = SimulationState(
@@ -262,19 +269,26 @@ def run(
         console.print("[cyan]📌 Counterfactual mode enabled[/cyan]")
 
     # Parse agent weights for multi-objective optimization
+    VALID_AGENTS = {"ceo", "cfo", "cto", "cmo"}
     if weight:
         for item in weight:
             if "=" in item:
                 key, value = item.split("=", 1)
+                agent = key.strip().lower()
+                if agent not in VALID_AGENTS:
+                    console.print(f"[red]Error: Invalid agent name '{agent}'. Valid agents: {', '.join(sorted(VALID_AGENTS))}[/red]")
+                    sys.exit(1)
                 try:
                     weight_val = float(value.strip())
                     if 0.0 <= weight_val <= 1.0:
-                        state.agent_weights[key.strip().lower()] = weight_val
-                        console.print(f"[cyan]⚖️ Weight: {key.strip()} = {weight_val}[/cyan]")
+                        state.agent_weights[agent] = weight_val
+                        console.print(f"[cyan]⚖️ Weight: {agent} = {weight_val}[/cyan]")
                     else:
-                        console.print(f"[yellow]⚠️ Weight must be between 0.0 and 1.0: {item}[/yellow]")
+                        console.print(f"[red]Error: Weight must be between 0.0 and 1.0: {item}[/red]")
+                        sys.exit(1)
                 except ValueError:
-                    console.print(f"[yellow]⚠️ Invalid weight value: {item}[/yellow]")
+                    console.print(f"[red]Error: Invalid weight value: {item}[/red]")
+                    sys.exit(1)
         console.print("[cyan]⚖️ Multi-objective optimization enabled[/cyan]")
 
     # Load data corpus
@@ -357,11 +371,16 @@ def run(
 # ==============================
 
 @app.command()
-def setup():
+def setup(
+    default: bool = typer.Option(False, "--default", help="Skip prompts and use default settings (non-interactive mode)")
+):
     """Create or update settings.json for AI provider configuration."""
-    console.print("[bold]OpenExec Setup Wizard[/bold]\n")
-    console.print("This will create a settings.json file in the current directory.")
-    console.print("Press Enter to accept defaults or type your own values.\n")
+    if not default:
+        console.print("[bold]OpenExec Setup Wizard[/bold]\n")
+        console.print("This will create a settings.json file in the current directory.")
+        console.print("Press Enter to accept defaults or type your own values.\n")
+    else:
+        console.print("[bold]OpenExec Setup (non-interactive mode)[/bold]\n")
 
     # Default settings
     defaults = {
@@ -398,37 +417,40 @@ def setup():
         }
     }
 
-    settings = {}
+    if default:
+        settings = json.loads(json.dumps(defaults))  # Deep copy
+        console.print("[green]Using default settings.[/green]")
+    else:
+        settings = {}
+        # Ask for AI settings
+        console.print("[cyan]=== AI Provider Settings ===[/cyan]")
+        console.print(f"Base URL (default: {defaults['ai']['base_url']}):")
+        settings["ai"] = defaults["ai"].copy()
+        url = console.input()
+        if url.strip():
+            settings["ai"]["base_url"] = url.strip()
 
-    # Ask for AI settings
-    console.print("[cyan]=== AI Provider Settings ===[/cyan]")
-    console.print(f"Base URL (default: {defaults['ai']['base_url']}):")
-    settings["ai"] = defaults["ai"].copy()
-    url = console.input()
-    if url.strip():
-        settings["ai"]["base_url"] = url.strip()
+        console.print(f"Model (default: {defaults['ai']['model']}):")
+        model = console.input()
+        if model.strip():
+            settings["ai"]["model"] = model.strip()
 
-    console.print(f"Model (default: {defaults['ai']['model']}):")
-    model = console.input()
-    if model.strip():
-        settings["ai"]["model"] = model.strip()
+        console.print(f"Temperature (default: {defaults['ai']['temperature']}):")
+        temp = console.input()
+        if temp.strip():
+            settings["ai"]["temperature"] = float(temp)
 
-    console.print(f"Temperature (default: {defaults['ai']['temperature']}):")
-    temp = console.input()
-    if temp.strip():
-        settings["ai"]["temperature"] = float(temp)
+        console.print(f"Max Tokens (default: {defaults['ai']['max_tokens']}):")
+        tokens = console.input()
+        if tokens.strip():
+            settings["ai"]["max_tokens"] = int(tokens)
 
-    console.print(f"Max Tokens (default: {defaults['ai']['max_tokens']}):")
-    tokens = console.input()
-    if tokens.strip():
-        settings["ai"]["max_tokens"] = int(tokens)
-
-    console.print("\n[cyan]=== Agent Settings ===[/cyan]")
-    console.print(f"Enabled Agents (default: {', '.join(defaults['agents']['enabled'])}):")
-    agents = console.input()
-    if agents.strip():
-        settings["agents"] = defaults["agents"].copy()
-        settings["agents"]["enabled"] = [a.strip().lower() for a in agents.split(",")]
+        console.print("\n[cyan]=== Agent Settings ===[/cyan]")
+        console.print(f"Enabled Agents (default: {', '.join(defaults['agents']['enabled'])}):")
+        agents = console.input()
+        if agents.strip():
+            settings["agents"] = defaults["agents"].copy()
+            settings["agents"]["enabled"] = [a.strip().lower() for a in agents.split(",")]
 
     # Save settings.json
     settings_path = Path("settings.json")

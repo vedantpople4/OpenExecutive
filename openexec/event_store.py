@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from src.events import (
+from openexec.events import (
     Event, EventType, SimulationInitialized, InceptionStarted,
     InceptionCompleted, AnalysisStarted, AgentReportGenerated,
     AnalysisCompleted, DeliberationStarted, DeliberationRoundStarted,

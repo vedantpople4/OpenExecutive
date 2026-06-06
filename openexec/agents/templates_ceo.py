@@ -13,8 +13,8 @@ class CEOTemplate:
     def __init__(self):
         """Initialize CEO agent with AI client and real-time data fetcher."""
         try:
-            from src.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
-            from src.data import RealTimeDataFetcher
+            from openexec.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
+            from openexec.data import RealTimeDataFetcher
 
             self.ai_client = AIClient()
             self.system_prompt = get_agent_system_prompt("ceo")
@@ -60,7 +60,7 @@ class CEOTemplate:
 
         if self.use_ai:
             try:
-                from src.ai import build_analysis_prompt
+                from openexec.ai import build_analysis_prompt
 
                 base_prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,

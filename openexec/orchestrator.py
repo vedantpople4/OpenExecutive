@@ -1,6 +1,6 @@
-from src.agents.interface import AgentReport
-from src.event_store import EventStore
-from src.events import (
+from openexec.agents.interface import AgentReport
+from openexec.event_store import EventStore
+from openexec.events import (
     Event, EventType, SimulationInitialized, InceptionStarted,
     InceptionCompleted, AnalysisStarted, AgentReportGenerated,
     AnalysisCompleted, DeliberationStarted, DeliberationRoundStarted,

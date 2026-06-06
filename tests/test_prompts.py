@@ -1,7 +1,7 @@
-"""Tests for src/ai/prompts.py — prompt builders and routing."""
+"""Tests for openexec/ai/prompts.py — prompt builders and routing."""
 
 import pytest
-from src.ai.prompts import (
+from openexec.ai.prompts import (
     AGENT_SYSTEM_PROMPTS,
     DELIBERATION_MODIFIERS,
     DECISION_TYPE_GUIDANCE,

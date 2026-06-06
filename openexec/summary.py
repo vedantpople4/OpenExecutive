@@ -12,7 +12,7 @@ def generate_executive_summary(results: Dict[str, Any]) -> str:
     lines.append("")
 
     # Decision
-    decision = results['executive_summary'].replace('Executive Board Analysis for: ', '')
+    decision = results.get('executive_summary', '').replace('Executive Board Analysis for: ', '')
     lines.append(f"**Decision:** {decision}")
     lines.append("")
 

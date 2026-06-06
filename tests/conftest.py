@@ -67,6 +67,16 @@ class FakeAgentReport:
 
 
 # -----------------------------------------------------------------------
+# Common fixtures for all tests
+# -----------------------------------------------------------------------
+
+@pytest.fixture
+def project_root():
+    """Get project root path."""
+    return Path(__file__).parent.parent
+
+
+# -----------------------------------------------------------------------
 # Minimal SimulationState (mirrors orchestrator.py's definition)
 # -----------------------------------------------------------------------
 

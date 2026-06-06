@@ -7,12 +7,12 @@ from pathlib import Path
 from typing import Any
 
 # Import the action item extraction utility
-from src.utils import extract_action_items
+from openexec.utils import extract_action_items
 
 # Priority 3: Memory & Learning imports
-from src.memory import memory_system
-from src.feedback import feedback_system
-from src.knowledge_base import knowledge_base
+from openexec.memory import memory_system
+from openexec.feedback import feedback_system
+from openexec.knowledge_base import knowledge_base
 
 
 def validate_settings() -> None:
@@ -44,13 +44,13 @@ def run_simulation(prompt: str, output_path: str | None = None, data_dir: str = 
     # Add this directory to path so imports work
     sys.path.insert(0, str(Path(__file__).parent.parent))
 
-    from src.agents import register_default_agents, registry
-    from src.orchestrator import Orchestrator, SimulationState
-    from src.utils import extract_action_items
-    from src.decision_tracker import decision_tracker
-    from src.summary import write_executive_summary
-    from src.risk_analyzer import quantify_risks
-    from src.export import (
+    from openexec.agents import register_default_agents, registry
+    from openexec.orchestrator import Orchestrator, SimulationState
+    from openexec.utils import extract_action_items
+    from openexec.decision_tracker import decision_tracker
+    from openexec.summary import write_executive_summary
+    from openexec.risk_analyzer import quantify_risks
+    from openexec.export import (
         export_action_items_json,
         export_action_items_csv,
         export_action_items_markdown
@@ -360,7 +360,7 @@ def main() -> int:
     if args[0] == "discuss":
         # Start interactive discussion mode
         try:
-            from src.interactive import InteractiveDiscussion
+            from openexec.interactive import InteractiveDiscussion
             print("Loading interactive discussion mode...")
             print("Note: This would load the last simulation results in a full implementation.")
             return 0

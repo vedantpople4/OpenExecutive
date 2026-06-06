@@ -3300,5 +3300,3055 @@
       }
     },
     "file_path": "decisions/decision_20260531_175359.json"
+  },
+  {
+    "timestamp": "20260602_220629",
+    "prompt": "Should we acquire a competitor or build organically?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Should we acquire a competitor or build organically?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Should we acquire a competitor or build organically?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260602_220629.json"
+  },
+  {
+    "timestamp": "20260602_221853",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260602_221853.json"
+  },
+  {
+    "timestamp": "20260602_223613",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260602_223613.json"
+  },
+  {
+    "timestamp": "20260603_001221",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_001221.json"
+  },
+  {
+    "timestamp": "20260603_120531",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_120531.json"
+  },
+  {
+    "timestamp": "20260603_120919",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_120919.json"
+  },
+  {
+    "timestamp": "20260603_204405",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_204405.json"
+  },
+  {
+    "timestamp": "20260603_204418",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_204418.json"
+  },
+  {
+    "timestamp": "20260603_215451",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_215451.json"
+  },
+  {
+    "timestamp": "20260603_215515",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_215515.json"
+  },
+  {
+    "timestamp": "20260603_215718",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_215718.json"
+  },
+  {
+    "timestamp": "20260603_231141",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260603_231141.json"
+  },
+  {
+    "timestamp": "20260604_001536",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260604_001536.json"
+  },
+  {
+    "timestamp": "20260604_013946",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260604_013946.json"
+  },
+  {
+    "timestamp": "20260604_042957",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260604_042957.json"
+  },
+  {
+    "timestamp": "20260604_190904",
+    "prompt": "Buy vs lease equipment?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Buy vs lease equipment?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Buy vs lease equipment?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260604_190904.json"
+  },
+  {
+    "timestamp": "20260604_200136",
+    "prompt": "Should we expand to European market?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Should we expand to European market?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Should we expand to European market?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260604_200136.json"
+  },
+  {
+    "timestamp": "20260604_201239",
+    "prompt": "Buy vs lease infrastructure equipment?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Buy vs lease infrastructure equipment?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Buy vs lease infrastructure equipment?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260604_201239.json"
+  },
+  {
+    "timestamp": "20260605_185532",
+    "prompt": "Should we invest in a remote blockchain startup?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Immediately suspend all funding, scoping, and engineering time dedicated to blockchain exploration | Owner: CEO & CTO | Timeframe: Today",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Commit resources to the K8s integration path (Option B) immediately; scope a rapid MVP for enterprise testing rather than an 18-month build | Owner: CTO & VP Engineering | Timeframe: Next 2 weeks",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Develop three tiered cost models showing burn rate impact if we delay K8s adoption by Q3/Q4, quantifying the opportunity cost of inaction | Owner: CFO | Timeframe: End of Week",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Conduct a 4-week, paid feasibility study (Owner: CTO/VP Engineering) to model the minimum viable integration cost and maximum potential revenue lift based on current customer needs. | Impact: -$100k initial OpEx | Owner: CFO",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Limit any blockchain engagement to an advisory role or strategic partnership that carries no upfront capital expenditure, focusing only on IP evaluation. | Impact: $0 immediate CapEx | Owner: CEO/CFO",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Prioritize and accelerate the Kubernetes-native platform build (Q2 2024 goal) over all speculative ventures until key enterprise milestones are achieved. | Impact: N/A - Core Revenue Driver | Owner: CTO",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Conduct a narrow Proof of Concept (PoC) focused on verifiable compute proofs. | Complexity: High | Lead: CTO/Platform Team | Est: 4 weeks",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Define the specific business problem blockchain solves for our customers (e.g., data lineage verification, supply chain provenance), rather than building the technology first. | Complexity: Low | Lead: Product Team | Est: 2 weeks",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "De-scope any recommendation to build a full 'Blockchain Platform' and focus solely on integrating an existing private ledger service for auditable transaction records if necessary. | Complexity: Medium | Lead: Security Team | Est: 6 weeks",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Defer any major blockchain infrastructure investment. Instead, form a small, dedicated 'Proof-of-Concept (PoC) Task Force' to investigate integrating existing ledger technology (e.g., Hyperledger Fabric SDKs) into the Observability/Compliance suite.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "If PoC shows viable traction with regulated industries, pivot the initiative: Focus on selling 'Immutable Audit Trails for AI Workflows' rather than selling 'Blockchain.'",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Owner: CTO and Product Marketing | Segment: Banks/Healthcare (Regulated Industries) | Owner: CMO",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Immediately suspend all funding, scoping, and engineering time dedicated to blockchain exploration | Owner: CEO & CTO | Timeframe: Today",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Commit resources to the K8s integration path (Option B) immediately; scope a rapid MVP for enterprise testing rather than an 18-month build | Owner: CTO & VP Engineering | Timeframe: Next 2 weeks",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop three tiered cost models showing burn rate impact if we delay K8s adoption by Q3/Q4, quantifying the opportunity cost of inaction | Owner: CFO | Timeframe: End of Week",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Should we invest in a remote blockchain startup?",
+      "synthesized_recommendations": [
+        "[CEO] Immediately suspend all funding, scoping, and engineering time dedicated to blockchain exploration | Owner: CEO & CTO | Timeframe: Today",
+        "[CEO] Commit resources to the K8s integration path (Option B) immediately; scope a rapid MVP for enterprise testing rather than an 18-month build | Owner: CTO & VP Engineering | Timeframe: Next 2 weeks",
+        "[CEO] Develop three tiered cost models showing burn rate impact if we delay K8s adoption by Q3/Q4, quantifying the opportunity cost of inaction | Owner: CFO | Timeframe: End of Week",
+        "[CFO] Conduct a 4-week, paid feasibility study (Owner: CTO/VP Engineering) to model the minimum viable integration cost and maximum potential revenue lift based on current customer needs. | Impact: -$100k initial OpEx | Owner: CFO",
+        "[CFO] Limit any blockchain engagement to an advisory role or strategic partnership that carries no upfront capital expenditure, focusing only on IP evaluation. | Impact: $0 immediate CapEx | Owner: CEO/CFO"
+      ],
+      "key_risks": [
+        "[CEO] Scope Creep on Platform Buildout. We risk over-engineering features that don't directly impact enterprise security or performance. Mitigation: Limit K8s MVP scope to core multi-tenancy and compliance observability only.",
+        "[CEO] Burn Rate Mismanagement. Committing resources to non-core projects (like blockchain) depletes capital needed for critical market expansion. Mitigation: CFO must enforce a 'Core Product Only' spending mandate until $30M ARR is secured.",
+        "[CEO] Competitor Feature Parity. AWS/GCP are moving fast on serverless GPU offerings. Delaying our platform risks losing the technical edge required to secure major enterprise contracts."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "De-scope Blockchain; Double Down on NovaScale K8s Platform",
+          "alignment_score": 0.5,
+          "key_findings": [
+            "The core opportunity remains in managing GPU compute at scale for regulated industries (HIPAA, GDPR). This is where we build defensible moat value. The blockchain space does not solve our customers' primary need: reliable AI compute capacity.",
+            "Delaying the K8s platform implementation is a critical risk; customer requests are already 60% native K8s, and building a custom solution (18 months) is too slow. We must commit to the integration path now."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260605_185532.json"
+  },
+  {
+    "timestamp": "20260605_191115",
+    "prompt": "Simple test",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Simple test",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Simple test",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260605_191115.json"
+  },
+  {
+    "timestamp": "20260605_191501",
+    "prompt": "Test",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "W:0.5] Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "W:0.5] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "W:0.5] Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "W:0.5] Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO][W:0.5] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO][W:0.5] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO][W:0.5] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO][W:0.5] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260605_191501.json"
+  },
+  {
+    "timestamp": "20260605_192530",
+    "prompt": "test",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: test",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: test",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260605_192530.json"
+  },
+  {
+    "timestamp": "20260605_193337",
+    "prompt": "test",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: test",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: test",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260605_193337.json"
+  },
+  {
+    "timestamp": "20260605_203044",
+    "prompt": "test",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Implement a 'Compliance-First' Product Initiative: Reallocate the Platform Team to build certified data residency and encryption layers specifically for LLM inference pipelines (e.g., HIPAA/GDPR compliance modules). | Owner: CTO | Timeframe: Immediate (Next 4 weeks)",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Execute a Financial Stress Test Protocol: Mandate that all future capacity planning must use a maximum of 50% growth assumption and model hardware acquisition via leasing until the revenue validates 80%+ utilization. | Owner: CFO | Timeframe: Immediate",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Launch Compliance-Focused GTM Campaign: Direct the CMO to create highly technical, compliance-centric content (webinars, whitepapers) targeting CIOs/CISOs in Healthcare and Finance verticals, proving our security advantage before selling compute power. | Owner: CMO | Timeframe: Next 6 weeks",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "De-scope Q2 2024: Reclassify the Kubernetes platform launch as a Phase II initiative. Focus initial engineering resources (Product & Platform Teams) on finalizing and commercializing Model Optimization APIs first. | Impact: N/A - Delaying commitment maximizes cash runway.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish Unit Economics Goal: Mandate a quarterly review tracking 'Cost Reduction per 1,000 GPU Hours' achieved via optimization tools. This metric must improve by X% to justify the next stage of spending. | Owner: VP Engineering & CFO | Timeline: Immediate (Q2 Focus)",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Pilot Program Funding: Allocate a small, fixed OpEx budget ($500k) for a minimum viable product (MVP) integration demonstrating K8s capability on *existing* cloud infrastructure before committing to the full $12M build. | Owner: CTO & VP Engineering | Timeline: Q3 2024",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Standardize on Managed Abstraction: For K8s functionality, commit fully to leveraging managed services (EKS/GKE/AKS) combined with a robust internal orchestration layer (e.g., using Terraform/Crossplane). This minimizes engineering effort and mitigates the build risk. | Complexity: Low | Lead: David Kim (VP Eng) | Est: 2 months",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Formalize Capacity Planning Model: Implement a mandatory, documented process requiring all financial and operational decisions regarding capacity or hiring to use a conservative growth projection (max 50% YoY). This must be enforced by the CFO/CTO. | Complexity: Low | Lead: Michael Torres (CFO) & Raj Patel (CTO) | Est: 1 month",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Accelerate Optimization Feature Set: Allocate resources from general platform building to deepen the proprietary model optimization tools and compliance reporting features (HIPAA/FedRAMP integration). This is our core moat. | Complexity: Medium | Lead: Product Team Head / ML Platform Team | Est: Ongoing (2-4 quarters)",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Execute a phased integration approach for Kubernetes using existing cloud mechanisms (AWS/GCP managed services) first. This minimizes CapEx and accelerates time-to-market. | Segment: Banks/HedgeFunds/Both | Owner: CTO/VP Engineering",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop targeted case studies demonstrating cost reduction ($2-5x optimization) within regulated use cases (HIPAA model training, GDPR data residency). Use these for sales enablement materials. | Segment: Banks | Owner: CMO/Product Marketing",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a formal 'Capacity Buffer' policy requiring that all infrastructure commitments are based on the 50th percentile of validated historical demand, not peak projection. | Segment: Internal Process | Owner: CFO/CTO",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a 'Compliance-First' Product Initiative: Reallocate the Platform Team to build certified data residency and encryption layers specifically for LLM inference pipelines (e.g., HIPAA/GDPR compliance modules). | Owner: CTO | Timeframe: Immediate (Next 4 weeks)",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch Compliance-Focused GTM Campaign: Direct the CMO to create highly technical, compliance-centric content (webinars, whitepapers) targeting CIOs/CISOs in Healthcare and Finance verticals, proving our security advantage before selling compute power. | Owner: CMO | Timeframe: Next 6 weeks",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: test",
+      "synthesized_recommendations": [
+        "[CEO] Implement a 'Compliance-First' Product Initiative: Reallocate the Platform Team to build certified data residency and encryption layers specifically for LLM inference pipelines (e.g., HIPAA/GDPR compliance modules). | Owner: CTO | Timeframe: Immediate (Next 4 weeks)",
+        "[CEO] Execute a Financial Stress Test Protocol: Mandate that all future capacity planning must use a maximum of 50% growth assumption and model hardware acquisition via leasing until the revenue validates 80%+ utilization. | Owner: CFO | Timeframe: Immediate",
+        "[CEO] Launch Compliance-Focused GTM Campaign: Direct the CMO to create highly technical, compliance-centric content (webinars, whitepapers) targeting CIOs/CISOs in Healthcare and Finance verticals, proving our security advantage before selling compute power. | Owner: CMO | Timeframe: Next 6 weeks",
+        "[CFO] De-scope Q2 2024: Reclassify the Kubernetes platform launch as a Phase II initiative. Focus initial engineering resources (Product & Platform Teams) on finalizing and commercializing Model Optimization APIs first. | Impact: N/A - Delaying commitment maximizes cash runway.",
+        "[CFO] Establish Unit Economics Goal: Mandate a quarterly review tracking 'Cost Reduction per 1,000 GPU Hours' achieved via optimization tools. This metric must improve by X% to justify the next stage of spending. | Owner: VP Engineering & CFO | Timeline: Immediate (Q2 Focus)"
+      ],
+      "key_risks": [
+        "[CEO] Market Complacency Risk: Focusing too narrowly on compliance could slow feature velocity for other emerging model types (e.g., multi-modal vision). Consequence: We lose market share to generalist hyperscalers. Mitigation: Maintain a small, dedicated 'Future Tech' team capacity buffer focused solely on evaluating next-generation compute paradigms.",
+        "[CEO] Internal Over-Optimization Risk: Delaying the K8s platform build entirely might frustrate engineering velocity and slow time-to-market for certain enterprise clients. Consequence: We become technically rigid. Mitigation: Define a minimal viable feature set (MVFS) of Kubernetes integration that addresses 70% of immediate client pain points, deferring the full native build until post-Series C.",
+        "[CFO] Over-investment in Platform Buildout: Committing to the full K8s platform without proven demand or optimization ROI. ($12M CapEx/OpEx). Probability: Medium"
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "Pivot Focus: Shift from Raw Capacity Expansion to Compliance Moats",
+          "alignment_score": 0.8,
+          "key_findings": [
+            "Growth projections are dangerous; overcommitment based on 300% growth targets led to significant budget overruns in Q3 2023. We must model capacity planning using a conservative (50%) growth assumption moving forward. This protects our runway and operational cash flow.",
+            "Our core differentiator\u2014Enterprise-first security and compliance readiness\u2014is undervalued. The market context shows that data sovereignty and regulatory pressure are the primary drivers, not just raw compute power. This is where our competitive moat must be built."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260605_203044.json"
+  },
+  {
+    "timestamp": "20260606_103826",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260606_103826.json"
+  },
+  {
+    "timestamp": "20260606_104032",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260606_104032.json"
+  },
+  {
+    "timestamp": "20260606_142247",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260606_142247.json"
+  },
+  {
+    "timestamp": "20260606_142252",
+    "prompt": "Test question?",
+    "action_items": [
+      {
+        "priority": "HIGH",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Establish a clear budget baseline derived from the Data Corpus.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "HIGH",
+        "task": "Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "owner": "CFO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Implement a microservices architecture to decouple scaling bottlenecks.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Mandate end-to-end testing across all proposed data flows before deployment.",
+        "owner": "CTO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Launch with a focused Minimum Viable Product (MVP) targeting the most receptive segment.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Develop a marketing narrative that explicitly addresses the technical and financial implications.",
+        "owner": "CMO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "owner": "CEO",
+        "due_date": "TBD"
+      },
+      {
+        "priority": "MEDIUM",
+        "task": "Focus initial strategy on the market fit identified by the CMO data.",
+        "owner": "CEO",
+        "due_date": "TBD"
+      }
+    ],
+    "results_summary": {
+      "executive_summary": "Executive Board Analysis for: Test question?",
+      "synthesized_recommendations": [
+        "[CEO] Prioritize alignment between the financial constraints (CFO) and the technological feasibility (CTO).",
+        "[CEO] Focus initial strategy on the market fit identified by the CMO data.",
+        "[CFO] Establish a clear budget baseline derived from the Data Corpus.",
+        "[CFO] Perform sensitivity analysis on cost projections to determine risk exposure.",
+        "[CTO] Implement a microservices architecture to decouple scaling bottlenecks."
+      ],
+      "key_risks": [
+        "[CEO] Risk of strategic misalignment if technical debt is ignored.",
+        "[CEO] Risk of poor market adoption if marketing strategy is disconnected from product reality.",
+        "[CFO] Risk of over-budgeting if technical implementation costs are underestimated (CTO's view)."
+      ],
+      "agent_summaries": {
+        "ceo": {
+          "title": "CEO Strategic Vision Report",
+          "alignment_score": 0.75,
+          "key_findings": [
+            "Core conflict: Test question?",
+            "Data from 'case_studies.md' suggests: # Case Studies\n\nThis document contains real-world business decisions and outcomes from TechNova's fi..."
+          ]
+        },
+        "cfo": {
+          "title": "CFO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cto": {
+          "title": "CTO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        },
+        "cmo": {
+          "title": "CMO Deliberation \u2014 Round 4",
+          "alignment_score": 0.5,
+          "key_findings": []
+        }
+      }
+    },
+    "file_path": "decisions/decision_20260606_142252.json"
   }
 ]

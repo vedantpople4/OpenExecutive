@@ -1,7 +1,7 @@
-"""Tests for src/summary.py — executive summary generation."""
+"""Tests for openexec/summary.py — executive summary generation."""
 
 import pytest
-from src.summary import generate_executive_summary, write_executive_summary
+from openexec.summary import generate_executive_summary, write_executive_summary
 
 
 @pytest.fixture
@@ -103,10 +103,21 @@ class TestGenerateExecutiveSummary:
     def test_limits_recommendations_to_5(self, sample_results):
         """Should limit recommendations to top 5."""
         summary = generate_executive_summary(sample_results)
-        # Should have 5 numbered recommendations
+        # Should have exactly 5 recommendations numbered 1-5
         lines = summary.split("\n")
-        rec_lines = [l for l in lines if l.strip().startswith(("1.", "2.", "3.", "4.", "5."))]
-        assert len(rec_lines) == 5
+        # Find the Top Recommendations section and count items there
+        in_rec_section = False
+        rec_count = 0
+        for line in lines:
+            if "## Top Recommendations" in line:
+                in_rec_section = True
+            elif in_rec_section and line.startswith("##"):
+                break
+            elif in_rec_section and line.strip() and not line.startswith("-"):
+                # Count recommendation lines (non-empty, non-list, non-header)
+                if any(line.strip().startswith(f"{i}. ") for i in range(1, 6)):
+                    rec_count += 1
+        assert rec_count == 5, f"Expected 5 recommendations, found {rec_count}: {lines[30:40]}"
 
     def test_includes_critical_risks(self, sample_results):
         """Should include critical risks section."""

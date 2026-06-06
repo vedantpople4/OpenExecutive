@@ -3,7 +3,15 @@
 
 import csv
 import json
+from enum import Enum
 from typing import Dict, Any, List
+
+
+class ExportFormat(Enum):
+    """Supported export formats."""
+    JSON = 'json'
+    CSV = 'csv'
+    CHECKLIST = 'checklist'
 
 
 def export_action_items_json(action_items: List[Dict[str, Any]], output_path: str) -> None:

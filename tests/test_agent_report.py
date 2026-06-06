@@ -1,7 +1,7 @@
-"""Tests for src/agents/interface.py — AgentReport."""
+"""Tests for openexec/agents/interface.py — AgentReport."""
 
 import pytest
-from src.agents.interface import AgentReport
+from openexec.agents.interface import AgentReport
 
 
 class TestAgentReportFromLLMResponse:
@@ -22,7 +22,9 @@ class TestAgentReportFromLLMResponse:
         """CEO verdict maps from 'strategic_verdict'."""
         report = AgentReport.from_llm_response("ceo", sample_agent_response)
         assert report.verdict == sample_agent_response["strategic_verdict"]
-        assert report.strategic_verdict is None  # no such field on AgentReport
+        # strategic_verdict is not a field on AgentReport, it's read from response
+        assert report.title == "Infrastructure Investment Strategy"
+        assert report.summary == sample_agent_response["summary"]
 
     def test_response_type_routing_for_cfo(self, sample_cfo_response):
         """CFO verdict maps from 'financial_verdict', CFO fields populated."""
@@ -150,11 +152,12 @@ class TestAgentReportGetRoleSpecificFields:
             alignment_score=0.7,
             technical_verdict="Green",
             market_verdict=None,  # should be excluded
-            contingency=None,     # not possible but tests the pattern
+            risks=[],  # empty list should be excluded
         )
         fields = report.get_role_specific_fields()
         assert "technical_verdict" in fields
         assert "market_verdict" not in fields  # None → excluded
+        assert "risks" not in fields  # [] → excluded
 
     def test_includes_all_populated_role_fields(self, sample_cto_response):
         report = AgentReport.from_llm_response("cto", sample_cto_response)

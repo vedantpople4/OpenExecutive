@@ -84,8 +84,133 @@
       "id": "b17e3e594613",
       "timestamp": "2026-05-31T18:19:38.039881",
       "prompt": "Should we invest in GPU infrastructure?"
+    },
+    {
+      "id": "82e6f21478a4",
+      "timestamp": "2026-06-02T22:06:29.703720",
+      "prompt": "Should we acquire a competitor or build organically?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-02T22:18:53.714178",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-02T22:36:13.133681",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T00:12:21.518115",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T12:05:31.066524",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T12:09:19.969317",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T20:44:05.566615",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T20:44:18.514798",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T21:54:51.553461",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T21:55:15.284439",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T21:57:18.523884",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-03T23:11:41.652136",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-04T00:15:36.680861",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-04T01:39:46.531307",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-04T04:29:57.854887",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "258386f7b359",
+      "timestamp": "2026-06-04T19:09:04.286046",
+      "prompt": "Buy vs lease equipment?"
+    },
+    {
+      "id": "0608b59f171c",
+      "timestamp": "2026-06-04T20:01:36.883436",
+      "prompt": "Should we expand to European market?"
+    },
+    {
+      "id": "751715c92803",
+      "timestamp": "2026-06-04T20:12:39.322908",
+      "prompt": "Buy vs lease infrastructure equipment?"
+    },
+    {
+      "id": "0cbc6611f554",
+      "timestamp": "2026-06-05T19:15:01.671667",
+      "prompt": "Test"
+    },
+    {
+      "id": "098f6bcd4621",
+      "timestamp": "2026-06-05T19:46:35.280951",
+      "prompt": "test"
+    },
+    {
+      "id": "098f6bcd4621",
+      "timestamp": "2026-06-05T20:30:44.505769",
+      "prompt": "test"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-06T10:38:26.236828",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-06T10:40:32.875543",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-06T14:22:47.118316",
+      "prompt": "Test question?"
+    },
+    {
+      "id": "e181d9d62950",
+      "timestamp": "2026-06-06T14:22:52.413662",
+      "prompt": "Test question?"
     }
   ],
   "decisions": [],
-  "last_updated": "2026-05-31T18:19:38.041077"
+  "last_updated": "2026-06-06T14:22:52.413814"
 }
