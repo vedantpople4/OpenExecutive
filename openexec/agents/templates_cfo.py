@@ -12,7 +12,7 @@ class CFOTemplate:
     def __init__(self):
         """Initialize CFO agent with AI client."""
         try:
-            from src.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
+            from openexec.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
             self.ai_client = AIClient()
             self.system_prompt = get_agent_system_prompt("cfo")
             self.use_ai = True
@@ -27,7 +27,7 @@ class CFOTemplate:
 
         if self.use_ai:
             try:
-                from src.ai import build_analysis_prompt
+                from openexec.ai import build_analysis_prompt
 
                 prompt = build_analysis_prompt(
                     core_prompt=state.core_prompt,

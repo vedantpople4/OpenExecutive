@@ -4,7 +4,7 @@ import pytest
 import json
 from pathlib import Path
 from datetime import datetime
-from src.feedback import FeedbackSystem
+from openexec.feedback import FeedbackSystem
 
 
 @pytest.fixture

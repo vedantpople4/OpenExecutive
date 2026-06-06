@@ -1,4 +1,4 @@
-from src.ai.abstract_provider import BaseProvider
+from openexec.ai.abstract_provider import BaseProvider
 import json
 import re
 from pathlib import Path
@@ -27,7 +27,7 @@ class AIClient:
         if provider is not None:
             self.provider = provider
         else:
-            from src.ai.ollama_provider import OllamaProvider
+            from openexec.ai.ollama_provider import OllamaProvider
             settings = self._load_settings(settings_path)
             ai_config = settings.get("ai", {})
             self.provider = OllamaProvider(ai_config)

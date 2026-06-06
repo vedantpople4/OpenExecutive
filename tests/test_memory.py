@@ -4,7 +4,7 @@ import pytest
 import json
 from pathlib import Path
 from datetime import datetime
-from src.memory import MemorySystem
+from openexec.memory import MemorySystem
 
 
 @pytest.fixture

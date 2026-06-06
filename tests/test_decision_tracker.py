@@ -4,7 +4,7 @@ import pytest
 import json
 from pathlib import Path
 from datetime import datetime
-from src.decision_tracker import DecisionTracker
+from openexec.decision_tracker import DecisionTracker
 
 
 @pytest.fixture

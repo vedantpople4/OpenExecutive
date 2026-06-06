@@ -1,8 +1,8 @@
-"""Tests for src/orchestrator_deliberation.py — DeliberationOrchestrator."""
+"""Tests for openexec/orchestrator_deliberation.py — DeliberationOrchestrator."""
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
-from src.orchestrator_deliberation import DeliberationOrchestrator
+from openexec.orchestrator_deliberation import DeliberationOrchestrator
 
 
 class TestDeliberationOrchestrator:
@@ -50,7 +50,7 @@ class TestConstants:
 
     def test_phase_rounds_constant(self):
         """PHASE_ROUNDS constant should be defined."""
-        from src.orchestrator_deliberation import PHASE_ROUNDS
+        from openexec.orchestrator_deliberation import PHASE_ROUNDS
         assert isinstance(PHASE_ROUNDS, dict)
         assert 1 in PHASE_ROUNDS
         assert 5 in PHASE_ROUNDS
@@ -58,13 +58,13 @@ class TestConstants:
     def test_deliberation_modifiers_constant(self):
         """DELIBERATION_MODIFIERS should be defined."""
         try:
-            from src.ai.prompts import DELIBERATION_MODIFIERS
+            from openexec.ai.prompts import DELIBERATION_MODIFIERS
             assert isinstance(DELIBERATION_MODIFIERS, dict)
             assert "ceo" in DELIBERATION_MODIFIERS
         except ImportError:
             # If the import fails, at least test the constant exists in the module
-            import src.orchestrator_deliberation
-            assert hasattr(src.orchestrator_deliberation, 'DELIBERATION_MODIFIERS')
+            import openexec.orchestrator_deliberation
+            assert hasattr(openexec.orchestrator_deliberation, 'DELIBERATION_MODIFIERS')
 
 
 # Mock-based tests for isolated functionality
@@ -90,7 +90,7 @@ class TestDeliberationOrchestratorMocked:
         assert hasattr(orch, 'run_deliberation')
         assert callable(getattr(orch, 'run_deliberation'))
 
-    @patch('src.orchestrator_deliberation.AIClient')
+    @patch('openexec.ai.client.AIClient')
     def test_ai_client_initialization(self, mock_ai_client_class):
         """Test that AIClient is properly initialized."""
         mock_registry = Mock()

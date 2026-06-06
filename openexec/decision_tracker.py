@@ -138,10 +138,14 @@ class DecisionTracker:
             limit: Number of recent decisions to return
 
         Returns:
-            List of recent decision records
+            List of recent decision records, sorted by timestamp (most recent first)
         """
         history = self.get_decision_history()
-        return history[-limit:] if history else []
+        if not history:
+            return []
+        # Get last N items and reverse to get most recent first
+        recent = history[-limit:]
+        return list(reversed(recent))
 
     def find_related_decisions(self, query: str) -> List[Dict[str, Any]]:
         """Find decisions related to a query.

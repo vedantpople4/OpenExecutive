@@ -7,7 +7,7 @@ for questioning executive board recommendations.
 
 import sys
 from typing import Dict, Any, Optional
-from src.agents.interface import AgentReport
+from openexec.agents.interface import AgentReport
 
 
 class InteractiveDiscussion:

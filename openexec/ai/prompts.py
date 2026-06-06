@@ -226,10 +226,10 @@ def _classify_decision(prompt: str) -> str:
         return "infrastructure"
     if any(w in p for w in ["pricing", "price", "cost", "charge", "fee", "revenue model"]):
         return "pricing"
-    if any(w in p for w in ["hire", "hiring", "team", "recruit", "headcount", "talent", "expand"]):
-        return "hiring"
     if any(w in p for w in ["market", "launch", "go-to-market", "gtm", "customer segment", "enter", "segment"]):
         return "market"
+    if any(w in p for w in ["hire", "hiring", "recruit", "headcount", "talent", "expand team", "expand the team"]):
+        return "hiring"
     if any(w in p for w in ["funding", "raise", "series", "investor", "runway", "capital", "vc", "equity"]):
         return "funding"
     if any(w in p for w in ["product", "feature", "build", "ship", "roadmap", "development"]):
@@ -334,7 +334,20 @@ def build_review_prompt(
 
         parts.append(f"\n### {other_agent.upper()} Report")
         parts.append(f"**Title:** {report.get('title', 'N/A')}")
-        parts.append(f"**Verdict:** {report.get(f'{other_agent}_verdict', report.get('summary', 'N/A'))}")
+        # Check for role-specific verdicts (technical_verdict, market_verdict, etc.) or agent_verdict
+        verdict_key = f'{other_agent}_verdict'
+        verdict = report.get(verdict_key)
+        if verdict is None:
+            # Try role-specific verdicts
+            verdict_map = {
+                'ceo': 'strategic_verdict',
+                'cfo': 'financial_verdict',
+                'cto': 'technical_verdict',
+                'cmo': 'market_verdict',
+            }
+            verdict = report.get(verdict_map.get(other_agent, 'summary'))
+        verdict = verdict or report.get('summary', 'N/A')
+        parts.append(f"**Verdict:** {verdict}")
         parts.append(f"**Summary:** {report.get('summary', 'N/A')}")
 
         if report.get("key_findings"):

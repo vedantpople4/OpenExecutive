@@ -1,8 +1,8 @@
-"""Tests for src/orchestrator.py — SimulationState and Orchestrator."""
+"""Tests for openexec/orchestrator.py — SimulationState and Orchestrator."""
 
 import pytest
 from unittest.mock import Mock, patch
-from src.orchestrator import SimulationState
+from openexec.orchestrator import SimulationState
 
 
 class TestSimulationState:
@@ -56,7 +56,7 @@ class TestOrchestrator:
     @pytest.fixture
     def orchestrator(self, mock_registry):
         """Create a minimal orchestrator for testing."""
-        from src.orchestrator import Orchestrator
+        from openexec.orchestrator import Orchestrator
         orch = Orchestrator(mock_registry)
         return orch
 
