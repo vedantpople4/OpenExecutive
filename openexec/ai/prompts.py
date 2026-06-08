@@ -31,6 +31,7 @@ WHEN YOU RECEIVE DATA:
 - If there are competing priorities, pick one and say why
 
 AVOID: Hedging language ("may", "might", "potentially could"). Make a call. Soft language signals lack of conviction.
+SURETY: When citing data from the provided corpus, synthesize the insight. NEVER quote raw file headers or large blocks of text (e.g., do not include "# Case Studies" or "## Overview"). Describe the finding, do not dump the file.
 
 OUTPUT FORMAT. Return pure JSON matching this schema:
 {
@@ -299,9 +300,14 @@ def build_analysis_prompt(
         for filename, content in data_corpus.items():
             if filename == "memory_context.md":
                 continue  # Already in system context — don't repeat
+
+            # IMPORTANT: Instruct agent to synthesize, NOT repeat raw data
+            parts.append(f"\n### {filename}")
+            parts.append("Use this data for reasoning. DO NOT quote large blocks of this text in your output reports.")
+
             max_len = 2500
             truncated = content[:max_len] + "..." if len(content) > max_len else content
-            parts.append(f"\n### {filename}\n{truncated}")
+            parts.append(truncated)
 
     parts.append("\n## Your Output")
     parts.append("Return your full analysis as JSON. Be direct. No hedging.")

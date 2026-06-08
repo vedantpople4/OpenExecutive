@@ -255,9 +255,20 @@ class Orchestrator(BaseOrchestrator):
 
         print("\n--- Phase 4: SYNTHESIS ---")
 
+        # Build executive summary from CEO synthesis if available
+        ceo_r5 = self.state.deliberation_outputs.get(5, {}).get("ceo")
+        board_summary = None
+        if ceo_r5 and hasattr(ceo_r5, "board_decision") and ceo_r5.board_decision:
+            board_summary = ceo_r5.board_decision.get("summary", "")
+        elif ceo_r5 and isinstance(ceo_r5, dict):
+            bd = ceo_r5.get("board_decision", {})
+            if isinstance(bd, dict):
+                board_summary = bd.get("summary", "")
+        executive_summary = board_summary or self.state.core_prompt
+
         final_report: Dict[str, Any] = {
             "simulation_id": self.state.simulation_id,
-            "executive_summary": f"Executive Board Analysis for: {self.state.core_prompt}",
+            "executive_summary": executive_summary,
             "decision_point": self.state.decision_point,
             "agent_reports": {},
             "data_sources": {
@@ -287,11 +298,8 @@ class Orchestrator(BaseOrchestrator):
             role_specific = report.get_role_specific_fields()
             if role_specific:
                 report_dict.update(role_specific)
-            delib_reports = self.state.deliberation_outputs.get(4, {}).get(name)
-            if delib_reports and hasattr(delib_reports, "get_role_specific_fields"):
-                delib_dict = self._report_to_dict(delib_reports)
-                if delib_dict.get("summary"):
-                    report_dict.update(delib_dict)
+            # NOTE: Keep individual agent reports as Phase-2 (analysis) outputs.
+            # Deliberation outputs live in `deliberation_rounds` for transcript.
             final_report["agent_reports"][name] = report_dict
 
             if (hasattr(report, 'reasoning')
@@ -306,6 +314,12 @@ class Orchestrator(BaseOrchestrator):
                     all_available_sources.update(report.reasoning['all_available_sources'])
                 if 'data_timestamp' in report.reasoning:
                     data_timestamps.append(report.reasoning['data_timestamp'])
+
+        # Track data corpus sources (loaded from data/ directory in main.py)
+        if self.state.data_corpus:
+            for filename in self.state.data_corpus.keys():
+                all_available_sources.add(filename)
+                all_sources_accessed.add(filename)
 
         ceo_r5 = self.state.deliberation_outputs.get(5, {}).get("ceo")
         if ceo_r5 and hasattr(ceo_r5, "board_decision") and ceo_r5.board_decision:

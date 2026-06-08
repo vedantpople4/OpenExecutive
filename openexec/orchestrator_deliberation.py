@@ -115,23 +115,25 @@ class DeliberationOrchestrator:
     def _call_agent(self, agent_name: str, round_num: int) -> AgentReport:
         """Build prompt, call LLM, return AgentReport.
 
-        Falls back to a hardcoded stub if the AI call fails so the loop
-        never crashes a running simulation on a single bad round.
+        Tries a full prompt first, falls back to a simplified prompt if JSON parsing fails,
+        and only then uses the hardcoded stub.
         """
         from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
         from openexec.ai.client import AIClient
 
         client = self._get_ai_client(agent_name)
-        deliberation_prompt = build_deliberation_prompt(
-            agent_name=agent_name,
-            round_num=round_num,
-            core_prompt=self.state.core_prompt,
-            prior_outputs=self._reports_to_dicts(self.state.deliberation_outputs),
-            challenges=self.state.challenges,
-        )
-        system_prompt = self._get_system_prompt(agent_name)
 
+        # Attempt 1: Full Context
         try:
+            deliberation_prompt = build_deliberation_prompt(
+                agent_name=agent_name,
+                round_num=round_num,
+                core_prompt=self.state.core_prompt,
+                prior_outputs=self._reports_to_dicts(self.state.deliberation_outputs),
+                challenges=self.state.challenges,
+            )
+            system_prompt = self._get_system_prompt(agent_name)
+
             ai_response = client.complete_json_with_retry(
                 prompt=deliberation_prompt,
                 system_prompt=system_prompt,
@@ -140,8 +142,39 @@ class DeliberationOrchestrator:
             agent_report = AgentReport.from_llm_response(agent_name, ai_response)
             agent_report.round_number = round_num
             return agent_report
+
         except Exception as e:
-            print(f"  [FALLBACK] LLM failed for {agent_name} round {round_num}: {e}")
+            print(f"  [RETRY] Full context failed for {agent_name} round {round_num}: {e}. Trying simplified prompt...")
+
+            # Attempt 2: Simplified Context (Round 3+ only)
+            if round_num >= 3:
+                try:
+                    # Prune prior_outputs to only include the most recent round and blind reports
+                    simplified_outputs = {
+                        0: self.state.deliberation_outputs.get(0, {}),
+                        round_num - 1: self.state.deliberation_outputs.get(round_num - 1, {})
+                    }
+
+                    simplified_prompt = build_deliberation_prompt(
+                        agent_name=agent_name,
+                        round_num=round_num,
+                        core_prompt=self.state.core_prompt,
+                        prior_outputs=simplified_outputs,
+                        challenges=self.state.challenges,
+                    )
+
+                    ai_response = client.complete_json_with_retry(
+                        prompt=simplified_prompt,
+                        system_prompt=system_prompt,
+                        temperature=0.3, # Lower temp for stability
+                    )
+                    agent_report = AgentReport.from_llm_response(agent_name, ai_response)
+                    agent_report.round_number = round_num
+                    return agent_report
+                except Exception as e2:
+                    print(f"  [FAIL] Simplified prompt also failed for {agent_name} round {round_num}: {e2}")
+
+            print(f"  [FALLBACK] Final failure for {agent_name} round {round_num}. Using stub.")
             return self._hardcoded_deliberation_report(agent_name, round_num)
 
     def _build_base_prompt(self, agent_name: str, round_num: int) -> str:

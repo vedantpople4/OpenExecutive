@@ -60,31 +60,82 @@ class RiskQuantifier:
         else:
             return "LOW"
 
+    def _impact_band(self, impact: int) -> str:
+        """Map impact score to band label."""
+        if impact >= 9:
+            return "Critical"
+        elif impact >= 7:
+            return "High"
+        elif impact >= 4:
+            return "Med"
+        return "Low"
+
+    def _prob_band(self, probability: float) -> str:
+        """Map probability to band label."""
+        if probability >= 0.7:
+            return "High"
+        elif probability >= 0.4:
+            return "Med"
+        return "Low"
+
     def generate_risk_matrix(self, risks: List[str]) -> str:
-        """Generate ASCII risk matrix."""
+        """Generate dynamic ASCII risk matrix with plotted risks."""
         quantified = [self.quantify_risk(risk) for risk in risks]
 
-        matrix = []
-        matrix.append("Risk Matrix:")
-        matrix.append("            IMPACT →")
-        matrix.append("            Low   Med   High  Critical")
-        matrix.append("PROBABIL  High  .     .     [H]   [C]")
-        matrix.append("ITY    ↑  Med   .     [M]   [H]   [C]")
-        matrix.append("         Low   [L]   [M]   [H]   .")
+        # Build a 3x4 grid: prob levels (High, Med, Low) x impact levels (Critical, High, Med, Low)
+        # Rows: probability (top to bottom: High, Med, Low)
+        # Cols: impact (left to right: Low, Med, High, Critical)
+        prob_levels = ["High", "Med", "Low"]
+        impact_levels = ["Low", "Med", "High", "Critical"]
 
-        matrix.append("")
-        matrix.append("Legend: [L]=Low, [M]=Medium, [H]=High, [C]=Critical")
-        matrix.append("")
+        # Collect markers per cell
+        cell_markers: Dict[str, Dict[str, List[str]]] = {p: {i: [] for i in impact_levels} for p in prob_levels}
+        for risk in quantified:
+            p_band = self._prob_band(risk['probability'])
+            i_band = self._impact_band(risk['impact'])
+            # Priority letter for marker
+            letter = risk['priority'][0]  # H, M, L
+            cell_markers[p_band][i_band].append(letter)
+
+        # Build grid rows
+        lines = []
+        lines.append("Risk Matrix:")
+        lines.append("            IMPACT ->")
+        lines.append("            Low   Med   High  Critical")
+
+        for prob in prob_levels:
+            if prob == "High":
+                row_label = "PROBABIL  High"
+            elif prob == "Med":
+                row_label = "ITY    ↑  Med"
+            else:
+                row_label = "         Low"
+
+            cells = []
+            for impact in impact_levels:
+                markers = cell_markers[prob][impact]
+                if markers:
+                    # Unique markers, sorted
+                    unique_markers = sorted(set(markers))
+                    cell_text = "[" + "".join(unique_markers) + "]"
+                else:
+                    cell_text = " .   "
+                cells.append(cell_text)
+            lines.append(f"{row_label}  {cells[0]}  {cells[1]}  {cells[2]}  {cells[3]}")
+
+        lines.append("")
+        lines.append("Legend: [H]=High priority, [M]=Medium priority, [L]=Low priority")
+        lines.append("")
 
         # Add detailed breakdown
-        matrix.append("## Quantified Risks")
-        matrix.append("")
+        lines.append("## Quantified Risks")
+        lines.append("")
         for risk in sorted(quantified, key=lambda x: x['risk_score'], reverse=True)[:10]:
-            matrix.append(f"- {risk['priority']} | P:{risk['probability']:.0%} | I:{risk['impact']}/10 | Score:{risk['risk_score']:.1f}")
-            matrix.append(f"  {risk['text'][:80]}...")
-            matrix.append("")
+            lines.append(f"- {risk['priority']} | P:{risk['probability']:.0%} | I:{risk['impact']}/10 | Score:{risk['risk_score']:.1f}")
+            lines.append(f"  {risk['text'][:80]}...")
+            lines.append("")
 
-        return '\n'.join(matrix)
+        return '\n'.join(lines)
 
 
 def quantify_risks(results: Dict[str, Any]) -> Dict[str, Any]:
