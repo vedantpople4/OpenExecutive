@@ -29,6 +29,7 @@ class SimulationState:
     deliberation_round: int = 0
     challenges: Dict[str, list[str]] = field(default_factory=dict)
     deliberation_outputs: Dict[int, Dict[str, Any]] = field(default_factory=dict)
+    board_summary: str = ""
     assumptions: Dict[str, str] = field(default_factory=dict)
     agent_weights: Dict[str, float] = field(default_factory=dict)  # agent_name -> weight (0.0-1.0)  # assumption_key -> assumption_value
 

@@ -12,6 +12,34 @@ Get back a structured board report with: a CEO board decision, a 5-round deliber
 
 ## What Problem Does It Solve?
 
+The board simulation originally hit context over‑flows in later rounds, causing fallback stubs. The new flow adds a **Scribe** summarizer and a `board_summary` field in `SimulationState`. After each delegation round (≥ 2) the orchestrator calls the Scribe to distill consensus, conflicts, constraints, and trajectory into a concise markdown summary. Subsequent round prompts include this summary plus only the immediate prior round’s reports, keeping the LLM context lean while preserving decision history. This eliminates fallback usage and produces full, substantive reports for Rounds 3‑5.
+
+## New Flow Overview
+
+1. **SimulationState** now holds `board_summary: str`.
+2. **DeliberationOrchestrator.run_deliberation** updates `board_summary` after each round via `_update_board_summary`.
+3. **build_deliberation_prompt** receives `board_summary` and injects it into prompts for rounds 3‑5.
+4. **_call_agent** uses the lean context (summary + prior round) and falls back only as last resort.
+5. **Scribe** (`SCRIBE_SYSTEM_PROMPT`) generates a JSON `{"board_summary": "..."}` with four sections: Consensus, Active Conflicts, Key Constraints, Current Trajectory.
+
+## How to Use
+
+Run the simulation as before:
+
+```bash
+openexec run "Should we invest in AI infrastructure?"
+```
+
+The generated `board_report.md` now contains full detailed reports for all rounds, no fallback stubs.
+
+## Implementation Files
+
+- `openexec/orchestrator_deliberation.py` – added `_update_board_summary`, lean context handling.
+- `openexec/ai/prompts.py` – added `SCRIBE_SYSTEM_PROMPT` and updated `build_deliberation_prompt` signature.
+- `openexec/orchestrator.py` – added `board_summary` field to `SimulationState`.
+- `README.md` – updated with new flow description.
+
+
 Business decisions get made by one person thinking in one direction. OpenExec forces structured disagreement from four distinct perspectives — and makes those perspectives *talk to each other* until a real decision emerges. It's not four parallel monologues. It's an actual board meeting where positions evolve under pressure.
 
 ## Setup

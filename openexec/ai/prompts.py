@@ -4,6 +4,30 @@ from typing import Any, Dict, List
 
 
 # ----------------------------------------------------------------------
+# Scribe Prompt for Deliberation Summarization
+# ----------------------------------------------------------------------
+
+SCRIBE_SYSTEM_PROMPT = """You are the Board Scribe. Your job is to maintain a high-fidelity, lean state of the board's deliberation.
+You synthesize raw reports into a running summary that ensures the board does not lose the thread of the argument while keeping the context window lean.
+
+You must maintain four structured sections:
+1. **Consensus**: Points all agents now agree upon. Be specific.
+2. **Active Conflicts**: Unresolved tensions, specifically naming which roles are in conflict (e.g., "CFO vs CTO on CapEx timing").
+3. **Key Constraints**: Technical, financial, or market boundaries that have been established as non-negotiable.
+4. **Current Trajectory**: The emerging direction of the final decision (e.g., "Moving toward a phased PoC rather than full overhaul").
+
+Rules:
+- Do not repeat reports. Distill them.
+- If a conflict is resolved, move it to Consensus.
+- If a new constraint is mentioned, add it to Key Constraints.
+- Keep the total summary under 500 words.
+
+Return pure JSON matching this schema:
+{
+  "board_summary": "string - the markdown-formatted summary with the four sections"
+}"""
+
+# ----------------------------------------------------------------------
 # Agent Persona System Prompts
 # ----------------------------------------------------------------------
 # Rules:
@@ -424,7 +448,7 @@ def build_deliberation_prompt(
     core_prompt: str,
     prior_outputs: Dict[int, Dict[str, Any]] | None = None,
     challenges: Dict[str, list[str]] | None = None,
-    board_context: bool = False,
+    board_summary: str | None = None,
 ) -> str:
     """Build a deliberative round prompt for a specific agent.
 
@@ -436,11 +460,13 @@ def build_deliberation_prompt(
         prior_outputs: Round-numbered dict of prior deliberation outputs.
                       Structure: {round_num: {"ceo": report, "cfo": report, ...}}
         challenges: Challenges directed at specific agents (e.g. "cfo" -> [list of questions]).
-        board_context: If True, include the full board summary (used in round 5).
-
+        board_summary: Running distilled summary of the board's progress.
     Returns:
         Formatted prompt string for the LLM.
     """
+    decision_type = _classify_decision(core_prompt)
+    guidance = DECISION_TYPE_GUIDANCE.get(decision_type, DECISION_TYPE_GUIDANCE["generic"])
+
     decision_type = _classify_decision(core_prompt)
     guidance = DECISION_TYPE_GUIDANCE.get(decision_type, DECISION_TYPE_GUIDANCE["generic"])
 
@@ -614,22 +640,26 @@ def build_deliberation_prompt(
         else:
             parts.append("(No specific challenges from CEO this round.)")
 
-        parts.append("\n**All Prior Reports:**")
+        if board_summary:
+            parts.append("\n## Board State Summary")
+            parts.append(board_summary)
+
+        parts.append("\n**Immediate Context (Prior Round Reports):**")
         if prior_outputs:
-            blind_reports = prior_outputs.get(0, {})
-            for name in ["cfo", "cto"]:
-                r = blind_reports.get(name)
-                if r:
-                    parts.extend(_format_report(name, r))
-                    parts.append("")
-            r1 = prior_outputs.get(1, {}).get("ceo", {})
-            if r1:
-                parts.extend(_format_report("ceo", r1))
-                parts.append("")
+            # Only pass the most recent round for reactivity
             r2 = prior_outputs.get(2, {})
             for name, r in r2.items():
                 parts.extend(_format_report(name, r))
                 parts.append("")
+
+            # Keep blind reports for grounding
+            blind_reports = prior_outputs.get(0, {})
+            for name in ["cfo", "cto"]:
+                r = blind_reports.get(name)
+                if r:
+                    parts.append(f"\n### {name.upper()} Initial Analysis (Grounding)")
+                    parts.extend(_format_report(name, r))
+                    parts.append("")
 
         parts.extend([
             "\n## Output Schema",
@@ -670,13 +700,24 @@ def build_deliberation_prompt(
             parts.append("(No external challenges directed at you this round — "
                          "proceed with self-revision if warranted.)")
 
-        parts.append("\n**Full Deliberation History:**")
+        if board_summary:
+            parts.append("\n## Board State Summary")
+            parts.append(board_summary)
+
+        parts.append("\n**Immediate Context (Prior Round Reports):**")
         if prior_outputs:
-            for rnd in sorted(prior_outputs.keys()):
-                if rnd == 0:
-                    continue  # Skip blind reports in revision round
-                parts.append(f"\n#### Round {rnd}:")
-                for name, r in prior_outputs[rnd].items():
+            # Only pass the most recent round for reactivity
+            r3 = prior_outputs.get(3, {})
+            for name, r in r3.items():
+                parts.extend(_format_report(name, r))
+                parts.append("")
+
+            # Keep blind reports for grounding
+            blind_reports = prior_outputs.get(0, {})
+            for name in ["cfo", "cto", "cmo"]:
+                r = blind_reports.get(name)
+                if r:
+                    parts.append(f"\n### {name.upper()} Initial Analysis (Grounding)")
                     parts.extend(_format_report(name, r))
                     parts.append("")
 
@@ -722,16 +763,18 @@ def build_deliberation_prompt(
             "## BOARD DELIBERATION — ROUND 5 (SYNTHESIS)",
             "You are the **CEO**. All rounds are complete. It is time to make the call.",
             f"\n**Decision:** {core_prompt}",
-            "\n**Deliberation Summary** (synthesized — focus on agreements, conflicts, revised stances):",
+            "\n**Deliberation State (Summary of all rounds):**",
         ]
 
-        if prior_outputs:
+        if board_summary:
+            parts.append(board_summary)
+        elif prior_outputs:
+            # Fallback if summary is missing: use the trimmed version previously implemented
             for rnd_num in sorted(prior_outputs.keys()):
                 if rnd_num == 0:
-                    continue  # Blind reports — skip
+                    continue
                 rnd_data = prior_outputs[rnd_num]
                 parts.append(f"\n[Round {rnd_num}]")
-                # Extract only the fields we need (no verbose lists)
                 for name, r in rnd_data.items():
                     summary = r.get("summary", "")[:300] if r.get("summary") else ""
                     verdicts = [

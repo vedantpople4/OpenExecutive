@@ -25,5 +25,6 @@
       "Bash(pytest tests/test_utils.py tests/test_ollama_provider.py tests/test_cli.py --tb=short -v)",
       "Bash(./bin/openexec *)"
     ]
-  }
+  },
+  "enabledPlugins": {}
 }
