@@ -42,6 +42,7 @@ class DeliberationOrchestrator:
     def run_deliberation(self) -> None:
         """Run all 5 deliberation rounds and store results in state."""
         from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
+        from openexec.ai.prompts import SCRIBE_SYSTEM_PROMPT
 
         self._init_ai_clients()
 
@@ -61,6 +62,9 @@ class DeliberationOrchestrator:
                 self._run_ceo_synthesis()
             else:
                 self._run_delegation_round(round_num)
+                # Update board summary after every delegation round except round 1 (which is just framing)
+                if round_num >= 2:
+                    self._update_board_summary(round_num)
             self.state.deliberation_round = round_num
 
         print("\n[green]✓ All deliberation rounds complete[/green]")
@@ -115,23 +119,26 @@ class DeliberationOrchestrator:
     def _call_agent(self, agent_name: str, round_num: int) -> AgentReport:
         """Build prompt, call LLM, return AgentReport.
 
-        Falls back to a hardcoded stub if the AI call fails so the loop
-        never crashes a running simulation on a single bad round.
+        Tries a lean context first, falls back to a simplified prompt if it fails,
+        and only then uses the hardcoded stub.
         """
         from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
         from openexec.ai.client import AIClient
 
         client = self._get_ai_client(agent_name)
-        deliberation_prompt = build_deliberation_prompt(
-            agent_name=agent_name,
-            round_num=round_num,
-            core_prompt=self.state.core_prompt,
-            prior_outputs=self._reports_to_dicts(self.state.deliberation_outputs),
-            challenges=self.state.challenges,
-        )
-        system_prompt = self._get_system_prompt(agent_name)
 
+        # Attempt 1: Lean Context (Scribe Summary + R-1 + R0)
         try:
+            deliberation_prompt = build_deliberation_prompt(
+                agent_name=agent_name,
+                round_num=round_num,
+                core_prompt=self.state.core_prompt,
+                prior_outputs=self._reports_to_dicts(self.state.deliberation_outputs),
+                challenges=self.state.challenges,
+                board_summary=self.state.board_summary,
+            )
+            system_prompt = self._get_system_prompt(agent_name)
+
             ai_response = client.complete_json_with_retry(
                 prompt=deliberation_prompt,
                 system_prompt=system_prompt,
@@ -140,13 +147,86 @@ class DeliberationOrchestrator:
             agent_report = AgentReport.from_llm_response(agent_name, ai_response)
             agent_report.round_number = round_num
             return agent_report
+
         except Exception as e:
-            print(f"  [FALLBACK] LLM failed for {agent_name} round {round_num}: {e}")
+            print(f"  [RETRY] Lean context failed for {agent_name} round {round_num}: {e}. Trying simplified prompt...")
+
+            # Attempt 2: Simplified Context (Round 3+ only)
+            if round_num >= 3:
+                try:
+                    # Prune prior_outputs to only include the most recent round and blind reports
+                    simplified_outputs = {
+                        0: self.state.deliberation_outputs.get(0, {}),
+                        round_num - 1: self.state.deliberation_outputs.get(round_num - 1, {})
+                    }
+
+                    simplified_prompt = build_deliberation_prompt(
+                        agent_name=agent_name,
+                        round_num=round_num,
+                        core_prompt=self.state.core_prompt,
+                        prior_outputs=simplified_outputs,
+                        challenges=self.state.challenges,
+                        board_summary=self.state.board_summary,
+                    )
+
+                    ai_response = client.complete_json_with_retry(
+                        prompt=simplified_prompt,
+                        system_prompt=system_prompt,
+                        temperature=0.3, # Lower temp for stability
+                    )
+                    agent_report = AgentReport.from_llm_response(agent_name, ai_response)
+                    agent_report.round_number = round_num
+                    return agent_report
+                except Exception as e2:
+                    print(f"  [FAIL] Simplified prompt also failed for {agent_name} round {round_num}: {e2}")
+
+            print(f"  [FALLBACK] Final failure for {agent_name} round {round_num}. Using stub.")
             return self._hardcoded_deliberation_report(agent_name, round_num)
 
-    def _build_base_prompt(self, agent_name: str, round_num: int) -> str:
-        """Returns a short contextual prefix (not used directly in prompts; retained for extension)."""
-        return f"[{agent_name.upper()} deliberation round {round_num}]"
+    def _update_board_summary(self, round_num: int) -> None:
+        """Call Scribe agent to synthesize current round's outputs into state.board_summary."""
+        from openexec.ai.prompts import SCRIBE_SYSTEM_PROMPT
+        from openexec.ai.client import AIClient
+
+        print(f"  -> Scribe synthesizing round {round_num} summary...")
+        client = AIClient()
+
+        # Gather raw materials for the scribe: current summary + new round reports
+        current_summary = self.state.board_summary or "No prior summary exists. Start the record."
+        round_reports = self.state.deliberation_outputs.get(round_num, {})
+
+        # Convert reports to a readable format for the scribe
+        reports_text = []
+        for name, report in round_reports.items():
+            if isinstance(report, AgentReport):
+                reports_text.append(f"Agent {name.upper()} wrote: {report.summary}")
+            else:
+                reports_text.append(f"Agent {name.upper()} wrote: {report.get('summary', 'N/A')}")
+
+        scribe_prompt = (
+            f"Current Board Summary:\n{current_summary}\n\n"
+            f"Reports from Round {round_num}:\n" + "\n".join(reports_text) +
+            "\n\nUpdate the board summary based on these new inputs. Maintain the four required sections."
+        )
+
+        try:
+            ai_response = client.complete_json_with_retry(
+                prompt=scribe_prompt,
+                system_prompt=SCRIBE_SYSTEM_PROMPT,
+                temperature=0.3,
+            )
+            # The scribe returns {"board_summary": "..."}
+            import json
+            data = json.loads(ai_response) if not ai_response.startswith("{") else ai_response
+            # Handle potential string wrapped JSON
+            if isinstance(data, str):
+                import json
+                data = json.loads(data)
+
+            self.state.board_summary = data.get("board_summary", self.state.board_summary)
+            print("  [OK] Board summary updated.")
+        except Exception as e:
+            print(f"  [WARN] Scribe failed to update summary: {e}")
 
     # ------------------------------------------------------------------
     # System prompt composition

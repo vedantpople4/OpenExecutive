@@ -132,14 +132,32 @@ class TestExtractActionItems:
         assert actions[0]["task"] == "Implement the budget"  # capitalized
         assert actions[1]["task"] == "Establish the timeline"  # already capitalized
 
-    def test_due_date_default(self):
-        """All action items should have TBD as default due date."""
+    def test_due_date_calculation(self):
+        """Due dates should be calculated based on priority: HIGH=2 weeks, MEDIUM=4 weeks, LOW=TBD."""
+        from datetime import datetime, timedelta
+
         results = {
             "synthesized_recommendations": ["[CEO] Test task"]
         }
         actions = extract_action_items(results)
 
-        assert all(a["due_date"] == "TBD" for a in actions)
+        assert len(actions) == 1
+        action = actions[0]
+        expected_date = (datetime.now() + timedelta(weeks=2)).strftime("%Y-%m-%d")
+        assert action["due_date"] == expected_date
+
+    def test_due_date_medium_priority(self):
+        """Medium priority items should have a 4-week due date."""
+        from datetime import datetime, timedelta
+
+        results = {
+            "synthesized_recommendations": ["[CMO] Test task"]
+        }
+        actions = extract_action_items(results)
+
+        assert len(actions) == 1
+        expected_date = (datetime.now() + timedelta(weeks=4)).strftime("%Y-%m-%d")
+        assert actions[0]["due_date"] == expected_date
 
     def test_mixed_sources(self):
         """Should extract from both synthesized and agent recommendations."""

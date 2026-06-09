@@ -209,8 +209,53 @@
       "id": "e181d9d62950",
       "timestamp": "2026-06-06T14:22:52.413662",
       "prompt": "Test question?"
+    },
+    {
+      "id": "ee345b2bf9c6",
+      "timestamp": "2026-06-07T09:04:05.336927",
+      "prompt": "Should we invest in AI infrastructure?"
+    },
+    {
+      "id": "ee345b2bf9c6",
+      "timestamp": "2026-06-07T15:10:29.606945",
+      "prompt": "Should we invest in AI infrastructure?"
+    },
+    {
+      "id": "ee345b2bf9c6",
+      "timestamp": "2026-06-07T16:44:39.205564",
+      "prompt": "Should we invest in AI infrastructure?"
+    },
+    {
+      "id": "ee345b2bf9c6",
+      "timestamp": "2026-06-07T16:58:12.122987",
+      "prompt": "Should we invest in AI infrastructure?"
+    },
+    {
+      "id": "ee345b2bf9c6",
+      "timestamp": "2026-06-07T17:16:32.141949",
+      "prompt": "Should we invest in AI infrastructure?"
+    },
+    {
+      "id": "ee345b2bf9c6",
+      "timestamp": "2026-06-07T18:39:58.620965",
+      "prompt": "Should we invest in AI infrastructure?"
+    },
+    {
+      "id": "ee345b2bf9c6",
+      "timestamp": "2026-06-08T19:07:56.219096",
+      "prompt": "Should we invest in AI infrastructure?"
+    },
+    {
+      "id": "ee345b2bf9c6",
+      "timestamp": "2026-06-08T19:49:19.144881",
+      "prompt": "Should we invest in AI infrastructure?"
+    },
+    {
+      "id": "5ac7ffc72672",
+      "timestamp": "2026-06-08T20:40:41.878496",
+      "prompt": "Should we attend AI conferences to market our company?"
     }
   ],
   "decisions": [],
-  "last_updated": "2026-06-06T14:22:52.413814"
+  "last_updated": "2026-06-08T20:40:41.879991"
 }

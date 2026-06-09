@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timedelta
 from typing import Any
 
 
@@ -54,6 +55,29 @@ def sanitize_prompt(prompt: str, max_length: int = 10000) -> str:
     return prompt
 
 
+def _dedup_action_items(action_items):
+    """Remove duplicate action items based on normalized task text."""
+    seen = set()
+    deduped = []
+    for item in action_items:
+        task_norm = item.get("task", "").strip().lower()
+        if task_norm and task_norm not in seen:
+            seen.add(task_norm)
+            deduped.append(item)
+    return deduped
+
+
+def _calc_due_date(priority):
+    """Calculate a due date string based on priority."""
+    if priority == "HIGH":
+        d = datetime.now() + timedelta(weeks=2)
+        return d.strftime("%Y-%m-%d")
+    elif priority == "MEDIUM":
+        d = datetime.now() + timedelta(weeks=4)
+        return d.strftime("%Y-%m-%d")
+    return "TBD"
+
+
 def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
     """Extract action items from the simulation results.
 
@@ -93,7 +117,7 @@ def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
                 'priority': priority,
                 'task': task,
                 'owner': owner,
-                'due_date': 'TBD'
+                'due_date': _calc_due_date(priority)
             })
 
     # Also extract from individual agent recommendations if not already covered
@@ -118,7 +142,7 @@ def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
                     'priority': priority,
                     'task': task,
                     'owner': owner,
-                    'due_date': 'TBD'
+                    'due_date': _calc_due_date(priority)
                 })
 
-    return action_items
+    return _dedup_action_items(action_items)
