@@ -206,8 +206,38 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
                     if report.get('round_number'):
                         f.write(f"(Round {report['round_number']})")
                     f.write("\n\n")
+                    # R5: board_decision nested content — always render if present
+                    bd = report.get('board_decision')
                     if report.get('summary'):
                         f.write(f"{report['summary']}\n\n")
+                    elif bd and bd.get('summary'):
+                        f.write(f"{bd['summary']}\n\n")
+                    if bd:
+                        if bd.get('consensus_points'):
+                            f.write("**Consensus:**\n")
+                            for pt in bd['consensus_points']:
+                                f.write(f"- {pt}\n")
+                            f.write("\n")
+                        if bd.get('dissent_points'):
+                            f.write("**Dissent:**\n")
+                            for d in bd['dissent_points']:
+                                f.write(f"- {d}\n")
+                            f.write("\n")
+                        if bd.get('final_priority_actions'):
+                            f.write("**Priority Actions:**\n")
+                            for a in bd['final_priority_actions']:
+                                f.write(f"- {a}\n")
+                            f.write("\n")
+                        if bd.get('contingencies'):
+                            f.write("**Contingencies:**\n")
+                            for c in bd['contingencies']:
+                                f.write(f"- {c}\n")
+                            f.write("\n")
+                        if bd.get('dissenting_opinions'):
+                            f.write("**Dissenting Opinions:**\n")
+                            for d in bd['dissenting_opinions']:
+                                f.write(f"- {d}\n")
+                            f.write("\n")
                     if report.get('agreements'):
                         f.write("**Agreements:**\n")
                         for a in report['agreements']:

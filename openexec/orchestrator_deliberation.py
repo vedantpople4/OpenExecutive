@@ -155,9 +155,11 @@ class DeliberationOrchestrator:
             if round_num >= 3:
                 try:
                     # Prune prior_outputs to only include the most recent round and blind reports
+                    raw_outputs_0 = self.state.deliberation_outputs.get(0, {})
+                    raw_outputs_r = self.state.deliberation_outputs.get(round_num - 1, {})
                     simplified_outputs = {
-                        0: self.state.deliberation_outputs.get(0, {}),
-                        round_num - 1: self.state.deliberation_outputs.get(round_num - 1, {})
+                        0: {k: self._report_to_dict(v) if isinstance(v, AgentReport) else v for k, v in raw_outputs_0.items()},
+                        round_num - 1: {k: self._report_to_dict(v) if isinstance(v, AgentReport) else v for k, v in raw_outputs_r.items()},
                     }
 
                     simplified_prompt = build_deliberation_prompt(
@@ -215,13 +217,14 @@ class DeliberationOrchestrator:
                 system_prompt=SCRIBE_SYSTEM_PROMPT,
                 temperature=0.3,
             )
-            # The scribe returns {"board_summary": "..."}
-            import json
-            data = json.loads(ai_response) if not ai_response.startswith("{") else ai_response
-            # Handle potential string wrapped JSON
-            if isinstance(data, str):
+            # complete_json_with_retry already returns a parsed dict
+            if isinstance(ai_response, dict):
+                data = ai_response
+            elif isinstance(ai_response, str):
                 import json
-                data = json.loads(data)
+                data = json.loads(ai_response)
+            else:
+                data = ai_response
 
             self.state.board_summary = data.get("board_summary", self.state.board_summary)
             print("  [OK] Board summary updated.")
