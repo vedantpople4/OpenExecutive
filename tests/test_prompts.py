@@ -211,18 +211,22 @@ class TestBuildDeliberationPrompt:
         assert "CTO blind analysis" in prompt
         assert "challenges_for_" in prompt.lower()
 
-    def test_round_4_includes_full_history(self):
-        """Round 4 revision receives all prior deliberation rounds as context."""
+    def test_round_4_uses_lean_context(self):
+        """Round 4 uses lean context: Board State Summary + R-1 only (not full history)."""
         prior_outputs = {
+            0: {"ceo": {"title": "Blind CEO"}},
             1: {"ceo": {"summary": "Round 1 CEO"}},
             2: {"cfo": {"summary": "Round 2 CFO"}},
             3: {"cmo": {"summary": "Round 3 CMO"}},
         }
-        prompt = build_deliberation_prompt("cfo", 4, "Test", prior_outputs, {})
+        prompt = build_deliberation_prompt("cfo", 4, "Test", prior_outputs, {},
+                                           board_summary="Consensus: agents aligned on compliance")
         assert "ROUND 4" in prompt
-        assert "Round 1" in prompt
-        assert "Round 2" in prompt
-        assert "Round 3" in prompt
+        assert "Board State Summary" in prompt
+        assert "Consensus: agents aligned on compliance" in prompt
+        assert "Round 3" in prompt  # R-1 included for reactivity
+        assert "Round 1" not in prompt  # Full history excluded
+        assert "Round 2" not in prompt
         assert "revised_recommendations" in prompt.lower()
 
     def test_round_5_includes_only_deliberation_rounds(self):
