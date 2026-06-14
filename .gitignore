@@ -40,3 +40,9 @@ Thumbs.db
 .settings.local.json
 
 decisions/
+
+graphify-out/*
+htmlcov/*
+.claude/*
+
+
