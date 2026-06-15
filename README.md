@@ -19,14 +19,15 @@ A single, structured markdown file that includes:
 You need Python 3.10+ and a running local LLM (e.g., Ollama or LM Studio).
 
 ```bash
-git clone <repo-url>
-cd OpenExec &amp;&amp; pip install -e .
+git clone https://github.com/vedantpople4/OpenExecutive.git
+cd OpenExec
+pip install -e .
 
 # Set up your AI provider (Ollama, LM Studio, etc.)
 openexec setup
 
 # Run your first simulation
-openexec run "Should we expand to Europe?"
+openexec run "Should we hire more Software Engineers or build AI agents to work?"
 ```
 
 This will produce a `board_report.md` with the full board report.
@@ -53,8 +54,6 @@ A few seconds later, OpenExec delivers a complete strategic report, including:
 *   **Dissent:** What they can't agree on, and why.
 *   **Risk:** A scored risk matrix with specific probabilities and impacts.
 *   **Action Items:** What to do, who owns it, and when it's due.
-
-**The result is a document you can take straight to your investors or co-founders.**
 
 ## Core Features
 
@@ -93,17 +92,13 @@ The orchestrator assembles the final `board_report.md`, including the board deci
 | **Runtime** | Python 3.10+ | Core language |
 | **CLI** | Typer (`typer`) | CLI with rich formatting |
 | **LLM Backend** | Ollama / LM Studio | Local AI inference |
-| **Parsers** | `json5` | Relaxed JSON parsing |
-| **Config** | `python-dotenv`, `pyyaml` | Settings and env management |
-| **Dev** | `pytest`, `black`, `ruff` | Testing and linting |
-
 ## Usage
 
 See the full command reference in the CLI for advanced options like counterfactual analysis ("What if our budget was 10x larger?") and weighted agent priorities.
 
 ```bash
 # Run a simulation
-openexec run "Should we buy or lease十八 lease new equipment?"
+openexec run "Should we buy or lease new equipment?"
 
 # Run with assumptions
 openexec run "Should we expand to Europe?" --assume market_growth=2%
