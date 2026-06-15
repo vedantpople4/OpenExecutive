@@ -1,0 +1,11 @@
+{
+  "conversations": [
+    {
+      "id": "a37f58b4e130",
+      "timestamp": "2026-06-14T18:37:39.998606",
+      "prompt": "Should we hire more Software Engineers or build AI agents to work?"
+    }
+  ],
+  "decisions": [],
+  "last_updated": "2026-06-14T18:37:39.999755"
+}
