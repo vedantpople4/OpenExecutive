@@ -66,10 +66,11 @@ class BaseOrchestrator(ABC):
 class Orchestrator(BaseOrchestrator):
     """Manages the multi-agent simulation workflow with Event Sourcing."""
 
-    def __init__(self, registry):
+    def __init__(self, registry, verbose: bool = False):
         self.registry = registry
         self.state: SimulationState | None = None
         self.event_store: EventStore | None = None
+        self.verbose = verbose
 
     def set_event_store(self, event_store: EventStore) -> None:
         """Set the event store for this orchestrator.
@@ -208,7 +209,7 @@ class Orchestrator(BaseOrchestrator):
         ))
 
         print("\n--- Phase 3: DELIBERATION ---")
-        delib = DeliberationOrchestrator(self.state, self.registry)
+        delib = DeliberationOrchestrator(self.state, self.registry, verbose=self.verbose)
 
         for round_num in range(1, 6):
             self._emit_event(DeliberationRoundStarted(

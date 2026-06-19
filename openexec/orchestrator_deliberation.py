@@ -29,11 +29,12 @@ class DeliberationOrchestrator:
     written back into state so run_synthesis() can surface it.
     """
 
-    def __init__(self, state: "SimulationState", registry) -> None:
+    def __init__(self, state: "SimulationState", registry, verbose: bool = False) -> None:
         self.state = state
         self.registry = registry
         self._ai_client = None
         self._ai_clients: Dict[str, Any] = {}
+        self.verbose = verbose
 
     # ------------------------------------------------------------------
     # Public entry point
@@ -58,6 +59,10 @@ class DeliberationOrchestrator:
         total_rounds = 5
         for round_num in range(1, total_rounds + 1):
             print(f"\n[bold]Progress: Round {round_num}/{total_rounds} ({round_num*100//total_rounds}%)[/bold]")
+            if self.verbose:
+                agents_this = PHASE_ROUNDS.get(round_num, ("ceo",)) if round_num != 5 else ("ceo",)
+                print(f"  [dim]agents this round: {agents_this}[/dim]")
+                print(f"  [dim]prior outputs keys: {sorted(self.state.deliberation_outputs.keys())}[/dim]")
             if round_num == 5:
                 self._run_ceo_synthesis()
             else:
@@ -68,6 +73,44 @@ class DeliberationOrchestrator:
             self.state.deliberation_round = round_num
 
         print("\n[green]✓ All deliberation rounds complete[/green]")
+
+    # ------------------------------------------------------------------
+    # Verbose dump helpers
+    # ------------------------------------------------------------------
+
+    def _dump_agent_report(self, agent_name: str, round_num: int, report) -> None:
+        from openexec.ai.prompts import get_agent_system_prompt
+
+        header_color = "green" if agent_name == "ceo" else "cyan"
+        print(f"     [bold {header_color}]── {agent_name.upper()} Round {round_num} ──[/bold {header_color}]")
+        if getattr(report, "summary", None):
+            print(f"     summary : {report.summary}")
+        if getattr(report, "position", None):
+            print(f"     position: {report.position}")
+        rc = getattr(report, "required_changes", None) or []
+        for c in rc:
+            print(f"     req chg : {c}")
+        rks = getattr(report, "risks", None) or []
+        for r in rks:
+            print(f"     risk    : {r}")
+        kf = getattr(report, "key_findings", None) or []
+        for k in kf:
+            print(f"     finding : {k}")
+        cf = getattr(report, "challenges_for", None) or {}
+        for tgt, items in cf.items():
+            for it in items:
+                print(f"     →{tgt}: {it}")
+
+        # Synthesized-board-decision fields (CEO round 5)
+        for attr in ("decision", "consensus_statement", "consensus_points", "final_actions", "contingencies"):
+            val = getattr(report, attr, None)
+            if not val:
+                continue
+            if isinstance(val, str):
+                print(f"     [green]{attr}[/green]: {val}")
+            elif isinstance(val, list):
+                for item in val:
+                    print(f"     [green]{attr}[/green]: {item}")
 
     # ------------------------------------------------------------------
     # Round delegation
@@ -85,6 +128,8 @@ class DeliberationOrchestrator:
             try:
                 report = self._call_agent(agent_name, round_num)
                 round_outputs[agent_name] = report
+                if self.verbose:
+                    self._dump_agent_report(agent_name, round_num, report)
                 # Track challenges directed at this agent
                 if round_num == 1 and agent_name == "ceo":
                     self._consolidate_challenges(1, round_outputs)
@@ -109,6 +154,8 @@ class DeliberationOrchestrator:
             # Persist the board_decision to state so run_synthesis can find it
             self.state.deliberation_outputs[5] = {"ceo": report}
             print("  [OK] Board decision produced — writing to state.")
+            if self.verbose:
+                self._dump_agent_report("ceo", 5, report)
         except Exception as e:
             print(f"  [WARN] CEO synthesis failed: {e}")
 
@@ -146,6 +193,8 @@ class DeliberationOrchestrator:
             )
             agent_report = AgentReport.from_llm_response(agent_name, ai_response)
             agent_report.round_number = round_num
+            if self.verbose:
+                print(f"     [dim]prompt sys {len(system_prompt)}t | usr {len(deliberation_prompt)}t | t=0.7[/dim]")
             return agent_report
 
         except Exception as e:
@@ -228,6 +277,10 @@ class DeliberationOrchestrator:
 
             self.state.board_summary = data.get("board_summary", self.state.board_summary)
             print("  [OK] Board summary updated.")
+            if self.verbose:
+                new_summary = self.state.board_summary or ""
+                print(f"     [magenta]SCRIBE R{round_num}[/magenta]  {len(current_summary)}→{len(new_summary)} chars")
+                print(f"     excerpt: {new_summary[:240]}…")
         except Exception as e:
             print(f"  [WARN] Scribe failed to update summary: {e}")
 

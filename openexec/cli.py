@@ -153,6 +153,11 @@ def run(
         "--no-feedback",
         help="Disable storing in feedback system"
     ),
+    verbose: bool = typer.Option(
+        False,
+        "-v", "--verbose",
+        help="Stream full agent responses, scribe synthesis, and prompt sizes to stdout"
+    ),
     config_override: Optional[Path] = typer.Option(
         None,
         "-c", "--config",
@@ -314,7 +319,7 @@ def run(
             state.data_corpus["memory_context.md"] = memory_context
 
     # Run simulation
-    orchestrator = Orchestrator(registry)
+    orchestrator = Orchestrator(registry, verbose=verbose)
     orchestrator.initialize(state)
 
     try:
