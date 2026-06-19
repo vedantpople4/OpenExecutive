@@ -1,4 +1,4 @@
-# OpenExec — Executive Board Simulation
+# OpenExec - Executive Board Simulation
 
 > Run a strategic meeting in your head, but with real arguments.
 
@@ -42,7 +42,7 @@ openexec run "Should we expand to Europe?"
 
 A few seconds later, OpenExec delivers a complete strategic report, including:
 
-*   **Board Decision:** A clear statement like "The board agrees that immediate survival depends on locking down the MVP scope to target one high-value segment."
+*   **Board Decision:** A clear statement like "The board agrees that immediate survival depends on locking down the MVP scope to target one high - value segment."
 *   **The Debate: A Round-by-Round Transcript:**
     *   **Round 1 (CEO):** Frames the strategic conflicts. *"The immediate decision hinges on whether we prioritize rapid market capture or foundational stability."*
     *   **Round 2 (CFO &amp; CTO):** Respond with data-driven positions. *"We cannot treat systemic scaling issues as abstract liabilities; they must be quantified as fixed CapEx costs."*
