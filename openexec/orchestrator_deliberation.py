@@ -386,17 +386,3 @@ class DeliberationOrchestrator:
                 else:
                     result[rnd][name] = val
         return result
-        """Return a minimal AgentReport when the LLM is unavailable."""
-        summaries = {
-            1: f"{agent_name.upper()} frames board; challenges directed at peers.",
-            2: f"{agent_name.upper()} responds to CEO's questions and cross-references peer.",
-            3: "CMO raises market challenges to CFO and CTO.",
-            4: f"{agent_name.upper()} revises position per challenges received.",
-            5: "CEO synthesizes board decision from all rounds.",
-        }
-        return AgentReport(
-            title=f"{agent_name.upper()} Deliberation — Round {round_num}",
-            summary=summaries.get(round_num, ""),
-            round_number=round_num,
-            alignment_score=0.5,
-        )

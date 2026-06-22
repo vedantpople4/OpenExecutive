@@ -416,7 +416,52 @@ class Orchestrator(BaseOrchestrator):
                         risks.append(f"[{name.upper()}] {risk}")
         return risks
 
-    def _delegate_task(self, agent_name: str, state: SimulationState, phase: str) -> None:
+    def run_team_deliberation(self) -> None:
+        """Phase 2.5: Hierarchical Team Analysis.
+        Sub-agents analyze prompt, then CXOs synthesize team-informed positions.
+        """
+        if not self.state:
+            raise ValueError("Simulation not initialized.")
+
+        from openexec.agents import TEAM_STRUCTURE
+
+        print("\n--- Phase 2.5: TEAM DELIBERATION ---")
+
+        for cxo_name, team_members in TEAM_STRUCTURE.items():
+            print(f"Processing {cxo_name.upper()} team...")
+            team_reports = {}
+
+            # 1. Sub-agent Analysis
+            for member_name in team_members:
+                print(f"  -> {member_name} analyzing...")
+                member = self.registry.get(member_name)
+                if member:
+                    report = member.analyze(self.state)
+                    team_reports[member_name] = report
+                    # Store as team_member output for audit/reporting
+                    self.state.agent_outputs[f"team_{member_name}"] = report
+
+            # 2. CXO Synthesis
+            # We call the CXO again, but providing the team reports as additional context
+            # For now, we'll implement this by passing team_reports into a custom synthesize method
+            # if it exists, otherwise we fallback to standard analyze.
+            cxo_agent = self.registry.get(cxo_name)
+            if cxo_agent:
+                print(f"  -> {cxo_name.upper()} synthesizing team position...")
+                # We use analyze but we have to ensure the CXO knows about the team reports.
+                # A cleaner way is adding team_reports to state temporarily or using a new method.
+                if hasattr(cxo_agent, "synthesize_team_position"):
+                    synthesized_report = cxo_agent.synthesize_team_position(team_reports, self.state)
+                else:
+                    # Fallback: use standard analyze and let prompts handle it if updated
+                    synthesized_report = cxo_agent.analyze(self.state)
+
+                # Update the blind report with the team-informed one
+                self.state.agent_outputs[cxo_name] = synthesized_report
+
+        print("\n--- Team Deliberation Complete. CXO positions updated. ---")
+
+    def _delegate_task(self, agent_name: str, state, phase: str) -> None:
         """Helper to delegate a task."""
         agent = self.registry.get(agent_name)
         if not agent:
@@ -443,6 +488,8 @@ class Orchestrator(BaseOrchestrator):
         try:
             self.run_inception()
             self.run_analysis()
+            if getattr(self, 'teams_enabled', False):
+                self.run_team_deliberation()
             self.run_review()
             final_results = self.run_synthesis()
 

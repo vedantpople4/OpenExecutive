@@ -125,6 +125,8 @@ def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
     for agent_name, report in agent_reports.items():
         recommendations = report.get('recommendations', [])
         for rec in recommendations:
+            if not isinstance(rec, str):
+                continue
             # Simple heuristic: look for actionable language
             action_keywords = ['implement', 'establish', 'create', 'develop', 'build', 'allocate', 'prioritize', 'focus', 'dedicate']
             if any(keyword in rec.lower() for keyword in action_keywords):

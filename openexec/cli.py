@@ -153,6 +153,11 @@ def run(
         "--no-feedback",
         help="Disable storing in feedback system"
     ),
+    teams: bool = typer.Option(
+        False,
+        "--teams",
+        help="Enable hierarchical team deliberation (sub-agents report to CXOs)"
+    ),
     verbose: bool = typer.Option(
         False,
         "-v", "--verbose",
@@ -320,6 +325,7 @@ def run(
 
     # Run simulation
     orchestrator = Orchestrator(registry, verbose=verbose)
+    orchestrator.teams_enabled = teams
     orchestrator.initialize(state)
 
     try:

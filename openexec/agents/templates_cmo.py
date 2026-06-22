@@ -82,6 +82,32 @@ class CNOTemplate:
         )
         return report
 
+    def synthesize_team_position(self, team_reports: Dict[str, AgentReport], state: 'SimulationState') -> AgentReport:
+        """Synthesize reports from the CMO's team into a consolidated market position."""
+        print("CMO Synthesizing: Consolidating input from Growth Marketer, Content Strategist, and SEO Specialist...")
+
+        team_context = "\n\n## INTERNAL TEAM REPORTS\n"
+        for member_name, report in team_reports.items():
+            team_context += f"\n### {member_name.upper()} Report\n- Summary: {report.summary}\n- Findings: {report.key_findings}\n"
+
+        enhanced_prompt = f"{state.core_prompt}\n\n{team_context}\n\n" \
+                         "Review the reports from your specialized marketing team. Synthesize their findings " \
+                         "into a single, cohesive market position for the board."
+
+        system_prompt = self.system_prompt + "\n\nMODALITY: You are now synthesizing team input. " \
+                                           "Ensure the final output reflects the team's market research."
+
+        try:
+            response_data = self.ai_client.complete_json_with_retry(
+                prompt=enhanced_prompt,
+                system_prompt=system_prompt,
+                temperature=0.7
+            )
+            return AgentReport.from_llm_response("cmo", response_data)
+        except Exception as e:
+            print(f"CMO Synthesis failed: {e}. Falling back to standard analysis.")
+            return self.analyze(state)
+
 
     def review_others(self, reports: dict[str, AgentReport]) -> None:
         """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_review()."""
