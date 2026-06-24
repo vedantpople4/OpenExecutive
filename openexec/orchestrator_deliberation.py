@@ -1,7 +1,6 @@
 """Deliberation orchestration — multi-round board meeting workflow."""
 
 from typing import Any, Dict
-from tqdm import tqdm
 
 from openexec.agents.interface import AgentReport
 
@@ -335,18 +334,7 @@ class DeliberationOrchestrator:
     # ------------------------------------------------------------------
 
     def _report_to_dict(self, report: AgentReport) -> Dict[str, Any]:
-        return {
-            ** {
-                "title": report.title,
-                "summary": report.summary,
-                "key_findings": report.key_findings,
-                "recommendations": report.recommendations,
-                "risks": report.risks,
-                "alignment_score": report.alignment_score,
-                "round_number": report.round_number,
-            },
-            ** report.get_role_specific_fields(),
-        }
+        return report.to_dict()
 
     # ------------------------------------------------------------------
     # Hardcoded fallback report

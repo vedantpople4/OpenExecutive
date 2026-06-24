@@ -256,7 +256,7 @@ class TestReportToDict:
 
     def test_includes_core_fields(self):
         orch = DeliberationOrchestrator(_make_state(), Mock())
-        report = _make_report(
+        report = AgentReport(
             title="T", summary="S", key_findings=["f"],
             recommendations=["r"], risks=["rk"],
             alignment_score=0.8, round_number=3,
@@ -268,8 +268,10 @@ class TestReportToDict:
         assert d["alignment_score"] == 0.8
 
     def test_includes_role_specific(self):
-        report = _make_report()
-        report.get_role_specific_fields.return_value = {"capex_vs_opex": "CapEx"}
+        report = AgentReport(
+            title="T", summary="S", capex_vs_opex="CapEx",
+            key_findings=[], recommendations=[], risks=[],
+        )
         orch = DeliberationOrchestrator(_make_state(), Mock())
         d = orch._report_to_dict(report)
         assert d["capex_vs_opex"] == "CapEx"

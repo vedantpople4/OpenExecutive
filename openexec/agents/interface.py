@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
@@ -178,3 +177,16 @@ class AgentReport:
             "board_decision": self.board_decision,
         }
         return {k: v for k, v in role_fields.items() if v is not None and v != []}
+
+    def to_dict(self) -> dict[str, Any]:
+        """Return a JSON-serialisable dict representation."""
+        return {
+            "title": self.title,
+            "summary": self.summary,
+            "key_findings": self.key_findings,
+            "recommendations": self.recommendations,
+            "risks": self.risks,
+            "alignment_score": self.alignment_score,
+            "round_number": self.round_number,
+            **self.get_role_specific_fields(),
+        }

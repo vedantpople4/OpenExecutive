@@ -9,8 +9,7 @@ from openexec.events import (
 )
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 import uuid
 
 
@@ -359,16 +358,7 @@ class Orchestrator(BaseOrchestrator):
 
     def _report_to_dict(self, report: AgentReport) -> Dict[str, Any]:
         """Convert an AgentReport to a JSON-serialisable dict."""
-        return {
-            "title": report.title,
-            "summary": report.summary,
-            "key_findings": report.key_findings,
-            "recommendations": report.recommendations,
-            "risks": report.risks,
-            "alignment_score": report.alignment_score,
-            "round_number": report.round_number,
-            ** report.get_role_specific_fields(),
-        }
+        return report.to_dict()
 
     def _calculate_success_rate(self, accessed: set, failed: set) -> float:
         """Calculate data access success rate."""

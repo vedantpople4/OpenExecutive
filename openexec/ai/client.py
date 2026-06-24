@@ -4,17 +4,8 @@ import re
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-_CORRECTION_SYSTEM = (
-    "You are a JSON correction assistant. Your output must be ONLY valid JSON "
-    "— no markdown, no explanation, no commentary."
-)
+from openexec.ai.prompts_constants import _CORRECTION_SYSTEM, _CORRECTION_USER
 
-_CORRECTION_USER = (
-    "The following text was supposed to be valid JSON but had errors. "
-    "Fix all syntax errors and return ONLY the corrected JSON object.\n\n"
-    "Broken input:\n{broken_text}\n\n"
-    "Corrected JSON:"
-)
 
 class AIClient:
     """Wrapper for LLM API calls using an abstract provider pattern.
