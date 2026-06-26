@@ -1,4 +1,3 @@
-from openexec.ai.abstract_provider import BaseProvider
 from openexec.ai.json_utils import JSONPipeline
 from openexec.ai.prompts_constants import _CORRECTION_SYSTEM, _CORRECTION_USER
 import json
@@ -14,7 +13,7 @@ class AIClient:
     calls to a configured BaseProvider instance.
     """
 
-    def __init__(self, provider: BaseProvider | None = None, settings_path: str | None = None):
+    def __init__(self, provider: Any | None = None, settings_path: str | None = None):
         if provider is not None:
             self.provider = provider
         else:

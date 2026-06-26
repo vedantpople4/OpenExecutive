@@ -7,7 +7,6 @@ from openexec.events import (
     DeliberationRoundCompleted, DeliberationCompleted, SynthesisStarted,
     SynthesisCompleted, ErrorOccurred
 )
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Dict
 import uuid
@@ -33,36 +32,7 @@ class SimulationState:
     agent_weights: Dict[str, float] = field(default_factory=dict)  # agent_name -> weight (0.0-1.0)  # assumption_key -> assumption_value
 
 
-class BaseOrchestrator(ABC):
-    """Abstract base for simulation orchestrators."""
-
-    @abstractmethod
-    def initialize(self, state: SimulationState) -> None:
-        """Initialize the simulation with briefing data."""
-        pass
-
-    @abstractmethod
-    def run_inception(self) -> None:
-        """Run Phase 1: Inception - receive prompt and delegate tasks."""
-        pass
-
-    @abstractmethod
-    def run_analysis(self) -> None:
-        """Run Phase 2: Individual Research - collect expert reports."""
-        pass
-
-    @abstractmethod
-    def run_review(self) -> None:
-        """Run Phase 3: Cross-Functional Review - manage feedback loops."""
-        pass
-
-    @abstractmethod
-    def run_synthesis(self) -> Dict[str, Any]:
-        """Run Phase 4: Synthesis - draft final document."""
-        pass
-
-
-class Orchestrator(BaseOrchestrator):
+class Orchestrator:
     """Manages the multi-agent simulation workflow with Event Sourcing."""
 
     def __init__(self, registry, verbose: bool = False):

@@ -1,4 +1,3 @@
-from openexec.ai.abstract_provider import BaseProvider
 from openexec.ai.json_utils import JSONPipeline
 from openexec.ai.prompts_constants import _CORRECTION_SYSTEM, _CORRECTION_USER
 import requests
@@ -7,13 +6,12 @@ import re
 from typing import Any, Dict, Optional
 
 
-class OllamaProvider(BaseProvider):
+class OllamaProvider:
     """Provider for Ollama-compatible LLMs (e.g., Ollama with local models like llama3, gemma, etc.).
 
     This provider uses the Ollama API at the local machine (default: http://localhost:11434)."""
 
     def __init__(self, ai_config: Dict[str, Any]):
-        super().__init__(ai_config)
         self.ai_config = ai_config
         self.base_url = ai_config.get("base_url", "http://localhost:11434")
         self.base_url = self.base_url.rstrip('/')
