@@ -40,38 +40,56 @@ class DeliberationOrchestrator:
     # ------------------------------------------------------------------
 
     def run_deliberation(self) -> None:
-        """Run all 5 deliberation rounds and store results in state."""
+        """Run dynamic deliberation rounds and store results in state."""
         from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
         from openexec.ai.prompts import SCRIBE_SYSTEM_PROMPT
 
         self._init_ai_clients()
 
         # The Phase-2 blind reports are the basis for round-1 framing.
-        # Store them under round-key 0 so all round builders can access them.
         self.state.deliberation_outputs[0] = {
             name: self._report_to_dict(report)
             for name, report in self.state.agent_outputs.items()
             if isinstance(report, AgentReport)
         }
 
-        # Simple progress counter without complex bar formatting
-        total_rounds = 5
-        for round_num in range(1, total_rounds + 1):
-            print(f"\n[bold]Progress: Round {round_num}/{total_rounds} ({round_num*100//total_rounds}%)[/bold]")
-            if self.verbose:
-                agents_this = PHASE_ROUNDS.get(round_num, ("ceo",)) if round_num != 5 else ("ceo",)
-                print(f"  [dim]agents this round: {agents_this}[/dim]")
-                print(f"  [dim]prior outputs keys: {sorted(self.state.deliberation_outputs.keys())}[/dim]")
-            if round_num == 5:
-                self._run_ceo_synthesis()
-            else:
-                self._run_delegation_round(round_num)
-                # Update board summary after every delegation round except round 1 (which is just framing)
-                if round_num >= 2:
-                    self._update_board_summary(round_num)
-            self.state.deliberation_round = round_num
+        round_num = 1
+        max_rounds = 10
+        converged = False
 
-        print("\n[green]✓ All deliberation rounds complete[/green]")
+        # Minimum round before convergence check: 2 when only 2 agents active, else 3
+        active = getattr(self.state, 'active_agents', None) or []
+        min_convergence_round = 2 if len([a for a in active if a != "ceo"]) <= 1 else 3
+
+        while round_num <= max_rounds and not converged:
+            print(f"\n[bold]Progress: Round {round_num}/{max_rounds}[/bold]")
+
+            if round_num == 1:
+                self._run_delegation_round(round_num)
+            elif round_num >= min_convergence_round and self._check_convergence(round_num - 1):
+                # Converged early — run CEO synthesis before exiting
+                print("  [Converged after round {}]".format(round_num - 1))
+                self._run_ceo_synthesis()
+                converged = True
+                break
+            elif round_num >= 5:
+                # Always attempt CEO synthesis by round 5
+                self._run_ceo_synthesis()
+                converged = True
+                break
+            else:
+                had_participants = self._run_delegation_round(round_num)
+                if had_participants:
+                    self._update_board_summary(round_num)
+
+            self.state.deliberation_round = round_num
+            round_num += 1
+
+        if round_num > max_rounds:
+            print("\n[yellow]Max rounds reached without explicit convergence. Forcing synthesis.[/yellow]")
+            self._run_ceo_synthesis()
+
+        print("\n[green]✓ Deliberation rounds complete[/green]")
 
     # ------------------------------------------------------------------
     # Verbose dump helpers
@@ -115,14 +133,56 @@ class DeliberationOrchestrator:
     # Round delegation
     # ------------------------------------------------------------------
 
-    def _run_delegation_round(self, round_num: int) -> None:
-        """Call each agent listed in PHASE_ROUNDS[round_num] for this round."""
+    def _run_delegation_round(self, round_num: int) -> bool:
+        """Call agents for this round, dynamically selected based on conflicts and active_agents.
+
+        Returns True if at least one agent participated, False if the round was skipped entirely
+        (e.g. when filtering reduces the participant list to zero for targeted simulations).
+        """
         from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
 
-        agents = PHASE_ROUNDS.get(round_num, ())
+        # 1. Base agents for the round from fixed layout
+        all_agents_this_round = PHASE_ROUNDS.get(round_num, ())
+
+        # 2. Limit by active_agents (targeted simulation)
+        agents_to_invite = list(all_agents_this_round)
+        if hasattr(self.state, 'active_agents') and self.state.active_agents:
+            agents_to_invite = [a for a in all_agents_this_round if a in self.state.active_agents]
+
+        # 3. Early-exit when no active agents are scheduled for this round
+        if not agents_to_invite:
+            print(f"  [Skipping round {round_num} — no active agents scheduled]")
+            return False
+
+        # 4. Dynamic Pruning (Skip agents if no conflicts/required changes involve them in previous round)
+        if round_num >= 2:
+            prior_round = self.state.deliberation_outputs.get(round_num - 1, {})
+            involved_agents = set()
+
+            # Check conflicts/required_changes in all reports from last round
+            for report in prior_round.values():
+                if isinstance(report, AgentReport):
+                    # Mentioned in conflicts?
+                    for conflict in report.conflicts:
+                        for agent in ["cfo", "cto", "cmo"]:
+                            if agent.upper() in conflict.upper():
+                                involved_agents.add(agent)
+                    # Mentioned in required changes?
+                    for change in report.required_changes:
+                        for agent in ["cfo", "cto", "cmo"]:
+                            if agent.upper() in change.upper():
+                                involved_agents.add(agent)
+
+            # If a round typically has agents but none are "involved", keep the default to avoid empty rounds
+            if involved_agents:
+                agents_to_invite = [a for a in agents_to_invite if a in involved_agents or a == "ceo"]
+            else:
+                # Fallback to requested active agents for this round if no specific conflicts found
+                pass
+
         round_outputs: Dict[str, AgentReport] = {}
 
-        for agent_name in agents:
+        for agent_name in agents_to_invite:
             print(f"  -> {agent_name.upper()} speaking...")
             try:
                 report = self._call_agent(agent_name, round_num)
@@ -136,6 +196,7 @@ class DeliberationOrchestrator:
                 print(f"  [WARN] {agent_name.upper()} deliberation failed: {e}")
 
         self.state.deliberation_outputs[round_num] = round_outputs
+        return bool(round_outputs)
 
     # ------------------------------------------------------------------
     # CEO synthesis
@@ -173,6 +234,8 @@ class DeliberationOrchestrator:
 
         client = self._get_ai_client(agent_name)
 
+        active_agents = getattr(self.state, 'active_agents', None) or []
+
         # Attempt 1: Lean Context (Scribe Summary + R-1 + R0)
         try:
             deliberation_prompt = build_deliberation_prompt(
@@ -182,6 +245,7 @@ class DeliberationOrchestrator:
                 prior_outputs=self._reports_to_dicts(self.state.deliberation_outputs),
                 challenges=self.state.challenges,
                 board_summary=self.state.board_summary,
+                active_agents=active_agents,
             )
             system_prompt = self._get_system_prompt(agent_name)
 
@@ -217,6 +281,7 @@ class DeliberationOrchestrator:
                         prior_outputs=simplified_outputs,
                         challenges=self.state.challenges,
                         board_summary=self.state.board_summary,
+                        active_agents=active_agents,
                     )
 
                     ai_response = client.complete_json_with_retry(
@@ -336,6 +401,40 @@ class DeliberationOrchestrator:
     def _report_to_dict(self, report: AgentReport) -> Dict[str, Any]:
         return report.to_dict()
 
+    def _check_convergence(self, round_num: int) -> bool:
+        """Check if the deliberation has converged.
+
+        Convergence is reached if:
+        1. Round is >= min_convergence_round (2 for two-agent sims, 3 otherwise).
+        2. The CEO explicitly signals convergence in their latest report.
+        3. Alignment scores are consistently high (> 0.8) and conflicts are empty.
+        """
+        active = getattr(self.state, 'active_agents', None) or []
+        min_round = 2 if len([a for a in active if a != "ceo"]) <= 1 else 3
+        if round_num < min_round:
+            return False
+
+        current_reports = self.state.deliberation_outputs.get(round_num, {})
+        if not current_reports:
+            return False
+
+        # 1. CEO explicit signal
+        ceo_report = current_reports.get("ceo")
+        if ceo_report and hasattr(ceo_report, "board_decision") and ceo_report.board_decision:
+            decision = ceo_report.board_decision
+            if decision.get("status") == "converged" or decision.get("final_decision"):
+                return True
+
+        # 2. Stability / Alignment check
+        reports = [r for r in current_reports.values() if isinstance(r, AgentReport)]
+        if not reports:
+            return False
+
+        all_aligned = all(r.alignment_score >= 0.8 for r in reports)
+        no_conflicts = all(not r.conflicts for r in reports)
+
+        return all_aligned and no_conflicts
+
     # ------------------------------------------------------------------
     # Hardcoded fallback report
     # ------------------------------------------------------------------
@@ -354,6 +453,7 @@ class DeliberationOrchestrator:
             summary=summaries.get(round_num, ""),
             round_number=round_num,
             alignment_score=0.5,
+            is_fallback=True,
         )
 
     # ------------------------------------------------------------------

@@ -1,0 +1,1 @@
+Partner requires multi-region failover and <50ms p99 latency for API endpoints.

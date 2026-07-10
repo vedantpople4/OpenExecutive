@@ -57,7 +57,7 @@ def register_default_agents() -> None:
     from .templates_ceo import CEOTemplate
     from .templates_cfo import CFOTemplate
     from .templates_cto import CTOTemplate
-    from .templates_cmo import CNOTemplate
+    from .templates_cmo import CMOTemplate
     from .templates_teams import (
         CFOAnalystTemplate, CFOBudgetPlannerTemplate, CFORiskAnalystTemplate,
         CTOEngineeringLeadTemplate, CTOArchitectTemplate, CTOSRETemplate,
@@ -68,7 +68,7 @@ def register_default_agents() -> None:
     registry.register(CEOTemplate, "ceo")
     registry.register(CFOTemplate, "cfo")
     registry.register(CTOTemplate, "cto")
-    registry.register(CNOTemplate, "cmo")
+    registry.register(CMOTemplate, "cmo")
 
     # Register sub-roles
     registry.register(CFOAnalystTemplate, "financial_analyst")

@@ -79,6 +79,12 @@ def get_default_config() -> Dict[str, Any]:
         },
         "feedback": {
             "store_automatically": True
+        },
+        "research": {
+            "enabled": False,
+            "web_search_weight": 0.5,
+            "knowledge_base_weight": 0.5,
+            "max_context_chars": 3000
         }
     }
 
@@ -153,10 +159,25 @@ def run(
         "--no-feedback",
         help="Disable storing in feedback system"
     ),
+    agents: Optional[str] = typer.Option(
+        None,
+        "--agents",
+        help="Comma-separated list of agents to include (e.g., 'ceo,cmo'). defaults to all."
+    ),
     teams: bool = typer.Option(
         False,
         "--teams",
         help="Enable hierarchical team deliberation (sub-agents report to CXOs)"
+    ),
+    research: bool = typer.Option(
+        False,
+        "--research",
+        help="Ground every agent's analysis with live web search + knowledge base retrieval"
+    ),
+    research_mix: Optional[str] = typer.Option(
+        None,
+        "--research-mix",
+        help="Weight ratio between web search and knowledge base (format: web=0.7,kb=0.3)"
     ),
     verbose: bool = typer.Option(
         False,
@@ -269,6 +290,14 @@ def run(
         status="initialized"
     )
 
+    # Set active agents if provided
+    if agents:
+        state.active_agents = [a.strip().lower() for a in agents.split(",")]
+        console.print(f"[cyan]🎯 Targeted simulation: {', '.join(state.active_agents)}[/cyan]")
+    else:
+        # Default to all registered agents
+        state.active_agents = list(registry.list_names())
+
     # Parse assumptions
     if assume:
         for item in assume:
@@ -300,6 +329,36 @@ def run(
                     console.print(f"[red]Error: Invalid weight value: {item}[/red]")
                     sys.exit(1)
         console.print("[cyan]⚖️ Multi-objective optimization enabled[/cyan]")
+
+    # Configure research mix (live web search vs. knowledge base)
+    research_cfg = dict(cfg.get("research", {}))
+    if research:
+        research_cfg["enabled"] = True
+    if research_mix:
+        for item in research_mix.split(","):
+            if "=" not in item:
+                continue
+            key, value = item.split("=", 1)
+            key = key.strip().lower()
+            try:
+                weight_val = float(value.strip())
+            except ValueError:
+                console.print(f"[red]Error: Invalid research-mix value: {item}[/red]")
+                sys.exit(1)
+            if key == "web":
+                research_cfg["web_search_weight"] = weight_val
+            elif key == "kb":
+                research_cfg["knowledge_base_weight"] = weight_val
+            else:
+                console.print(f"[red]Error: Invalid research-mix key '{key}'. Use 'web' or 'kb'.[/red]")
+                sys.exit(1)
+        research_cfg["enabled"] = True
+    state.research_cfg = research_cfg
+    if research_cfg.get("enabled"):
+        console.print(
+            f"[cyan]🔎 Research grounding enabled — web:{research_cfg.get('web_search_weight', 0.5)} "
+            f"/ kb:{research_cfg.get('knowledge_base_weight', 0.5)}[/cyan]"
+        )
 
     # Load data corpus
     try:
@@ -400,31 +459,10 @@ def setup(
             "model": "llama3",
             "temperature": 0.7,
             "max_tokens": 4096,
-            "provider": "openai_compatible",
             "timeout": 120
         },
         "agents": {
             "enabled": ["ceo", "cfo", "cto", "cmo"],
-            "analysis_depth": "medium",
-            "confidence_threshold": 0.6,
-            "max_interactions": 10
-        },
-        "output": {
-            "format": "markdown",
-            "include_sections": [
-                "executive_summary",
-                "individual_reports",
-                "synthesized_recommendations",
-                "risk_assessment"
-            ]
-        },
-        "simulation": {
-            "phases": [
-                {"name": "inception", "weight": 0.1},
-                {"name": "analysis", "weight": 0.5},
-                {"name": "review", "weight": 0.25},
-                {"name": "synthesis", "weight": 0.1}
-            ]
         }
     }
 

@@ -29,7 +29,14 @@ class SimulationState:
     deliberation_outputs: Dict[int, Dict[str, Any]] = field(default_factory=dict)
     board_summary: str = ""
     assumptions: Dict[str, str] = field(default_factory=dict)
-    agent_weights: Dict[str, float] = field(default_factory=dict)  # agent_name -> weight (0.0-1.0)  # assumption_key -> assumption_value
+    agent_weights: Dict[str, float] = field(default_factory=dict)  # agent_name -> weight (0.0-1.0)
+    active_agents: list[str] = field(default_factory=list)  # Subset of agents to include in simulation
+    research_cfg: Dict[str, Any] = field(default_factory=lambda: {
+        "enabled": False,
+        "web_search_weight": 0.5,
+        "knowledge_base_weight": 0.5,
+        "max_context_chars": 3000,
+    })  # Research mix: live web search vs. knowledge base, see openexec.research
 
 
 class Orchestrator:
@@ -126,7 +133,11 @@ class Orchestrator:
         ))
 
         print("\n--- Phase 2: ANALYSIS ---")
+        # Filter agents by active_agents list
         agent_names = self.registry.list_names()
+        if self.state.active_agents:
+            agent_names = [n for n in agent_names if n in self.state.active_agents]
+
         reports: Dict[str, Any] = {}
 
         for name in agent_names:
@@ -388,6 +399,10 @@ class Orchestrator:
         print("\n--- Phase 2.5: TEAM DELIBERATION ---")
 
         for cxo_name, team_members in TEAM_STRUCTURE.items():
+            # Skip if CXO is not active
+            if self.state.active_agents and cxo_name not in self.state.active_agents:
+                continue
+
             print(f"Processing {cxo_name.upper()} team...")
             team_reports = {}
 
@@ -402,21 +417,14 @@ class Orchestrator:
                     self.state.agent_outputs[f"team_{member_name}"] = report
 
             # 2. CXO Synthesis
-            # We call the CXO again, but providing the team reports as additional context
-            # For now, we'll implement this by passing team_reports into a custom synthesize method
-            # if it exists, otherwise we fallback to standard analyze.
             cxo_agent = self.registry.get(cxo_name)
             if cxo_agent:
                 print(f"  -> {cxo_name.upper()} synthesizing team position...")
-                # We use analyze but we have to ensure the CXO knows about the team reports.
-                # A cleaner way is adding team_reports to state temporarily or using a new method.
                 if hasattr(cxo_agent, "synthesize_team_position"):
                     synthesized_report = cxo_agent.synthesize_team_position(team_reports, self.state)
                 else:
-                    # Fallback: use standard analyze and let prompts handle it if updated
                     synthesized_report = cxo_agent.analyze(self.state)
 
-                # Update the blind report with the team-informed one
                 self.state.agent_outputs[cxo_name] = synthesized_report
 
         print("\n--- Team Deliberation Complete. CXO positions updated. ---")

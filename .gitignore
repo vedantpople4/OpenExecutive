@@ -44,5 +44,6 @@ decisions/
 graphify-out/*
 htmlcov/*
 .claude/*
+memory/*
 
 

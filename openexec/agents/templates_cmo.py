@@ -2,7 +2,7 @@ from .interface import AgentReport
 from typing import Any
 
 
-class CNOTemplate:
+class CMOTemplate:
     """Concrete CMO implementation focusing on Market Reception and Go-to-Market (How to sell it?)."""
 
     name = "cmo"
@@ -33,7 +33,8 @@ class CNOTemplate:
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
                     agent_name="cmo",
-                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None
+                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None,
+                    research_cfg=getattr(state, 'research_cfg', None),
                 )
 
                 response_data = self.ai_client.complete_json_with_retry(

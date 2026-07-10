@@ -27,23 +27,17 @@ def sanitize_prompt(prompt: str, max_length: int = 10000) -> str:
     prompt = prompt.replace('\x00', '')
 
     # Remove common injection patterns (case-insensitive)
-    injection_patterns = [
-        r'\bignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?|directions?)\b',
-        r'\bforget\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?)\b',
-        r'\bdisregard\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?)\b',
-        r'\bnew\s+instructions?:',
-        r'\boverride\s+(your\s+)?(system|default|original)\s+(instructions?|behavior|prompt)\b',
-        r'<\s*script\b[^>]*>.*?<\s*/\s*script\s*>',  # Full <script>...</script> tags
-        r'<\s*script\b[^>]*>',  # Opening <script> tag
-        r'javascript:',
-        r'on\w+\s*=',  # Event handlers like onclick=, onerror=
-    ]
-
-    for pattern in injection_patterns:
-        if 'script' in pattern.lower():
-            prompt = re.sub(pattern, '[FILTERED]', prompt, flags=re.IGNORECASE | re.DOTALL)
-        else:
-            prompt = re.sub(pattern, '[FILTERED]', prompt, flags=re.IGNORECASE)
+    injection_pattern = re.compile(
+        r'(\b(ignore|forget|disregard)\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?|directions?)\b)|'
+        r'(\bnew\s+instructions?:)|'
+        r'(\boverride\s+(your\s+)?(system|default|original)\s+(instructions?|behavior|prompt)\b)|'
+        r'(<\s*script\b[^>]*>.*?<\s*/\s*script\s*>)|'
+        r'(<\s*script\b[^>]*>)|'
+        r'(javascript:)|'
+        r'(on\w+\s*=)',
+        re.IGNORECASE | re.DOTALL
+    )
+    prompt = injection_pattern.sub('[FILTERED]', prompt)
 
     # Escape potential markdown/image links that could be used for context injection
     prompt = re.sub(r'!\[.*?\]\(.*?\)', '[Image removed]', prompt)
@@ -100,18 +94,8 @@ def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
             task = rec[end_bracket+2:].strip()
 
             # Determine priority based on owner
-            priority_map = {
-                'CEO': 'HIGH',
-                'CFO': 'HIGH',
-                'CTO': 'MEDIUM',
-                'CMO': 'MEDIUM'
-            }
-
-            priority = 'MEDIUM'  # default
-            for cxo, prio in priority_map.items():
-                if cxo in owner.upper():
-                    priority = prio
-                    break
+            priority_map = {'CEO': 'HIGH', 'CFO': 'HIGH', 'CTO': 'MEDIUM', 'CMO': 'MEDIUM'}
+            priority = next((prio for cxo, prio in priority_map.items() if cxo in owner.upper()), 'MEDIUM')
 
             action_items.append({
                 'priority': priority,

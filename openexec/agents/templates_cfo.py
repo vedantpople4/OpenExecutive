@@ -33,7 +33,8 @@ class CFOTemplate:
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
                     agent_name="cfo",
-                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None
+                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None,
+                    research_cfg=getattr(state, 'research_cfg', None),
                 )
 
                 response_data = self.ai_client.complete_json_with_retry(
