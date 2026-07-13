@@ -97,6 +97,39 @@ def save_config(config: Dict[str, Any]):
     console.print(f"[green]✓ Configuration saved to {CONFIG_FILE}[/green]")
 
 
+def set_nested_config(cfg: Dict[str, Any], dotted_key: str, raw_value: str) -> Any:
+    """Set a (possibly dotted, e.g. 'ai.temperature') key in cfg, creating
+    intermediate dicts as needed. Returns the coerced value that was stored.
+
+    Values are parsed as JSON first (so 'true'/'false'/numbers round-trip as
+    real types, matching get_default_config()'s nested bool/int/float values)
+    and fall back to the raw string if that fails.
+    """
+    try:
+        value: Any = json.loads(raw_value)
+    except json.JSONDecodeError:
+        value = raw_value
+
+    parts = dotted_key.split(".")
+    target = cfg
+    for part in parts[:-1]:
+        if not isinstance(target.get(part), dict):
+            target[part] = {}
+        target = target[part]
+    target[parts[-1]] = value
+    return value
+
+
+def get_nested_config(cfg: Dict[str, Any], dotted_key: str) -> Any:
+    """Get a (possibly dotted) key from cfg. Raises KeyError if any segment is missing."""
+    target: Any = cfg
+    for part in dotted_key.split("."):
+        if not isinstance(target, dict) or part not in target:
+            raise KeyError(dotted_key)
+        target = target[part]
+    return target
+
+
 def detect_export_format(output_path: str) -> Optional[str]:
     """Auto-detect export format from output file extension."""
     ext = Path(output_path).suffix.lower()
@@ -213,7 +246,54 @@ def run(
 
         openexec run "..." --data-dir ./company_data
     """
+    _run_simulation(
+        prompt=prompt,
+        output=output,
+        summary=summary,
+        export=export,
+        data_dir=data_dir,
+        assume=assume,
+        weight=weight,
+        no_memory=no_memory,
+        no_feedback=no_feedback,
+        agents=agents,
+        teams=teams,
+        research=research,
+        research_mix=research_mix,
+        seed=seed,
+        temperature=temperature,
+        verbose=verbose,
+        config_override=config_override,
+    )
 
+
+def _run_simulation(
+    prompt: Optional[str],
+    output: Optional[str] = None,
+    summary: Optional[str] = None,
+    export: Optional[str] = None,
+    data_dir: str = "data",
+    assume: Optional[List[str]] = None,
+    weight: Optional[List[str]] = None,
+    no_memory: bool = False,
+    no_feedback: bool = False,
+    agents: Optional[str] = None,
+    teams: bool = False,
+    research: bool = False,
+    research_mix: Optional[str] = None,
+    seed: Optional[int] = None,
+    temperature: Optional[float] = None,
+    verbose: bool = False,
+    config_override: Optional[Path] = None,
+):
+    """
+    Core simulation logic behind the `run` command.
+
+    Plain Python defaults (not typer.Option) so it can be called directly —
+    e.g. from `quick`/`batch` — without going through Typer's CLI parsing.
+    Calling `run()` itself directly would bind every unspecified parameter to
+    its raw typer.Option/ArgumentInfo object instead of a real default.
+    """
     # Handle stdin
     if prompt == "-":
         console.print("[cyan]📥 Reading prompt from stdin...[/cyan]")
@@ -566,21 +646,72 @@ def discuss(
     """
     Start interactive discussion mode.
 
-    Load a previous decision and ask follow-up questions,
-    challenge assumptions, or explore scenarios.
+    Load a previous decision and ask follow-up questions against its
+    stored context (prompt, agent recommendations, risks).
     """
-    console.print("[cyan]Interactive Discussion Mode[/cyan]")
     if decision_id:
-        console.print(f"Loading: {decision_id}")
+        conv = memory_system.get_conversation(decision_id)
+        if not conv:
+            console.print(f"[red]Error:[/red] Decision not found: {decision_id}")
+            raise typer.Exit(1)
     else:
-        # Get most recent decision
         history = memory_system.get_conversation_history(limit=1)
-        if history:
-            console.print(f"Latest: {history[0]['timestamp'][:10]} - {history[0]['prompt'][:60]}...")
-        else:
-            console.print("[yellow]No previous decisions found.[/yellow]")
-    console.print("\n[yellow]Full interactive Q&A would be implemented here.[/yellow]")
-    console.print("Features: ask follow-ups, challenge agents, explore scenarios.")
+        if not history:
+            console.print("[yellow]No previous decisions found.[/yellow] Run 'openexec run \"...\"' first.")
+            raise typer.Exit(1)
+        conv = memory_system.get_conversation(history[0]["id"])
+
+    if not Path("settings.json").exists():
+        console.print("[red]Error: settings.json not found[/red] — run 'openexec setup' first.")
+        raise typer.Exit(1)
+
+    console.print(Panel.fit(
+        f"[bold]{conv['prompt']}[/bold]\n\n{conv.get('executive_summary', '')}",
+        title=f"Discussing decision {conv['id']} ({conv['timestamp'][:10]})",
+        border_style="blue"
+    ))
+
+    context_lines = [
+        "# Decision context",
+        f"**Question:** {conv['prompt']}",
+        f"**Executive summary:** {conv.get('executive_summary', '')}",
+    ]
+    for agent_name, summary in conv.get("agent_summaries", {}).items():
+        context_lines.append(f"\n## {agent_name.upper()} — {summary.get('title', '')}")
+        for finding in summary.get("key_findings", []):
+            context_lines.append(f"- Finding: {finding}")
+        for rec in summary.get("recommendations", []):
+            context_lines.append(f"- Recommendation: {rec}")
+    if conv.get("overall_risk_assessment"):
+        context_lines.append("\n## Risks")
+        for risk in conv["overall_risk_assessment"]:
+            context_lines.append(f"- {risk}")
+
+    system_prompt = (
+        "You are a board discussion assistant. Answer follow-up questions about the "
+        "decision below using only the context provided. If the answer isn't in the "
+        "context, say so. Be concise.\n\n" + "\n".join(context_lines)
+    )
+
+    from openexec.ai.client import AIClient
+    client = AIClient()
+
+    console.print("\n[dim]Ask a question about this decision, or type 'exit' to quit.[/dim]\n")
+    while True:
+        try:
+            question = console.input("[bold cyan]You:[/bold cyan] ")
+        except (EOFError, KeyboardInterrupt):
+            console.print()
+            break
+        question = question.strip()
+        if not question or question.lower() in {"exit", "quit"}:
+            break
+        try:
+            answer = client.complete(question, system_prompt=system_prompt)
+        except Exception as e:
+            console.print(f"[red]Error:[/red] {e}")
+            continue
+        console.print(f"[bold green]Assistant:[/bold green] {answer}\n")
 
 
 # ==============================
@@ -740,15 +871,19 @@ def feedback(
     rating: Optional[int] = typer.Option(None, "-r", "--rating", help="Rating 1-5"),
     outcome: Optional[str] = typer.Option(None, "-o", "--outcome", help="What happened?")
 ):
-    """Provide feedback on a decision's outcome."""
-    if not agent:
-        # Show interactive mode
-        console.print(f"\n[bold]📝 Feedback for: {decision_id}[/bold]")
-        console.print("\n[yellow]Interactive feedback mode would be implemented here.[/yellow]")
-        console.print("In full version: rate individual recommendations, describe outcomes.")
-        return
+    """
+    Provide feedback on a decision's outcome.
 
-    if rating and outcome:
+    Pass --agent, --rating and --outcome to record a single rating directly.
+    Omit --agent to walk through every agent's recommendations interactively.
+    """
+    if agent:
+        if rating is None or not outcome:
+            console.print("[red]Error:[/red] Both --rating and --outcome required when using --agent")
+            raise typer.Exit(1)
+        if not 1 <= rating <= 5:
+            console.print("[red]Error:[/red] --rating must be between 1 and 5")
+            raise typer.Exit(1)
         feedback_id = feedback_system.record_feedback(
             decision_id=decision_id,
             agent=agent,
@@ -757,9 +892,60 @@ def feedback(
             outcome=outcome
         )
         console.print(f"[green]✓ Feedback recorded: {feedback_id}[/green]")
-    else:
-        console.print("[red]Error:[/red] Both --rating and --outcome required when using --agent")
+        return
+
+    # Interactive mode: walk through each agent's stored recommendations
+    conv = memory_system.get_conversation(decision_id)
+    if not conv:
+        console.print(f"[red]Error:[/red] Decision not found: {decision_id}")
         raise typer.Exit(1)
+
+    agent_summaries = conv.get("agent_summaries", {})
+    if not agent_summaries:
+        console.print("[yellow]No agent recommendations stored for this decision.[/yellow]")
+        raise typer.Exit(1)
+
+    console.print(f"\n[bold]📝 Feedback for: {conv['prompt'][:80]}[/bold]")
+    console.print("[dim]Press Enter to skip an agent.[/dim]\n")
+
+    recorded = 0
+    for agent_name, summary in agent_summaries.items():
+        recs = summary.get("recommendations") or []
+        console.print(f"[cyan]{agent_name.upper()}[/cyan] — {summary.get('title', '')}")
+        for rec in recs[:3]:
+            console.print(f"  • {rec[:150]}")
+
+        raw_rating = console.input("  Rating (1-5, blank to skip): ").strip()
+        if not raw_rating:
+            console.print()
+            continue
+        try:
+            rating_val = int(raw_rating)
+            if not 1 <= rating_val <= 5:
+                raise ValueError
+        except ValueError:
+            console.print("  [red]Invalid rating, skipping this agent.[/red]\n")
+            continue
+
+        outcome_val = console.input("  Outcome (what happened?): ").strip()
+        if not outcome_val:
+            console.print("  [red]Outcome required, skipping this agent.[/red]\n")
+            continue
+
+        feedback_id = feedback_system.record_feedback(
+            decision_id=decision_id,
+            agent=agent_name,
+            recommendation=" | ".join(recs[:3]) if recs else "[no recommendations recorded]",
+            rating=rating_val,
+            outcome=outcome_val
+        )
+        console.print(f"  [green]✓ Recorded ({feedback_id})[/green]\n")
+        recorded += 1
+
+    if recorded:
+        console.print(f"[green]✓ Feedback complete: {recorded} agent(s) rated[/green]")
+    else:
+        console.print("[yellow]No feedback recorded.[/yellow]")
 
 
 # ==============================
@@ -938,19 +1124,18 @@ def config_command(
             raise typer.Exit(1)
 
         cfg = load_config()
-        # Support nested keys like "ai.temperature"?? For now simple
-        cfg[key] = value
+        coerced = set_nested_config(cfg, key, value)
         save_config(cfg)
-        console.print(f"[green]✓ Set {key} = {value}[/green]")
+        console.print(f"[green]✓ Set {key} = {coerced!r}[/green]")
 
     elif action == "get":
         if not key:
             console.print("[red]Error:[/red] Key required for get action")
             raise typer.Exit(1)
         cfg = load_config()
-        if key in cfg:
-            console.print(f"{key} = {cfg[key]}")
-        else:
+        try:
+            console.print(f"{key} = {get_nested_config(cfg, key)}")
+        except KeyError:
             console.print(f"[yellow]Key '{key}' not found in config[/yellow]")
 
     else:
@@ -963,22 +1148,45 @@ def config_command(
 # Shortcuts & Quick Actions
 # ==============================
 
+QUICK_PRESETS: Dict[str, Dict[str, Any]] = {
+    "default": {},
+    "fast": {"no_memory": True, "no_feedback": True},
+    "deep": {"teams": True, "research": True},
+}
+
+
 @app.command("quick")
 def quick(
     prompt: str = typer.Argument(..., help="Quick decision prompt"),
-    preset: str = typer.Option("default", "-p", "--preset", help="Preset configuration")
+    preset: str = typer.Option(
+        "default",
+        "-p", "--preset",
+        help=f"Preset configuration: {', '.join(QUICK_PRESETS)}"
+    )
 ):
     """
-    Quick simulation with preset configuration.
+    Quick simulation with a named preset.
 
-    Uses optimized defaults for fast execution.
+    Presets:
+
+        default - standard run
+
+        fast    - skip memory context injection and feedback storage, for speed
+
+        deep    - enable --research and --teams for deeper analysis
     """
+    if preset not in QUICK_PRESETS:
+        console.print(
+            f"[red]Error:[/red] Unknown preset '{preset}'. "
+            f"Valid presets: {', '.join(QUICK_PRESETS)}"
+        )
+        raise typer.Exit(1)
+
     console.print(f"[cyan]⚡ Quick mode: {preset}[/cyan]")
-    # In full version, would load preset config
-    # For now, just run with minimal output
-    run(
+    _run_simulation(
         prompt=prompt,
-        output=f"quick_{Path(prompt).stem[:20] if len(prompt) > 20 else 'decision'}.md"
+        output=f"quick_{Path(prompt).stem[:20] if len(prompt) > 20 else 'decision'}.md",
+        **QUICK_PRESETS[preset]
     )
 
 
@@ -1026,7 +1234,7 @@ def batch(
     for i, prompt in enumerate(prompts, 1):
         console.print(f"\n[bold]Simulation {i}/{len(prompts)}[/bold]")
         console.print(f"Prompt: {prompt}\n")
-        run(prompt=prompt, output=f"batch_{i}_{Path(prompt).stem[:20]}.md")
+        _run_simulation(prompt=prompt, output=f"batch_{i}_{Path(prompt).stem[:20]}.md")
 
     console.print(f"\n[green]✓ Batch complete: {len(prompts)} simulations[/green]")
 

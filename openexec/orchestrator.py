@@ -474,7 +474,7 @@ class Orchestrator:
             raise ValueError("Orchestrator must be initialized before running.")
 
         print("\n===========================================")
-        print("STARTING FULL EXECUTIVE BOARD SIMULATION")
+        print("STARTING BOARD SIMULATION")
         print("===========================================")
 
         try:
