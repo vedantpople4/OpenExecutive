@@ -13,13 +13,18 @@ class AIClient:
     calls to a configured BaseProvider instance.
     """
 
+    # Runtime overrides for settings.json values (e.g. seed, temperature_override),
+    # set once by the CLI. Class-level because AIClient() is instantiated all over
+    # the codebase with no arguments.
+    runtime_overrides: Dict[str, Any] = {}
+
     def __init__(self, provider: Any | None = None, settings_path: str | None = None):
         if provider is not None:
             self.provider = provider
         else:
             from openexec.ai.ollama_provider import OllamaProvider
             settings = self._load_settings(settings_path)
-            ai_config = settings.get("ai", {})
+            ai_config = {**settings.get("ai", {}), **AIClient.runtime_overrides}
             self.provider = OllamaProvider(ai_config)
         self._pipeline = JSONPipeline()
 

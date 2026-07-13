@@ -1,5 +1,6 @@
 from openexec.agents.interface import AgentReport
 from openexec.event_store import EventStore
+from openexec.grounding import check_report_grounding
 from openexec.events import (
     Event, EventType, SimulationInitialized, InceptionStarted,
     InceptionCompleted, AnalysisStarted, AgentReportGenerated,
@@ -253,6 +254,7 @@ class Orchestrator:
             "executive_summary": executive_summary,
             "decision_point": self.state.decision_point,
             "agent_reports": {},
+            "fallback_warnings": [],
             "data_sources": {
                 "sources_accessed": [],
                 "sources_failed": [],
@@ -276,13 +278,22 @@ class Orchestrator:
                 "recommendations": report.recommendations,
                 "risks": report.risks,
                 "alignment_score": report.alignment_score,
+                "is_fallback": getattr(report, 'is_fallback', False),
             }
             role_specific = report.get_role_specific_fields()
             if role_specific:
                 report_dict.update(role_specific)
+
+            grounding = check_report_grounding(report_dict, self.state.data_corpus)
+            if grounding:
+                report_dict["grounding"] = grounding
+
             # NOTE: Keep individual agent reports as Phase-2 (analysis) outputs.
             # Deliberation outputs live in `deliberation_rounds` for transcript.
             final_report["agent_reports"][name] = report_dict
+
+            if getattr(report, 'is_fallback', False):
+                final_report["fallback_warnings"].append(f"{name.upper()} (Phase 2 Analysis)")
 
             if (hasattr(report, 'reasoning')
                     and isinstance(report.reasoning, dict)
@@ -317,6 +328,9 @@ class Orchestrator:
                     for name, report in outputs.items()
                     if isinstance(report, AgentReport)
                 }
+                for name, report in outputs.items():
+                    if isinstance(report, AgentReport) and getattr(report, 'is_fallback', False):
+                        final_report["fallback_warnings"].append(f"{name.upper()} (Round {rnd})")
 
         final_report["synthesized_recommendations"] = self._synthesize_recommendations()
         final_report["overall_risk_assessment"] = self._synthesize_risks()
@@ -350,14 +364,19 @@ class Orchestrator:
 
     def _synthesize_recommendations(self) -> list[str]:
         """Synthesize recommendations from all agents.
-        
+
+        Fallback stub reports are excluded — their recommendations are generic
+        placeholders, not real analysis, and must not be presented as actionable.
+
         When agent_weights are set, recommendations from higher-weighted agents
         are tagged with priority indicators.
         """
         recommendations = []
         weights = self.state.agent_weights if hasattr(self.state, 'agent_weights') else {}
-        
+
         for name, report in self.state.agent_outputs.items():
+            if getattr(report, 'is_fallback', False):
+                continue
             if hasattr(report, 'recommendations'):
                 weight = weights.get(name.lower(), 1.0)  # Default weight is 1.0 if not specified
                 for rec in report.recommendations:
@@ -370,14 +389,19 @@ class Orchestrator:
 
     def _synthesize_risks(self) -> list[str]:
         """Synthesize risks from all agents.
-        
+
+        Fallback stub reports are excluded — their risks are generic
+        placeholders, not real analysis, and must not be presented as actionable.
+
         When agent_weights are set, risks from higher-weighted agents
         are tagged with priority indicators.
         """
         risks = []
         weights = self.state.agent_weights if hasattr(self.state, 'agent_weights') else {}
-        
+
         for name, report in self.state.agent_outputs.items():
+            if getattr(report, 'is_fallback', False):
+                continue
             if hasattr(report, 'risks'):
                 weight = weights.get(name.lower(), 1.0)
                 for risk in report.risks:

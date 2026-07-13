@@ -79,7 +79,8 @@ class CMOTemplate:
             reasoning={
                 "data_used": list(state.data_corpus.keys()),
                 "focus_areas": ["Marketing", "Customer Fit"]
-            }
+            },
+            is_fallback=True,
         )
         return report
 

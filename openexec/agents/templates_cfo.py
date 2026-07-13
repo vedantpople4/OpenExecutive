@@ -76,7 +76,8 @@ class CFOTemplate:
             reasoning={
                 "data_used": list(state.data_corpus.keys()),
                 "focus_areas": ["Budget", "ROI"]
-            }
+            },
+            is_fallback=True,
         )
         return report
 

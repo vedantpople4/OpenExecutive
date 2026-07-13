@@ -83,7 +83,8 @@ class DecisionTracker:
             agent_summaries[agent_name] = {
                 "title": report.get("title", ""),
                 "alignment_score": report.get("alignment_score", 0),
-                "key_findings": report.get("key_findings", [])[:2]  # Top 2 findings
+                "key_findings": report.get("key_findings", [])[:2],  # Top 2 findings
+                "is_fallback": report.get("is_fallback", False),
             }
 
         summary["agent_summaries"] = agent_summaries

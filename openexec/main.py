@@ -149,6 +149,17 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
         f.write("# Executive Board Simulation Report\n\n")
         f.write(f"## Executive Summary\n\n{results['executive_summary']}\n\n")
 
+        if results.get('fallback_warnings'):
+            f.write("## ⚠️ Data Integrity Warning\n\n")
+            f.write(
+                "The AI model failed to respond for the reports listed below. Each one is a "
+                "**hardcoded placeholder stub**, not a real analysis — treat its content as "
+                "absent, not as a genuine executive position:\n\n"
+            )
+            for warning in results['fallback_warnings']:
+                f.write(f"- {warning}\n")
+            f.write("\n")
+
         if results.get('decision_point'):
             f.write(f"## Decision Point\n\n{results['decision_point']}\n\n")
 
@@ -206,6 +217,11 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
                     if report.get('round_number'):
                         f.write(f"(Round {report['round_number']})")
                     f.write("\n\n")
+                    if report.get('is_fallback'):
+                        f.write(
+                            "> ⚠️ **FALLBACK STUB — AI call failed this round. "
+                            "The content below is a generic placeholder, not a real position.**\n\n"
+                        )
                     # R5: board_decision nested content — always render if present
                     bd = report.get('board_decision')
                     if report.get('summary'):
@@ -274,6 +290,11 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
 
         for agent_name, report in results.get('agent_reports', {}).items():
             f.write(f"### {agent_name.upper()} Report\n\n")
+            if report.get('is_fallback'):
+                f.write(
+                    "> ⚠️ **FALLBACK STUB — AI analysis failed for this agent. "
+                    "The content below is a generic placeholder, not a real recommendation.**\n\n"
+                )
             f.write(f"**{report['title']}**\n\n")
             f.write(f"{report['summary']}\n\n")
 
@@ -294,6 +315,14 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
                 for risk in report['risks']:
                     f.write(f"- {risk}\n")
                 f.write("\n")
+
+            grounding = report.get('grounding')
+            if grounding and grounding.get('claims_checked'):
+                line = (f"**Grounding:** {grounding['claims_grounded']}/{grounding['claims_checked']} "
+                        "numeric claims found in source data")
+                if grounding.get('ungrounded'):
+                    line += f" — unverified: {', '.join(grounding['ungrounded'][:5])}"
+                f.write(f"{line}\n\n")
 
             score = report['alignment_score']
             if score >= 0.8:

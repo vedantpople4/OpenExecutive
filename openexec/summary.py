@@ -45,7 +45,8 @@ def generate_executive_summary(results: Dict[str, Any]) -> str:
     agent_reports = results.get('agent_reports', {})
     for agent_name, report in agent_reports.items():
         confidence = report.get('alignment_score', 0)
-        lines.append(f"- **{agent_name.upper()}:** {confidence:.0%}")
+        suffix = " ⚠️ FALLBACK STUB — not a real analysis" if report.get('is_fallback') else ""
+        lines.append(f"- **{agent_name.upper()}:** {confidence:.0%}{suffix}")
     lines.append("")
 
     # Data Sources

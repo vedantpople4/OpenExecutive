@@ -107,6 +107,8 @@ def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
     # Also extract from individual agent recommendations if not already covered
     agent_reports = results.get('agent_reports', {})
     for agent_name, report in agent_reports.items():
+        if report.get('is_fallback'):
+            continue  # Placeholder stub — not a real recommendation, skip
         recommendations = report.get('recommendations', [])
         for rec in recommendations:
             if not isinstance(rec, str):

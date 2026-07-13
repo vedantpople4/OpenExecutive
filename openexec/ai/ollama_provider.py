@@ -24,12 +24,25 @@ class OllamaProvider:
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
 
+        # A runtime temperature_override (e.g. from `openexec run --temperature`)
+        # beats the per-call value — agents hardcode temperature at every call
+        # site, so the provider is the only choke point where an override can win.
+        temperature_override = self.ai_config.get("temperature_override")
+        if temperature_override is not None:
+            resolved_temperature = temperature_override
+        elif temperature is not None:
+            resolved_temperature = temperature
+        else:
+            resolved_temperature = self.ai_config.get("temperature", 0.7)
+
         payload = {
             "model": self.ai_config.get("model", "llama3"),
             "messages": messages,
             "max_tokens": max_tokens if max_tokens is not None else self.ai_config.get("max_tokens", 4096),
-            "temperature": temperature if temperature is not None else self.ai_config.get("temperature", 0.7),
+            "temperature": resolved_temperature,
         }
+        if self.ai_config.get("seed") is not None:
+            payload["seed"] = int(self.ai_config["seed"])
 
         url = f"{self.base_url}/chat/completions"
         headers = {"Content-Type": "application/json"}
@@ -127,6 +140,8 @@ class OllamaProvider:
             "max_tokens": self.ai_config.get("max_tokens", 4096),
             "temperature": 0.0,  # Use 0 temp for correction — deterministic
         }
+        if self.ai_config.get("seed") is not None:
+            payload["seed"] = int(self.ai_config["seed"])
 
         url = f"{self.base_url}/chat/completions"
         headers = {"Content-Type": "application/json"}

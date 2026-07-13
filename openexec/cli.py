@@ -179,6 +179,16 @@ def run(
         "--research-mix",
         help="Weight ratio between web search and knowledge base (format: web=0.7,kb=0.3)"
     ),
+    seed: Optional[int] = typer.Option(
+        None,
+        "--seed",
+        help="Random seed for reproducible runs (requires provider support, e.g. LM Studio)"
+    ),
+    temperature: Optional[float] = typer.Option(
+        None,
+        "--temperature",
+        help="Override sampling temperature for every agent call (e.g. 0.0 for max determinism)"
+    ),
     verbose: bool = typer.Option(
         False,
         "-v", "--verbose",
@@ -247,6 +257,20 @@ def run(
     # Auto-summary if enabled in config
     if cfg.get("auto_summary") and not summary:
         summary = output.replace('.md', '_summary.md').replace('.pdf', '_summary.md')
+
+    # Reproducibility overrides — applied at the provider level so they win
+    # over the temperature hardcoded at each agent call site
+    if seed is not None or temperature is not None:
+        from openexec.ai.client import AIClient
+        overrides: Dict[str, Any] = {}
+        if seed is not None:
+            overrides["seed"] = seed
+        if temperature is not None:
+            overrides["temperature_override"] = temperature
+        AIClient.runtime_overrides = overrides
+        parts = [f"seed={seed}" if seed is not None else "",
+                 f"temperature={temperature}" if temperature is not None else ""]
+        console.print(f"[cyan]🎲 Reproducibility: {' '.join(p for p in parts if p)}[/cyan]")
 
     # Show banner
     console.print(Panel.fit(
@@ -329,6 +353,20 @@ def run(
                     console.print(f"[red]Error: Invalid weight value: {item}[/red]")
                     sys.exit(1)
         console.print("[cyan]⚖️ Multi-objective optimization enabled[/cyan]")
+
+    # Close the feedback loop: when the user gave no explicit weights, derive
+    # them from accumulated agent ratings (needs >= 3 ratings to count)
+    if not weight:
+        performance = feedback_system.get_all_agent_performance()
+        derived_notices = []
+        for agent_name, scores in performance.items():
+            agent_key = agent_name.lower()
+            if agent_key in VALID_AGENTS and scores.get("total_ratings", 0) >= 3:
+                avg = scores["average_rating"]
+                state.agent_weights[agent_key] = round(avg / 5.0, 2)
+                derived_notices.append(f"{agent_key}={state.agent_weights[agent_key]} (avg {avg:.1f}/5)")
+        if derived_notices:
+            console.print(f"[cyan]📊 Feedback-derived weights: {', '.join(derived_notices)}[/cyan]")
 
     # Configure research mix (live web search vs. knowledge base)
     research_cfg = dict(cfg.get("research", {}))
@@ -428,6 +466,10 @@ def run(
         # Log decision
         decision_file = decision_tracker.log_decision(prompt, final_results, action_items)
         console.print(f"[green]✓ Logged: {Path(decision_file).name}[/green]")
+
+        if not teams and not research:
+            console.print("[dim]Tip: add --research (web+KB grounding) or --teams "
+                          "(sub-agent deliberation) for deeper analysis.[/dim]")
 
     except Exception as e:
         console.print(f"\n[red]✗ Simulation failed: {e}[/red]")
