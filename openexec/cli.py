@@ -7,8 +7,6 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any
 import typer
 from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -37,7 +35,21 @@ app = typer.Typer(
     no_args_is_help=True
 )
 
-console = Console()
+# Plain text only: no color, no automatic highlighting, no markdown/markup
+# interpretation. Structure is conveyed with ASCII separators (-> => ----)
+# instead of styling, and text content is shown in full, never truncated.
+console = Console(markup=False, highlight=False)
+
+SEPARATOR = "-" * 60
+
+
+def print_section(title: str, body: str = "") -> None:
+    """Print a plain-text section: a title framed by separator lines."""
+    console.print(SEPARATOR)
+    console.print(title)
+    console.print(SEPARATOR)
+    if body:
+        console.print(body)
 
 
 # ==============================
@@ -94,7 +106,7 @@ def save_config(config: Dict[str, Any]):
     ensure_config_dir()
     with open(CONFIG_FILE, 'w') as f:
         json.dump(config, f, indent=2)
-    console.print(f"[green]✓ Configuration saved to {CONFIG_FILE}[/green]")
+    console.print(f"-> Configuration saved to {CONFIG_FILE}")
 
 
 def set_nested_config(cfg: Dict[str, Any], dotted_key: str, raw_value: str) -> Any:
@@ -294,17 +306,19 @@ def _run_simulation(
     Calling `run()` itself directly would bind every unspecified parameter to
     its raw typer.Option/ArgumentInfo object instead of a real default.
     """
+    console.print("Starting Simulation...")
+
     # Handle stdin
     if prompt == "-":
-        console.print("[cyan]📥 Reading prompt from stdin...[/cyan]")
+        console.print("Reading prompt from stdin...")
         prompt = sys.stdin.read().strip()
         if not prompt:
-            console.print("[red]Error:[/red] No input from stdin")
+            console.print("ERROR: No input from stdin")
             raise typer.Exit(1)
 
     if not prompt:
-        console.print("[red]Error:[/red] Prompt is required")
-        console.print("\n[bold]Examples:[/bold]")
+        console.print("ERROR: Prompt is required")
+        console.print("\nExamples:")
         console.print("  openexec run \"Should we buy GPUs?\"")
         console.print("  cat prompt.txt | openexec run -")
         raise typer.Exit(1)
@@ -312,7 +326,7 @@ def _run_simulation(
     # Sanitize prompt to prevent prompt injection attacks
     prompt = sanitize_prompt(prompt)
     if not prompt:
-        console.print("[red]Error:[/red] Prompt was empty after sanitization")
+        console.print("ERROR: Prompt was empty after sanitization")
         raise typer.Exit(1)
 
     # Load configuration
@@ -322,7 +336,7 @@ def _run_simulation(
             with open(config_override) as f:
                 cfg.update(json.load(f))
         else:
-            console.print(f"[yellow]Warning: Config file {config_override} not found, using defaults[/yellow]")
+            console.print(f"WARNING: Config file {config_override} not found, using defaults")
     else:
         cfg = load_config()
 
@@ -350,24 +364,20 @@ def _run_simulation(
         AIClient.runtime_overrides = overrides
         parts = [f"seed={seed}" if seed is not None else "",
                  f"temperature={temperature}" if temperature is not None else ""]
-        console.print(f"[cyan]🎲 Reproducibility: {' '.join(p for p in parts if p)}[/cyan]")
+        console.print(f"Reproducibility: {' '.join(p for p in parts if p)}")
 
     # Show banner
-    console.print(Panel.fit(
-        f"[bold]🎯 Decision[/bold]\n{prompt}",
-        title="OpenExec Simulation",
-        border_style="blue"
-    ))
+    print_section("OpenExec Simulation", f"Decision: {prompt}")
 
     # Validate settings
     settings_path = Path("settings.json")
     if not settings_path.exists():
-        console.print("[red]Error: settings.json not found[/red]")
-        console.print("\n[bold]Next step:[/bold] Run 'openexec setup' to create configuration.")
+        console.print("ERROR: settings.json not found")
+        console.print("\nNext step: Run 'openexec setup' to create configuration.")
         console.print("Or manually create settings.json with your AI provider settings.")
-        console.print("\n[gray]Example settings:[/gray]")
-        console.print(Panel('''
-{
+        console.print("\nExample settings:")
+        console.print(SEPARATOR)
+        console.print('''{
   "ai": {
     "base_url": "http://localhost:11434/v1",
     "model": "llama3",
@@ -375,15 +385,15 @@ def _run_simulation(
     "max_tokens": 4096,
     "provider": "openai_compatible"
   }
-}
-        ''', border_style="yellow"))
+}''')
+        console.print(SEPARATOR)
         raise typer.Exit(1)
 
     # Validate output directory exists
     output_dir = Path(output).parent
     if not output_dir.exists():
-        console.print(f"[red]Error: Output directory does not exist: {output_dir}[/red]")
-        console.print(f"[gray]Create it with: mkdir -p {output_dir}[/gray]")
+        console.print(f"ERROR: Output directory does not exist: {output_dir}")
+        console.print(f"Create it with: mkdir -p {output_dir}")
         raise typer.Exit(1)
 
     # Setup
@@ -397,7 +407,7 @@ def _run_simulation(
     # Set active agents if provided
     if agents:
         state.active_agents = [a.strip().lower() for a in agents.split(",")]
-        console.print(f"[cyan]🎯 Targeted simulation: {', '.join(state.active_agents)}[/cyan]")
+        console.print(f"=> Targeted simulation: {', '.join(state.active_agents)}")
     else:
         # Default to all registered agents
         state.active_agents = list(registry.list_names())
@@ -408,8 +418,8 @@ def _run_simulation(
             if "=" in item:
                 key, value = item.split("=", 1)
                 state.assumptions[key.strip()] = value.strip()
-                console.print(f"[cyan]📌 Assumption: {key.strip()} = {value.strip()}[/cyan]")
-        console.print("[cyan]📌 Counterfactual mode enabled[/cyan]")
+                console.print(f"=> Assumption: {key.strip()} = {value.strip()}")
+        console.print("=> Counterfactual mode enabled")
 
     # Parse agent weights for multi-objective optimization
     VALID_AGENTS = {"ceo", "cfo", "cto", "cmo"}
@@ -419,20 +429,20 @@ def _run_simulation(
                 key, value = item.split("=", 1)
                 agent = key.strip().lower()
                 if agent not in VALID_AGENTS:
-                    console.print(f"[red]Error: Invalid agent name '{agent}'. Valid agents: {', '.join(sorted(VALID_AGENTS))}[/red]")
+                    console.print(f"ERROR: Invalid agent name '{agent}'. Valid agents: {', '.join(sorted(VALID_AGENTS))}")
                     sys.exit(1)
                 try:
                     weight_val = float(value.strip())
                     if 0.0 <= weight_val <= 1.0:
                         state.agent_weights[agent] = weight_val
-                        console.print(f"[cyan]⚖️ Weight: {agent} = {weight_val}[/cyan]")
+                        console.print(f"=> Weight: {agent} = {weight_val}")
                     else:
-                        console.print(f"[red]Error: Weight must be between 0.0 and 1.0: {item}[/red]")
+                        console.print(f"ERROR: Weight must be between 0.0 and 1.0: {item}")
                         sys.exit(1)
                 except ValueError:
-                    console.print(f"[red]Error: Invalid weight value: {item}[/red]")
+                    console.print(f"ERROR: Invalid weight value: {item}")
                     sys.exit(1)
-        console.print("[cyan]⚖️ Multi-objective optimization enabled[/cyan]")
+        console.print("=> Multi-objective optimization enabled")
 
     # Close the feedback loop: when the user gave no explicit weights, derive
     # them from accumulated agent ratings (needs >= 3 ratings to count)
@@ -446,7 +456,7 @@ def _run_simulation(
                 state.agent_weights[agent_key] = round(avg / 5.0, 2)
                 derived_notices.append(f"{agent_key}={state.agent_weights[agent_key]} (avg {avg:.1f}/5)")
         if derived_notices:
-            console.print(f"[cyan]📊 Feedback-derived weights: {', '.join(derived_notices)}[/cyan]")
+            console.print(f"=> Feedback-derived weights: {', '.join(derived_notices)}")
 
     # Configure research mix (live web search vs. knowledge base)
     research_cfg = dict(cfg.get("research", {}))
@@ -461,21 +471,21 @@ def _run_simulation(
             try:
                 weight_val = float(value.strip())
             except ValueError:
-                console.print(f"[red]Error: Invalid research-mix value: {item}[/red]")
+                console.print(f"ERROR: Invalid research-mix value: {item}")
                 sys.exit(1)
             if key == "web":
                 research_cfg["web_search_weight"] = weight_val
             elif key == "kb":
                 research_cfg["knowledge_base_weight"] = weight_val
             else:
-                console.print(f"[red]Error: Invalid research-mix key '{key}'. Use 'web' or 'kb'.[/red]")
+                console.print(f"ERROR: Invalid research-mix key '{key}'. Use 'web' or 'kb'.")
                 sys.exit(1)
         research_cfg["enabled"] = True
     state.research_cfg = research_cfg
     if research_cfg.get("enabled"):
         console.print(
-            f"[cyan]🔎 Research grounding enabled — web:{research_cfg.get('web_search_weight', 0.5)} "
-            f"/ kb:{research_cfg.get('knowledge_base_weight', 0.5)}[/cyan]"
+            f"=> Research grounding enabled -- web:{research_cfg.get('web_search_weight', 0.5)} "
+            f"/ kb:{research_cfg.get('knowledge_base_weight', 0.5)}"
         )
 
     # Load data corpus
@@ -488,16 +498,16 @@ def _run_simulation(
                         content = file_path.read_text()
                         state.data_corpus[file_path.name] = content
                     except Exception as e:
-                        console.print(f"[yellow]⚠ Could not read {file_path.name}: {e}[/yellow]")
+                        console.print(f"WARNING: Could not read {file_path.name}: {e}")
     except Exception as e:
-        console.print(f"[yellow]⚠ Could not access data directory: {e}[/yellow]")
+        console.print(f"WARNING: Could not access data directory: {e}")
 
     # Priority 3: Inject memory context
     memory_enabled = cfg.get("memory", {}).get("enabled", True) and not no_memory
     if memory_enabled and cfg.get("memory", {}).get("context_injection", True):
         memory_context = memory_system.get_memory_context(prompt)
         if memory_context:
-            console.print("[cyan]📚 Loaded context from past decisions[/cyan]")
+            console.print("=> Loaded context from past decisions")
             state.data_corpus["memory_context.md"] = memory_context
 
     # Run simulation
@@ -512,14 +522,14 @@ def _run_simulation(
         feedback_enabled = cfg.get("feedback", {}).get("store_automatically", True) and not no_feedback
         if feedback_enabled:
             memory_system.store_conversation(prompt, final_results)
-            console.print("[green]✓ Stored in memory[/green]")
+            console.print("-> Stored in memory")
 
         # Quantify risks (Priority 2)
         final_results = quantify_risks(final_results)
 
         # Write report
         write_report(final_results, output)
-        console.print(f"[green]✓ Report: {output}[/green]")
+        console.print(f"-> Report: {output}")
 
         # Extract action items
         action_items = extract_action_items(final_results)
@@ -527,7 +537,7 @@ def _run_simulation(
         # Generate executive summary
         if summary:
             write_executive_summary(final_results, summary)
-            console.print(f"[green]✓ Summary: {summary}[/green]")
+            console.print(f"-> Summary: {summary}")
 
         # Export action items
         if export:
@@ -539,20 +549,20 @@ def _run_simulation(
             elif export == "checklist":
                 export_action_items_markdown(action_items, export_path)
             else:
-                console.print(f"[red]✗ Unknown export format: {export}[/red]")
+                console.print(f"ERROR: Unknown export format: {export}")
                 raise typer.Exit(1)
-            console.print(f"[green]✓ Exported: {export_path}[/green]")
+            console.print(f"-> Exported: {export_path}")
 
         # Log decision
         decision_file = decision_tracker.log_decision(prompt, final_results, action_items)
-        console.print(f"[green]✓ Logged: {Path(decision_file).name}[/green]")
+        console.print(f"-> Logged: {Path(decision_file).name}")
 
         if not teams and not research:
-            console.print("[dim]Tip: add --research (web+KB grounding) or --teams "
-                          "(sub-agent deliberation) for deeper analysis.[/dim]")
+            console.print("Tip: add --research (web+KB grounding) or --teams "
+                          "(sub-agent deliberation) for deeper analysis.")
 
     except Exception as e:
-        console.print(f"\n[red]✗ Simulation failed: {e}[/red]")
+        console.print(f"\nERROR: Simulation failed: {e}")
         import traceback
         traceback.print_exc()
         raise typer.Exit(1)
@@ -568,11 +578,11 @@ def setup(
 ):
     """Create or update settings.json for AI provider configuration."""
     if not default:
-        console.print("[bold]OpenExec Setup Wizard[/bold]\n")
+        console.print("OpenExec Setup Wizard\n")
         console.print("This will create a settings.json file in the current directory.")
         console.print("Press Enter to accept defaults or type your own values.\n")
     else:
-        console.print("[bold]OpenExec Setup (non-interactive mode)[/bold]\n")
+        console.print("OpenExec Setup (non-interactive mode)\n")
 
     # Default settings
     defaults = {
@@ -590,11 +600,11 @@ def setup(
 
     if default:
         settings = json.loads(json.dumps(defaults))  # Deep copy
-        console.print("[green]Using default settings.[/green]")
+        console.print("Using default settings.")
     else:
         settings = {}
         # Ask for AI settings
-        console.print("[cyan]=== AI Provider Settings ===[/cyan]")
+        console.print("=== AI Provider Settings ===")
         console.print(f"Base URL (default: {defaults['ai']['base_url']}):")
         settings["ai"] = defaults["ai"].copy()
         url = console.input()
@@ -616,7 +626,7 @@ def setup(
         if tokens.strip():
             settings["ai"]["max_tokens"] = int(tokens)
 
-        console.print("\n[cyan]=== Agent Settings ===[/cyan]")
+        console.print("\n=== Agent Settings ===")
         console.print(f"Enabled Agents (default: {', '.join(defaults['agents']['enabled'])}):")
         agents = console.input()
         if agents.strip():
@@ -628,8 +638,8 @@ def setup(
     with open(settings_path, "w") as f:
         json.dump(settings, f, indent=2)
 
-    console.print(f"\n[green]✓ Settings saved to {settings_path}[/green]")
-    console.print("\n[yellow]Next step:[/yellow] Run 'openexec run \"Your decision here\"'")
+    console.print(f"\n-> Settings saved to {settings_path}")
+    console.print("\nNext step: Run 'openexec run \"Your decision here\"'")
 
 
 # ==============================
@@ -652,54 +662,54 @@ def discuss(
     if decision_id:
         conv = memory_system.get_conversation(decision_id)
         if not conv:
-            console.print(f"[red]Error:[/red] Decision not found: {decision_id}")
+            console.print(f"ERROR: Decision not found: {decision_id}")
             raise typer.Exit(1)
     else:
         history = memory_system.get_conversation_history(limit=1)
         if not history:
-            console.print("[yellow]No previous decisions found.[/yellow] Run 'openexec run \"...\"' first.")
+            console.print("No previous decisions found. Run 'openexec run \"...\"' first.")
             raise typer.Exit(1)
         conv = memory_system.get_conversation(history[0]["id"])
 
     if not Path("settings.json").exists():
-        console.print("[red]Error: settings.json not found[/red] — run 'openexec setup' first.")
+        console.print("ERROR: settings.json not found -- run 'openexec setup' first.")
         raise typer.Exit(1)
 
-    console.print(Panel.fit(
-        f"[bold]{conv['prompt']}[/bold]\n\n{conv.get('executive_summary', '')}",
-        title=f"Discussing decision {conv['id']} ({conv['timestamp'][:10]})",
-        border_style="blue"
-    ))
+    print_section(
+        f"Discussing decision {conv['id']} ({conv['timestamp'][:10]})",
+        f"{conv['prompt']}\n\n{conv.get('executive_summary', '')}"
+    )
 
     context_lines = [
-        "# Decision context",
-        f"**Question:** {conv['prompt']}",
-        f"**Executive summary:** {conv.get('executive_summary', '')}",
+        "Decision context",
+        f"Question: {conv['prompt']}",
+        f"Executive summary: {conv.get('executive_summary', '')}",
     ]
     for agent_name, summary in conv.get("agent_summaries", {}).items():
-        context_lines.append(f"\n## {agent_name.upper()} — {summary.get('title', '')}")
+        context_lines.append(f"\n{agent_name.upper()} -- {summary.get('title', '')}")
         for finding in summary.get("key_findings", []):
-            context_lines.append(f"- Finding: {finding}")
+            context_lines.append(f"Finding: {finding}")
         for rec in summary.get("recommendations", []):
-            context_lines.append(f"- Recommendation: {rec}")
+            context_lines.append(f"Recommendation: {rec}")
     if conv.get("overall_risk_assessment"):
-        context_lines.append("\n## Risks")
+        context_lines.append("\nRisks")
         for risk in conv["overall_risk_assessment"]:
-            context_lines.append(f"- {risk}")
+            context_lines.append(f"{risk}")
 
     system_prompt = (
         "You are a board discussion assistant. Answer follow-up questions about the "
         "decision below using only the context provided. If the answer isn't in the "
-        "context, say so. Be concise.\n\n" + "\n".join(context_lines)
+        "context, say so. Be concise. Respond in plain text, with no markdown "
+        "formatting (no **, ##, backticks, or bullet dashes).\n\n" + "\n".join(context_lines)
     )
 
     from openexec.ai.client import AIClient
     client = AIClient()
 
-    console.print("\n[dim]Ask a question about this decision, or type 'exit' to quit.[/dim]\n")
+    console.print("\nAsk a question about this decision, or type 'exit' to quit.\n")
     while True:
         try:
-            question = console.input("[bold cyan]You:[/bold cyan] ")
+            question = console.input("You: ")
         except (EOFError, KeyboardInterrupt):
             console.print()
             break
@@ -709,9 +719,9 @@ def discuss(
         try:
             answer = client.complete(question, system_prompt=system_prompt)
         except Exception as e:
-            console.print(f"[red]Error:[/red] {e}")
+            console.print(f"ERROR: {e}")
             continue
-        console.print(f"[bold green]Assistant:[/bold green] {answer}\n")
+        console.print(f"Assistant: {answer}\n")
 
 
 # ==============================
@@ -724,36 +734,23 @@ def history(
         10,
         "-n", "--limit",
         help="Number of entries to show"
-    ),
-    full: bool = typer.Option(
-        False,
-        "--full",
-        help="Show full prompts"
     )
 ):
     """View recent decision history."""
     conversations = memory_system.get_conversation_history(limit=limit)
 
-    console.print(f"\n[bold]📚 Recent Decisions ({len(conversations)})[/bold]\n")
+    console.print(f"\nRecent Decisions ({len(conversations)})\n")
 
     if not conversations:
-        console.print("[yellow]No decisions in memory yet.[/yellow]")
+        console.print("No decisions in memory yet.")
         return
 
-    table = Table(show_header=True, expand=True)
-    table.add_column("Date", style="cyan", no_wrap=True, width=10)
-    table.add_column("Decision", style="white")
-
-    for conv in conversations:
-        date = conv["timestamp"][:10]
-        if full:
-            prompt = conv["prompt"]
-        else:
-            prompt = conv["prompt"][:100] + ("..." if len(conv["prompt"]) > 100 else "")
-        table.add_row(date, prompt)
-
-    console.print(table)
-    console.print(f"\n[dim]Total stored: {len(memory_system.index['conversations'])} decisions[/dim]")
+    for i, conv in enumerate(conversations, 1):
+        console.print(SEPARATOR)
+        console.print(f"[{i}] {conv['timestamp'][:10]}")
+        console.print(conv["prompt"])
+    console.print(SEPARATOR)
+    console.print(f"\nTotal stored: {len(memory_system.index['conversations'])} decisions")
 
 
 @app.command()
@@ -771,43 +768,31 @@ def search(
     if kb:
         # Search knowledge base
         results = knowledge_base.retrieve_relevant(query, limit=limit)
-        console.print(f"\n[bold]🔍 Knowledge Base: {query}[/bold] ({len(results)} results)\n")
+        console.print(f"\nKnowledge Base: {query} ({len(results)} results)\n")
 
         if not results:
-            console.print("[yellow]No results found.[/yellow]")
+            console.print("No results found.")
             return
 
-        table = Table(show_header=True)
-        table.add_column("Source", style="cyan", width=30)
-        table.add_column("Score", style="green", width=6)
-        table.add_column("Preview", style="white")
-
         for result in results:
-            preview = result['chunk'][:120]
-            if len(result['chunk']) > 120:
-                preview += "..."
-            table.add_row(result['doc_title'], str(result['score']), preview)
-
-        console.print(table)
+            console.print(SEPARATOR)
+            console.print(f"{result['doc_title']} (score: {result['score']})")
+            console.print(result['chunk'])
+        console.print(SEPARATOR)
     else:
         # Search memory
         results = memory_system.search_memory(query)
-        console.print(f"\n[bold]🔍 Memory: {query}[/bold] ({len(results)} results)\n")
+        console.print(f"\nMemory: {query} ({len(results)} results)\n")
 
         if not results:
-            console.print("[yellow]No results found.[/yellow]")
+            console.print("No results found.")
             return
 
-        table = Table(show_header=True)
-        table.add_column("Date", style="cyan", width=10)
-        table.add_column("Decision", style="white")
-
         for conv in results:
-            date = conv["timestamp"][:10]
-            prompt = conv["prompt"][:100] + ("..." if len(conv["prompt"]) > 100 else "")
-            table.add_row(date, prompt)
-
-        console.print(table)
+            console.print(SEPARATOR)
+            console.print(conv["timestamp"][:10])
+            console.print(conv["prompt"])
+        console.print(SEPARATOR)
 
 
 # ==============================
@@ -825,18 +810,18 @@ def performance(
     scores = feedback_system.get_all_agent_performance()
 
     if not scores:
-        console.print("[yellow]No performance data yet. Provide feedback to build metrics.[/yellow]")
+        console.print("No performance data yet. Provide feedback to build metrics.")
         return
 
     if agent:
         agent = agent.upper()
         if agent not in scores:
-            console.print(f"[yellow]No data for {agent}[/yellow]")
+            console.print(f"No data for {agent}")
             return
 
         s = scores[agent]
-        console.print(f"\n[bold]📊 {agent} Performance[/bold]\n")
-        console.print(f"Average Rating: [green]{s['average_rating']:.1f}/5.0[/green]")
+        console.print(f"\n{agent} Performance\n")
+        console.print(f"Average Rating: {s['average_rating']:.1f}/5.0")
         console.print(f"Total Ratings: {s['total_ratings']}")
         console.print(f"Success Rate: {s['successful_outcomes']}/{s['total_feedback']}")
 
@@ -844,24 +829,16 @@ def performance(
             recent_avg = sum(r["rating"] for r in s["recent_performance"]) / len(s["recent_performance"])
             console.print(f"Recent (last {len(s['recent_performance'])}): {recent_avg:.1f}/5.0")
     else:
-        console.print("\n[bold]📊 Agent Performance[/bold]\n")
-
-        table = Table(show_header=True)
-        table.add_column("Agent", style="cyan")
-        table.add_column("Avg Rating", style="green", justify="right")
-        table.add_column("# Ratings", style="yellow", justify="right")
-        table.add_column("Success Rate", style="magenta", justify="right")
+        console.print("\nAgent Performance\n")
 
         for agent_name, s in sorted(scores.items()):
-            table.add_row(
-                agent_name.upper(),
-                f"{s['average_rating']:.1f}/5.0",
-                str(s['total_ratings']),
-                f"{s['successful_outcomes']}/{s['total_feedback']}"
-            )
-
-        console.print(table)
-        console.print("\n[dim]Use 'openexec performance <AGENT>' for details[/dim]")
+            console.print(SEPARATOR)
+            console.print(f"{agent_name.upper()}")
+            console.print(f"Avg Rating: {s['average_rating']:.1f}/5.0")
+            console.print(f"# Ratings: {s['total_ratings']}")
+            console.print(f"Success Rate: {s['successful_outcomes']}/{s['total_feedback']}")
+        console.print(SEPARATOR)
+        console.print("\nUse 'openexec performance <AGENT>' for details")
 
 
 @app.command()
@@ -879,41 +856,42 @@ def feedback(
     """
     if agent:
         if rating is None or not outcome:
-            console.print("[red]Error:[/red] Both --rating and --outcome required when using --agent")
+            console.print("ERROR: Both --rating and --outcome required when using --agent")
             raise typer.Exit(1)
         if not 1 <= rating <= 5:
-            console.print("[red]Error:[/red] --rating must be between 1 and 5")
+            console.print("ERROR: --rating must be between 1 and 5")
             raise typer.Exit(1)
         feedback_id = feedback_system.record_feedback(
             decision_id=decision_id,
             agent=agent,
-            recommendation="[summary truncated]",
+            recommendation="(not captured -- pass --agent without a stored decision context)",
             rating=rating,
             outcome=outcome
         )
-        console.print(f"[green]✓ Feedback recorded: {feedback_id}[/green]")
+        console.print(f"-> Feedback recorded: {feedback_id}")
         return
 
     # Interactive mode: walk through each agent's stored recommendations
     conv = memory_system.get_conversation(decision_id)
     if not conv:
-        console.print(f"[red]Error:[/red] Decision not found: {decision_id}")
+        console.print(f"ERROR: Decision not found: {decision_id}")
         raise typer.Exit(1)
 
     agent_summaries = conv.get("agent_summaries", {})
     if not agent_summaries:
-        console.print("[yellow]No agent recommendations stored for this decision.[/yellow]")
+        console.print("No agent recommendations stored for this decision.")
         raise typer.Exit(1)
 
-    console.print(f"\n[bold]📝 Feedback for: {conv['prompt'][:80]}[/bold]")
-    console.print("[dim]Press Enter to skip an agent.[/dim]\n")
+    console.print(f"\nFeedback for: {conv['prompt']}")
+    console.print("Press Enter to skip an agent.\n")
 
     recorded = 0
     for agent_name, summary in agent_summaries.items():
         recs = summary.get("recommendations") or []
-        console.print(f"[cyan]{agent_name.upper()}[/cyan] — {summary.get('title', '')}")
-        for rec in recs[:3]:
-            console.print(f"  • {rec[:150]}")
+        console.print(SEPARATOR)
+        console.print(f"{agent_name.upper()} -- {summary.get('title', '')}")
+        for rec in recs:
+            console.print(f"  -> {rec}")
 
         raw_rating = console.input("  Rating (1-5, blank to skip): ").strip()
         if not raw_rating:
@@ -924,28 +902,29 @@ def feedback(
             if not 1 <= rating_val <= 5:
                 raise ValueError
         except ValueError:
-            console.print("  [red]Invalid rating, skipping this agent.[/red]\n")
+            console.print("  Invalid rating, skipping this agent.\n")
             continue
 
         outcome_val = console.input("  Outcome (what happened?): ").strip()
         if not outcome_val:
-            console.print("  [red]Outcome required, skipping this agent.[/red]\n")
+            console.print("  Outcome required, skipping this agent.\n")
             continue
 
         feedback_id = feedback_system.record_feedback(
             decision_id=decision_id,
             agent=agent_name,
-            recommendation=" | ".join(recs[:3]) if recs else "[no recommendations recorded]",
+            recommendation=" | ".join(recs) if recs else "(no recommendations recorded)",
             rating=rating_val,
             outcome=outcome_val
         )
-        console.print(f"  [green]✓ Recorded ({feedback_id})[/green]\n")
+        console.print(f"  -> Recorded ({feedback_id})\n")
         recorded += 1
 
+    console.print(SEPARATOR)
     if recorded:
-        console.print(f"[green]✓ Feedback complete: {recorded} agent(s) rated[/green]")
+        console.print(f"-> Feedback complete: {recorded} agent(s) rated")
     else:
-        console.print("[yellow]No feedback recorded.[/yellow]")
+        console.print("No feedback recorded.")
 
 
 # ==============================
@@ -959,24 +938,19 @@ def kb_list(
     """List knowledge base documents."""
     docs = knowledge_base.list_documents(category=category)
 
-    console.print(f"\n[bold]📚 Knowledge Base ({len(docs)} documents)[/bold]\n")
+    console.print(f"\nKnowledge Base ({len(docs)} documents)\n")
 
     if not docs:
-        console.print("[yellow]No documents ingested yet.[/yellow]")
-        console.print("Use: [cyan]openexec kb-ingest <file> [category][/cyan]")
+        console.print("No documents ingested yet.")
+        console.print("Use: openexec kb-ingest <file> <category>")
         return
-
-    table = Table(show_header=True)
-    table.add_column("Title", style="cyan")
-    table.add_column("Category", style="green", width=12)
-    table.add_column("Size", style="yellow", justify="right", width=10)
 
     for doc in docs:
         title = doc.get('title') or doc.get('filename', 'Unknown')
         size = f"{doc.get('size', 0):,}"
-        table.add_row(title, doc['category'], size)
-
-    console.print(table)
+        console.print(SEPARATOR)
+        console.print(f"{title}  =>  category: {doc['category']}  =>  size: {size}")
+    console.print(SEPARATOR)
 
 
 @app.command("kb-ingest")
@@ -988,7 +962,7 @@ def kb_ingest(
     """Ingest document into knowledge base."""
     path = Path(file_path)
     if not path.exists():
-        console.print(f"[red]✗ File not found: {file_path}[/red]")
+        console.print(f"ERROR: File not found: {file_path}")
         raise typer.Exit(1)
 
     # Use title if provided
@@ -996,9 +970,9 @@ def kb_ingest(
 
     try:
         doc_id = knowledge_base.ingest_document(file_path, category, metadata)
-        console.print(f"[green]✓ Ingested into '{category}': {doc_id}[/green]")
+        console.print(f"-> Ingested into '{category}': {doc_id}")
     except Exception as e:
-        console.print(f"[red]✗ Failed: {e}[/red]")
+        console.print(f"ERROR: Failed: {e}")
         raise typer.Exit(1)
 
 
@@ -1011,24 +985,17 @@ def kb_search(
     """Search knowledge base for relevant content."""
     results = knowledge_base.retrieve_relevant(query, category=category, limit=limit)
 
-    console.print(f"\n[bold]🔍 KB Search: {query}[/bold] ({len(results)} results)\n")
+    console.print(f"\nKB Search: {query} ({len(results)} results)\n")
 
     if not results:
-        console.print("[yellow]No matches found.[/yellow]")
+        console.print("No matches found.")
         return
 
-    table = Table(show_header=True)
-    table.add_column("Source", style="cyan", width=30)
-    table.add_column("Score", style="green", width=6)
-    table.add_column("Preview", style="white")
-
     for result in results:
-        preview = result['chunk'][:150]
-        if len(result['chunk']) > 150:
-            preview += "..."
-        table.add_row(result['doc_title'], str(result['score']), preview)
-
-    console.print(table)
+        console.print(SEPARATOR)
+        console.print(f"{result['doc_title']} (score: {result['score']})")
+        console.print(result['chunk'])
+    console.print(SEPARATOR)
 
 
 @app.command("kb-categories")
@@ -1036,15 +1003,15 @@ def kb_categories():
     """List all knowledge base categories."""
     categories = knowledge_base.list_categories()
 
-    console.print("\n[bold]📂 Knowledge Base Categories[/bold]\n")
+    console.print("\nKnowledge Base Categories\n")
 
     if not categories:
-        console.print("[yellow]No categories yet.[/yellow]")
+        console.print("No categories yet.")
         return
 
     for cat in sorted(categories):
         count = len(knowledge_base.list_documents(category=cat))
-        console.print(f"  [cyan]{cat}[/cyan]: {count} documents")
+        console.print(f"  -> {cat}: {count} documents")
 
 
 @app.command("kb-stats")
@@ -1052,7 +1019,7 @@ def kb_stats():
     """Show knowledge base statistics."""
     stats = knowledge_base.get_kb_stats()
 
-    console.print("\n[bold]📊 Knowledge Base Statistics[/bold]\n")
+    console.print("\nKnowledge Base Statistics\n")
     console.print(f"Documents: {stats['total_documents']}")
     console.print(f"Chunks: {stats['total_chunks']}")
     console.print(f"Categories: {', '.join(stats['categories'])}")
@@ -1112,34 +1079,34 @@ def config_command(
                 return
         cfg = get_default_config()
         save_config(cfg)
-        console.print(f"[green]✓ Created default config at {CONFIG_FILE}[/green]")
+        console.print(f"-> Created default config at {CONFIG_FILE}")
         console.print("\nEdit this file to customize defaults.")
 
     elif action == "set":
         if not key:
-            console.print("[red]Error:[/red] Key required for set action")
+            console.print("ERROR: Key required for set action")
             raise typer.Exit(1)
         if not value:
-            console.print("[red]Error:[/red] Value required for set action")
+            console.print("ERROR: Value required for set action")
             raise typer.Exit(1)
 
         cfg = load_config()
         coerced = set_nested_config(cfg, key, value)
         save_config(cfg)
-        console.print(f"[green]✓ Set {key} = {coerced!r}[/green]")
+        console.print(f"-> Set {key} = {coerced!r}")
 
     elif action == "get":
         if not key:
-            console.print("[red]Error:[/red] Key required for get action")
+            console.print("ERROR: Key required for get action")
             raise typer.Exit(1)
         cfg = load_config()
         try:
             console.print(f"{key} = {get_nested_config(cfg, key)}")
         except KeyError:
-            console.print(f"[yellow]Key '{key}' not found in config[/yellow]")
+            console.print(f"Key '{key}' not found in config")
 
     else:
-        console.print(f"[red]Unknown action: {action}[/red]")
+        console.print(f"ERROR: Unknown action: {action}")
         console.print("Valid actions: show, init, set, get")
         raise typer.Exit(1)
 
@@ -1177,12 +1144,12 @@ def quick(
     """
     if preset not in QUICK_PRESETS:
         console.print(
-            f"[red]Error:[/red] Unknown preset '{preset}'. "
+            f"ERROR: Unknown preset '{preset}'. "
             f"Valid presets: {', '.join(QUICK_PRESETS)}"
         )
         raise typer.Exit(1)
 
-    console.print(f"[cyan]⚡ Quick mode: {preset}[/cyan]")
+    console.print(f"=> Quick mode: {preset}")
     _run_simulation(
         prompt=prompt,
         output=f"quick_{Path(prompt).stem[:20] if len(prompt) > 20 else 'decision'}.md",
@@ -1201,7 +1168,7 @@ def review(
             console.print(f"Decision: {conv['timestamp'][:10]}")
             console.print(f"Prompt: {conv['prompt']}")
         else:
-            console.print(f"[red]Decision not found: {decision_id}[/red]")
+            console.print(f"Decision not found: {decision_id}")
     else:
         # Show most recent
         history = memory_system.get_conversation_history(limit=1)
@@ -1211,7 +1178,7 @@ def review(
             console.print(f"ID: {conv['id']}")
             console.print(f"Prompt: {conv['prompt']}")
         else:
-            console.print("[yellow]No decisions in memory.[/yellow]")
+            console.print("No decisions in memory.")
 
 
 # ==============================
@@ -1226,17 +1193,17 @@ def batch(
     prompts = [line.strip() for line in file if line.strip()]
 
     if not prompts:
-        console.print("[red]Error:[/red] No prompts in file")
+        console.print("ERROR: No prompts in file")
         raise typer.Exit(1)
 
-    console.print(f"[cyan]Running {len(prompts)} simulations[/cyan]")
+    console.print(f"Running {len(prompts)} simulations")
 
     for i, prompt in enumerate(prompts, 1):
-        console.print(f"\n[bold]Simulation {i}/{len(prompts)}[/bold]")
+        console.print(f"\nSimulation {i}/{len(prompts)}")
         console.print(f"Prompt: {prompt}\n")
         _run_simulation(prompt=prompt, output=f"batch_{i}_{Path(prompt).stem[:20]}.md")
 
-    console.print(f"\n[green]✓ Batch complete: {len(prompts)} simulations[/green]")
+    console.print(f"\n-> Batch complete: {len(prompts)} simulations")
 
 
 # ==============================
