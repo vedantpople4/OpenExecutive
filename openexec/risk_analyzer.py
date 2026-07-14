@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """Risk quantification and analysis for OpenExec."""
 
+import re
 from typing import Dict, Any, List
+
+# Agents tag their own risks per output schema, e.g. "Probability: High" or
+# "[probability: Med]". An explicit tag beats keyword guessing.
+_PROB_TAG_RE = re.compile(r"probability:?\s*\(?\s*(high|med(?:ium)?|low)", re.IGNORECASE)
+_TAG_PROBABILITIES = {"high": 0.8, "med": 0.5, "medium": 0.5, "low": 0.2}
 
 
 class RiskQuantifier:
@@ -34,6 +40,11 @@ class RiskQuantifier:
                 probability = scores['probability']
                 impact = scores['impact']
                 break
+
+        # An explicit probability tag from the agent overrides the keyword guess
+        tag_match = _PROB_TAG_RE.search(risk_text)
+        if tag_match:
+            probability = _TAG_PROBABILITIES[tag_match.group(1).lower()]
 
         # Adjust based on agent (CEO/CFO risks are typically higher impact)
         if '[CEO]' in risk_text or '[CFO]' in risk_text:

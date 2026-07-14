@@ -1,17 +1,17 @@
 # OpenExec Dependencies
 
 # Core
-python-dotenv>=1.0.0
 
 # Configuration
-pyyaml>=6.0.0
 
 # Text processing (for report generation)
-markdown>=3.5.0
 
 # AI/LLM Integration (OpenAI-compatible format)
 requests>=2.31.0
 json5>=0.9.0
+
+# Web search (free, no API key)
+ddgs>=9.0.0
 
 # Development
 pytest>=7.4.0

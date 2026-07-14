@@ -1,0 +1,1 @@
+Monolith latency: 400ms at 1k concurrent. DB locks frequently on write-heavy loads.

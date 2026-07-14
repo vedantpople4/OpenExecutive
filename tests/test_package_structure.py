@@ -177,7 +177,6 @@ class TestOpenexecModules:
             'export.py',
             'summary.py',
             'utils.py',
-            'interactive.py'
         ]
 
         for module in core_modules:

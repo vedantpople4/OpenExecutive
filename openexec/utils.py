@@ -27,23 +27,17 @@ def sanitize_prompt(prompt: str, max_length: int = 10000) -> str:
     prompt = prompt.replace('\x00', '')
 
     # Remove common injection patterns (case-insensitive)
-    injection_patterns = [
-        r'\bignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?|directions?)\b',
-        r'\bforget\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?)\b',
-        r'\bdisregard\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?)\b',
-        r'\bnew\s+instructions?:',
-        r'\boverride\s+(your\s+)?(system|default|original)\s+(instructions?|behavior|prompt)\b',
-        r'<\s*script\b[^>]*>.*?<\s*/\s*script\s*>',  # Full <script>...</script> tags
-        r'<\s*script\b[^>]*>',  # Opening <script> tag
-        r'javascript:',
-        r'on\w+\s*=',  # Event handlers like onclick=, onerror=
-    ]
-
-    for pattern in injection_patterns:
-        if 'script' in pattern.lower():
-            prompt = re.sub(pattern, '[FILTERED]', prompt, flags=re.IGNORECASE | re.DOTALL)
-        else:
-            prompt = re.sub(pattern, '[FILTERED]', prompt, flags=re.IGNORECASE)
+    injection_pattern = re.compile(
+        r'(\b(ignore|forget|disregard)\s+(all\s+)?(previous|prior|above)\s+(instructions?|commands?|directions?)\b)|'
+        r'(\bnew\s+instructions?:)|'
+        r'(\boverride\s+(your\s+)?(system|default|original)\s+(instructions?|behavior|prompt)\b)|'
+        r'(<\s*script\b[^>]*>.*?<\s*/\s*script\s*>)|'
+        r'(<\s*script\b[^>]*>)|'
+        r'(javascript:)|'
+        r'(on\w+\s*=)',
+        re.IGNORECASE | re.DOTALL
+    )
+    prompt = injection_pattern.sub('[FILTERED]', prompt)
 
     # Escape potential markdown/image links that could be used for context injection
     prompt = re.sub(r'!\[.*?\]\(.*?\)', '[Image removed]', prompt)
@@ -100,18 +94,8 @@ def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
             task = rec[end_bracket+2:].strip()
 
             # Determine priority based on owner
-            priority_map = {
-                'CEO': 'HIGH',
-                'CFO': 'HIGH',
-                'CTO': 'MEDIUM',
-                'CMO': 'MEDIUM'
-            }
-
-            priority = 'MEDIUM'  # default
-            for cxo, prio in priority_map.items():
-                if cxo in owner.upper():
-                    priority = prio
-                    break
+            priority_map = {'CEO': 'HIGH', 'CFO': 'HIGH', 'CTO': 'MEDIUM', 'CMO': 'MEDIUM'}
+            priority = next((prio for cxo, prio in priority_map.items() if cxo in owner.upper()), 'MEDIUM')
 
             action_items.append({
                 'priority': priority,
@@ -123,8 +107,12 @@ def extract_action_items(results: dict[str, Any]) -> list[dict[str, str]]:
     # Also extract from individual agent recommendations if not already covered
     agent_reports = results.get('agent_reports', {})
     for agent_name, report in agent_reports.items():
+        if report.get('is_fallback'):
+            continue  # Placeholder stub — not a real recommendation, skip
         recommendations = report.get('recommendations', [])
         for rec in recommendations:
+            if not isinstance(rec, str):
+                continue
             # Simple heuristic: look for actionable language
             action_keywords = ['implement', 'establish', 'create', 'develop', 'build', 'allocate', 'prioritize', 'focus', 'dedicate']
             if any(keyword in rec.lower() for keyword in action_keywords):

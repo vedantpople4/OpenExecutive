@@ -1,5 +1,5 @@
-"""Data module for OpenExec - Real-time data fetching and integration."""
+"""Data module for OpenExec - research context fetching."""
 
-from .fetcher import RealTimeDataFetcher, WebDataResult, DataSource
+from .websearch import web_search
 
-__all__ = ["RealTimeDataFetcher", "WebDataResult", "DataSource"]
+__all__ = ["web_search"]

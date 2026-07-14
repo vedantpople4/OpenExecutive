@@ -55,8 +55,8 @@ def test_ollama_provider_complete_json():
         }
         provider = OllamaProvider(ai_config)
 
-        # Mock _parse_with_pipeline to return our test JSON directly
-        with patch.object(provider, '_parse_with_pipeline', return_value={"key": "value"}):
+        # Mock _pipeline.parse to return our test JSON directly
+        with patch.object(provider._pipeline, 'parse', return_value={"key": "value"}):
             result = provider.complete_json("Hello, Ollama!\n\nOutput as JSON only: {\"key\": \"value\"}")
 
         assert result == {"key": "value"}
@@ -68,23 +68,27 @@ def test_preprocess_bracket_strings_not_matched():
     """Braces inside strings should not affect bracket matching."""
     provider = OllamaProvider({"base_url": "http://localhost:11434", "model": "test"})
 
+    from openexec.ai.json_utils import JSONPipeline
+    pipeline = JSONPipeline()
+
     # Braces inside string values should not break extraction
     raw = '{"title": "Goal {2026}", "summary": "Cost {high}"}'
-    result = provider._preprocess(raw)
+    result = pipeline._preprocess(raw)
     assert result == raw
 
     # Extra text after JSON should be stripped
     raw2 = 'Here is JSON: {\"key\": \"value\"} trailing text'
-    result2 = provider._preprocess(raw2)
+    result2 = pipeline._preprocess(raw2)
     assert result2 == '{\"key\": \"value\"}'
 
 
 def test_preprocess_strips_markdown_fences():
     """Markdown code fences should be stripped from JSON."""
-    provider = OllamaProvider({"base_url": "http://localhost:11434", "model": "test"})
+    from openexec.ai.json_utils import JSONPipeline
+    pipeline = JSONPipeline()
 
     raw = '```json\n{\"key\": \"value\"}\n```'
-    result = provider._preprocess(raw)
+    result = pipeline._preprocess(raw)
     assert result == '{\"key\": \"value\"}'
 
 

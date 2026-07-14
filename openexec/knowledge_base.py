@@ -2,9 +2,8 @@
 """Custom knowledge base system for OpenExec - RAG over proprietary company data."""
 
 import json
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Set
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 import hashlib
 

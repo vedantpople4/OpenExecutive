@@ -1,5 +1,6 @@
 from openexec.agents.interface import AgentReport
 from openexec.event_store import EventStore
+from openexec.grounding import check_report_grounding
 from openexec.events import (
     Event, EventType, SimulationInitialized, InceptionStarted,
     InceptionCompleted, AnalysisStarted, AgentReportGenerated,
@@ -7,10 +8,8 @@ from openexec.events import (
     DeliberationRoundCompleted, DeliberationCompleted, SynthesisStarted,
     SynthesisCompleted, ErrorOccurred
 )
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 import uuid
 
 
@@ -31,39 +30,17 @@ class SimulationState:
     deliberation_outputs: Dict[int, Dict[str, Any]] = field(default_factory=dict)
     board_summary: str = ""
     assumptions: Dict[str, str] = field(default_factory=dict)
-    agent_weights: Dict[str, float] = field(default_factory=dict)  # agent_name -> weight (0.0-1.0)  # assumption_key -> assumption_value
+    agent_weights: Dict[str, float] = field(default_factory=dict)  # agent_name -> weight (0.0-1.0)
+    active_agents: list[str] = field(default_factory=list)  # Subset of agents to include in simulation
+    research_cfg: Dict[str, Any] = field(default_factory=lambda: {
+        "enabled": False,
+        "web_search_weight": 0.5,
+        "knowledge_base_weight": 0.5,
+        "max_context_chars": 3000,
+    })  # Research mix: live web search vs. knowledge base, see openexec.research
 
 
-class BaseOrchestrator(ABC):
-    """Abstract base for simulation orchestrators."""
-
-    @abstractmethod
-    def initialize(self, state: SimulationState) -> None:
-        """Initialize the simulation with briefing data."""
-        pass
-
-    @abstractmethod
-    def run_inception(self) -> None:
-        """Run Phase 1: Inception - receive prompt and delegate tasks."""
-        pass
-
-    @abstractmethod
-    def run_analysis(self) -> None:
-        """Run Phase 2: Individual Research - collect expert reports."""
-        pass
-
-    @abstractmethod
-    def run_review(self) -> None:
-        """Run Phase 3: Cross-Functional Review - manage feedback loops."""
-        pass
-
-    @abstractmethod
-    def run_synthesis(self) -> Dict[str, Any]:
-        """Run Phase 4: Synthesis - draft final document."""
-        pass
-
-
-class Orchestrator(BaseOrchestrator):
+class Orchestrator:
     """Manages the multi-agent simulation workflow with Event Sourcing."""
 
     def __init__(self, registry, verbose: bool = False):
@@ -157,7 +134,11 @@ class Orchestrator(BaseOrchestrator):
         ))
 
         print("\n--- Phase 2: ANALYSIS ---")
+        # Filter agents by active_agents list
         agent_names = self.registry.list_names()
+        if self.state.active_agents:
+            agent_names = [n for n in agent_names if n in self.state.active_agents]
+
         reports: Dict[str, Any] = {}
 
         for name in agent_names:
@@ -273,6 +254,7 @@ class Orchestrator(BaseOrchestrator):
             "executive_summary": executive_summary,
             "decision_point": self.state.decision_point,
             "agent_reports": {},
+            "fallback_warnings": [],
             "data_sources": {
                 "sources_accessed": [],
                 "sources_failed": [],
@@ -296,13 +278,22 @@ class Orchestrator(BaseOrchestrator):
                 "recommendations": report.recommendations,
                 "risks": report.risks,
                 "alignment_score": report.alignment_score,
+                "is_fallback": getattr(report, 'is_fallback', False),
             }
             role_specific = report.get_role_specific_fields()
             if role_specific:
                 report_dict.update(role_specific)
+
+            grounding = check_report_grounding(report_dict, self.state.data_corpus)
+            if grounding:
+                report_dict["grounding"] = grounding
+
             # NOTE: Keep individual agent reports as Phase-2 (analysis) outputs.
             # Deliberation outputs live in `deliberation_rounds` for transcript.
             final_report["agent_reports"][name] = report_dict
+
+            if getattr(report, 'is_fallback', False):
+                final_report["fallback_warnings"].append(f"{name.upper()} (Phase 2 Analysis)")
 
             if (hasattr(report, 'reasoning')
                     and isinstance(report.reasoning, dict)
@@ -337,6 +328,9 @@ class Orchestrator(BaseOrchestrator):
                     for name, report in outputs.items()
                     if isinstance(report, AgentReport)
                 }
+                for name, report in outputs.items():
+                    if isinstance(report, AgentReport) and getattr(report, 'is_fallback', False):
+                        final_report["fallback_warnings"].append(f"{name.upper()} (Round {rnd})")
 
         final_report["synthesized_recommendations"] = self._synthesize_recommendations()
         final_report["overall_risk_assessment"] = self._synthesize_risks()
@@ -359,16 +353,7 @@ class Orchestrator(BaseOrchestrator):
 
     def _report_to_dict(self, report: AgentReport) -> Dict[str, Any]:
         """Convert an AgentReport to a JSON-serialisable dict."""
-        return {
-            "title": report.title,
-            "summary": report.summary,
-            "key_findings": report.key_findings,
-            "recommendations": report.recommendations,
-            "risks": report.risks,
-            "alignment_score": report.alignment_score,
-            "round_number": report.round_number,
-            ** report.get_role_specific_fields(),
-        }
+        return report.to_dict()
 
     def _calculate_success_rate(self, accessed: set, failed: set) -> float:
         """Calculate data access success rate."""
@@ -379,14 +364,19 @@ class Orchestrator(BaseOrchestrator):
 
     def _synthesize_recommendations(self) -> list[str]:
         """Synthesize recommendations from all agents.
-        
+
+        Fallback stub reports are excluded — their recommendations are generic
+        placeholders, not real analysis, and must not be presented as actionable.
+
         When agent_weights are set, recommendations from higher-weighted agents
         are tagged with priority indicators.
         """
         recommendations = []
         weights = self.state.agent_weights if hasattr(self.state, 'agent_weights') else {}
-        
+
         for name, report in self.state.agent_outputs.items():
+            if getattr(report, 'is_fallback', False):
+                continue
             if hasattr(report, 'recommendations'):
                 weight = weights.get(name.lower(), 1.0)  # Default weight is 1.0 if not specified
                 for rec in report.recommendations:
@@ -399,14 +389,19 @@ class Orchestrator(BaseOrchestrator):
 
     def _synthesize_risks(self) -> list[str]:
         """Synthesize risks from all agents.
-        
+
+        Fallback stub reports are excluded — their risks are generic
+        placeholders, not real analysis, and must not be presented as actionable.
+
         When agent_weights are set, risks from higher-weighted agents
         are tagged with priority indicators.
         """
         risks = []
         weights = self.state.agent_weights if hasattr(self.state, 'agent_weights') else {}
-        
+
         for name, report in self.state.agent_outputs.items():
+            if getattr(report, 'is_fallback', False):
+                continue
             if hasattr(report, 'risks'):
                 weight = weights.get(name.lower(), 1.0)
                 for risk in report.risks:
@@ -416,7 +411,49 @@ class Orchestrator(BaseOrchestrator):
                         risks.append(f"[{name.upper()}] {risk}")
         return risks
 
-    def _delegate_task(self, agent_name: str, state: SimulationState, phase: str) -> None:
+    def run_team_deliberation(self) -> None:
+        """Phase 2.5: Hierarchical Team Analysis.
+        Sub-agents analyze prompt, then CXOs synthesize team-informed positions.
+        """
+        if not self.state:
+            raise ValueError("Simulation not initialized.")
+
+        from openexec.agents import TEAM_STRUCTURE
+
+        print("\n--- Phase 2.5: TEAM DELIBERATION ---")
+
+        for cxo_name, team_members in TEAM_STRUCTURE.items():
+            # Skip if CXO is not active
+            if self.state.active_agents and cxo_name not in self.state.active_agents:
+                continue
+
+            print(f"Processing {cxo_name.upper()} team...")
+            team_reports = {}
+
+            # 1. Sub-agent Analysis
+            for member_name in team_members:
+                print(f"  -> {member_name} analyzing...")
+                member = self.registry.get(member_name)
+                if member:
+                    report = member.analyze(self.state)
+                    team_reports[member_name] = report
+                    # Store as team_member output for audit/reporting
+                    self.state.agent_outputs[f"team_{member_name}"] = report
+
+            # 2. CXO Synthesis
+            cxo_agent = self.registry.get(cxo_name)
+            if cxo_agent:
+                print(f"  -> {cxo_name.upper()} synthesizing team position...")
+                if hasattr(cxo_agent, "synthesize_team_position"):
+                    synthesized_report = cxo_agent.synthesize_team_position(team_reports, self.state)
+                else:
+                    synthesized_report = cxo_agent.analyze(self.state)
+
+                self.state.agent_outputs[cxo_name] = synthesized_report
+
+        print("\n--- Team Deliberation Complete. CXO positions updated. ---")
+
+    def _delegate_task(self, agent_name: str, state, phase: str) -> None:
         """Helper to delegate a task."""
         agent = self.registry.get(agent_name)
         if not agent:
@@ -437,12 +474,14 @@ class Orchestrator(BaseOrchestrator):
             raise ValueError("Orchestrator must be initialized before running.")
 
         print("\n===========================================")
-        print("STARTING FULL EXECUTIVE BOARD SIMULATION")
+        print("STARTING BOARD SIMULATION")
         print("===========================================")
 
         try:
             self.run_inception()
             self.run_analysis()
+            if getattr(self, 'teams_enabled', False):
+                self.run_team_deliberation()
             self.run_review()
             final_results = self.run_synthesis()
 

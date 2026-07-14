@@ -19,8 +19,88 @@
       "id": "1fd8beddf99e",
       "timestamp": "2026-06-15T19:16:19.525969",
       "prompt": "Should we expand to LATAM?"
+    },
+    {
+      "id": "1151bc70aa31",
+      "timestamp": "2026-06-21T16:06:40.400547",
+      "prompt": "Should we hire more engineers or build AI agents to work?"
+    },
+    {
+      "id": "1151bc70aa31",
+      "timestamp": "2026-06-21T17:14:55.003261",
+      "prompt": "Should we hire more engineers or build AI agents to work?"
+    },
+    {
+      "id": "2c8bc0f7bcc8",
+      "timestamp": "2026-06-28T18:09:08.726067",
+      "prompt": "We have strong traction in the SME market, but a Tier-1 Global Bank offered a M contract if we pivot..."
+    },
+    {
+      "id": "8dec14e8920c",
+      "timestamp": "2026-06-28T18:44:46.944963",
+      "prompt": "Our current monolithic architecture is hitting a wall. A new Global Partnership will spike traffic 1..."
+    },
+    {
+      "id": "8dec14e8920c",
+      "timestamp": "2026-06-30T18:54:39.856722",
+      "prompt": "Our current monolithic architecture is hitting a wall. A new Global Partnership will spike traffic 1..."
+    },
+    {
+      "id": "2ff2313921ec",
+      "timestamp": "2026-06-30T19:38:23.985213",
+      "prompt": "Should we launch a TikTok influencer campaign for our new enterprise tool?"
+    },
+    {
+      "id": "4fd9f7ff0111",
+      "timestamp": "2026-06-30T22:06:00.198840",
+      "prompt": "Should we migrate backend to on-premise for data sovereignty?"
+    },
+    {
+      "id": "91317310c67e",
+      "timestamp": "2026-07-07T18:34:19.214728",
+      "prompt": "Fix critical security bug"
+    },
+    {
+      "id": "211aa9dfa107",
+      "timestamp": "2026-07-07T19:10:06.276635",
+      "prompt": "Should we rebuild the auth service from scratch or refactor it?"
+    },
+    {
+      "id": "211aa9dfa107",
+      "timestamp": "2026-07-07T20:29:52.219165",
+      "prompt": "Should we rebuild the auth service from scratch or refactor it?"
+    },
+    {
+      "id": "211aa9dfa107",
+      "timestamp": "2026-07-09T18:32:09.227023",
+      "prompt": "Should we rebuild the auth service from scratch or refactor it?"
+    },
+    {
+      "id": "6e1147fea701",
+      "timestamp": "2026-07-09T18:34:26.863060",
+      "prompt": "test research wiring"
+    },
+    {
+      "id": "211aa9dfa107",
+      "timestamp": "2026-07-09T19:37:12.348825",
+      "prompt": "Should we rebuild the auth service from scratch or refactor it?"
+    },
+    {
+      "id": "61631f05a98b",
+      "timestamp": "2026-07-12T18:32:29.761839",
+      "prompt": "Should we migrate our monolith to microservices?"
+    },
+    {
+      "id": "61631f05a98b",
+      "timestamp": "2026-07-12T18:41:50.864901",
+      "prompt": "Should we migrate our monolith to microservices?"
+    },
+    {
+      "id": "61631f05a98b",
+      "timestamp": "2026-07-12T19:12:57.875952",
+      "prompt": "Should we migrate our monolith to microservices?"
     }
   ],
   "decisions": [],
-  "last_updated": "2026-06-15T19:16:19.527157"
+  "last_updated": "2026-07-12T19:12:57.876517"
 }

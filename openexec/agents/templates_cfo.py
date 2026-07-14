@@ -33,7 +33,8 @@ class CFOTemplate:
                     core_prompt=state.core_prompt,
                     data_corpus=state.data_corpus,
                     agent_name="cfo",
-                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None
+                    assumptions=state.assumptions if hasattr(state, 'assumptions') else None,
+                    research_cfg=getattr(state, 'research_cfg', None),
                 )
 
                 response_data = self.ai_client.complete_json_with_retry(
@@ -75,9 +76,36 @@ class CFOTemplate:
             reasoning={
                 "data_used": list(state.data_corpus.keys()),
                 "focus_areas": ["Budget", "ROI"]
-            }
+            },
+            is_fallback=True,
         )
         return report
+
+    def synthesize_team_position(self, team_reports: Dict[str, AgentReport], state: 'SimulationState') -> AgentReport:
+        """Synthesize reports from the CFO's team into a consolidated financial position."""
+        print("CFO Synthesizing: Consolidating input from Financial Analyst, Budget Planner, and Risk Analyst...")
+
+        team_context = "\n\n## INTERNAL TEAM REPORTS\n"
+        for member_name, report in team_reports.items():
+            team_context += f"\n### {member_name.upper()} Report\n- Summary: {report.summary}\n- Findings: {report.key_findings}\n"
+
+        enhanced_prompt = f"{state.core_prompt}\n\n{team_context}\n\n" \
+                         "Review the reports from your specialized financial team. Synthesize their findings " \
+                         "into a single, cohesive financial position for the board."
+
+        system_prompt = self.system_prompt + "\n\nMODALITY: You are now synthesizing team input. " \
+                                           "Ensure the final output reflects the team's quantitative research."
+
+        try:
+            response_data = self.ai_client.complete_json_with_retry(
+                prompt=enhanced_prompt,
+                system_prompt=system_prompt,
+                temperature=0.7
+            )
+            return AgentReport.from_llm_response("cfo", response_data)
+        except Exception as e:
+            print(f"CFO Synthesis failed: {e}. Falling back to standard analysis.")
+            return self.analyze(state)
 
 
     def review_others(self, reports: dict[str, AgentReport]) -> None:
