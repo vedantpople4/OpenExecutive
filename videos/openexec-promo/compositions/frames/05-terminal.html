@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>05-terminal</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-400.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 600;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-600.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-700.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 800;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-800.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 900;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-900.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "IBM Plex Mono";
+          font-weight: 500;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/ibm-plex-mono-500.woff2") format("woff2");
+        }
+
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          overflow: hidden;
+          font-family: "Barlow", sans-serif;
+          container-type: size;
+        }
+
+        .ground {
+          position: absolute;
+          inset: 0;
+          background: #111111;
+        }
+
+        .stage {
+          position: absolute;
+          inset: 0;
+        }
+
+        /* Mono kicker, top-left — matches Frame 4's chrome placement convention */
+        .kicker-wrap {
+          position: absolute;
+          top: 9cqh;
+          left: 5.5cqw;
+          display: flex;
+          align-items: center;
+          gap: 1cqw;
+          opacity: 0;
+        }
+
+        .rule-stub {
+          width: 36px;
+          height: 2px;
+          background: #e85d26;
+          flex: none;
+        }
+
+        .kicker {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.72cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #e85d26;
+          white-space: nowrap;
+        }
+
+        /* Terminal window — ink-black-alt surface, 1px border-dark, sharp corners */
+        .terminal-wrap {
+          position: absolute;
+          top: 20cqh;
+          left: 5.5cqw;
+          width: 78cqw;
+          transform-origin: 0% 0%;
+        }
+
+        .terminal {
+          background: #1a1a18;
+          border: 1px solid #282826;
+          border-radius: 0;
+          padding: 3.2cqw 3.5cqw;
+          min-height: 44cqh;
+        }
+
+        /* Terminal titlebar chrome — mono label, no traffic-light dots (flat system, 0 radius) */
+        .terminal-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-bottom: 1.8cqw;
+          margin-bottom: 2cqw;
+          border-bottom: 1px solid #282826;
+        }
+
+        .terminal-bar-label {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.72cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #888880;
+        }
+
+        .terminal-bar-dots {
+          display: flex;
+          gap: 0.6cqw;
+        }
+
+        .terminal-bar-dot {
+          width: 0.55cqw;
+          height: 0.55cqw;
+          background: #282826;
+        }
+
+        .terminal-body {
+          font-family: "IBM Plex Mono", monospace;
+          font-size: 1.15cqw;
+          line-height: 1.9;
+          color: #f0ece5;
+        }
+
+        .term-line {
+          display: flex;
+          align-items: baseline;
+          white-space: pre-wrap;
+          word-break: break-word;
+          min-height: 1.9em;
+        }
+
+        .term-prompt {
+          color: #e85d26;
+          flex: none;
+          margin-right: 0.7cqw;
+        }
+
+        .term-text {
+          color: #f0ece5;
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
+
+        .term-text.output {
+          color: #888880;
+        }
+
+        /* Restrained fire-orange underline seeded beneath the research-mix ratio (Frame 6 handoff) */
+        .term-underline-wrap {
+          position: relative;
+          display: inline-block;
+        }
+
+        .term-underline {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -0.15em;
+          height: 2px;
+          background: #e85d26;
+          transform-origin: 0% 50%;
+        }
+
+        .cursor {
+          display: inline-block;
+          width: 0.6cqw;
+          height: 1.3cqw;
+          background: #e85d26;
+          margin-left: 0.25cqw;
+          flex: none;
+        }
+      </style>
+
+      <div data-hf-id="hf-jvlz" id="root" data-composition-id="05-terminal" data-width="1920" data-height="1080" data-duration="12.5">
+        <div data-hf-id="hf-kwhc" id="ground-05-terminal" class="clip ground" data-start="0" data-duration="12.5" data-track-index="0"></div>
+
+        <div data-hf-id="hf-tan6" class="stage">
+          <div data-hf-id="hf-hcte" class="kicker-wrap" id="kicker-wrap">
+            <div data-hf-id="hf-har7" class="rule-stub"></div>
+            <div data-hf-id="hf-c2j3" class="kicker">Research grounding</div>
+          </div>
+
+          <div data-hf-id="hf-j6bk" class="terminal-wrap" id="terminal-wrap">
+            <div data-hf-id="hf-1ms0" class="terminal">
+              <div data-hf-id="hf-b8ww" class="terminal-bar">
+                <div data-hf-id="hf-w4mp" class="terminal-bar-dots">
+                  <div data-hf-id="hf-r45i" class="terminal-bar-dot"></div>
+                  <div data-hf-id="hf-psy2" class="terminal-bar-dot"></div>
+                  <div data-hf-id="hf-q793" class="terminal-bar-dot"></div>
+                </div>
+                <div data-hf-id="hf-mfw9" class="terminal-bar-label">openexec — zsh</div>
+              </div>
+              <div data-hf-id="hf-vv39" class="terminal-body">
+                <div data-hf-id="hf-bfze" class="term-line" id="line-cmd">
+                  <span data-hf-id="hf-zhky" class="term-prompt">$</span><span data-hf-id="hf-c7et" class="term-text" id="text-cmd"></span><span data-hf-id="hf-l3r0" class="cursor" id="cursor-cmd"></span>
+                </div>
+                <div data-hf-id="hf-l4lz" class="term-line" id="line-1">
+                  <span data-hf-id="hf-7gn5" class="term-text output" id="text-1"></span>
+                </div>
+                <div data-hf-id="hf-a94c" class="term-line" id="line-2">
+                  <span data-hf-id="hf-ber6" class="term-text output" id="text-2"></span>
+                </div>
+                <div data-hf-id="hf-b0s5" class="term-line" id="line-3">
+                  <span data-hf-id="hf-hkgz" class="term-text output" id="text-3">
+                    <span data-hf-id="hf-1o7v" id="text-3-pre"></span><span data-hf-id="hf-zhu1" class="term-underline-wrap" id="text-3-ul-wrap"><span data-hf-id="hf-ryt5" id="text-3-ul-text"></span><span data-hf-id="hf-jkg0" class="term-underline" id="text-3-underline"></span></span>
+                  </span>
+                </div>
+                <div data-hf-id="hf-tshu" class="term-line" id="line-4">
+                  <span data-hf-id="hf-u2zg" class="term-text output" id="text-4"></span>
+                </div>
+                <div data-hf-id="hf-iknq" class="term-line" id="line-prompt2">
+                  <span data-hf-id="hf-f01q" class="term-prompt" id="prompt-2" style="opacity: 0">$</span><span data-hf-id="hf-z825" class="cursor" id="cursor-2" style="opacity: 0"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        window.__timelines = window.__timelines || {};
+
+        var kickerWrap = document.getElementById("kicker-wrap");
+        var terminalWrap = document.getElementById("terminal-wrap");
+
+        var textCmd = document.getElementById("text-cmd");
+        var cursorCmd = document.getElementById("cursor-cmd");
+
+        var text1 = document.getElementById("text-1");
+        var text2 = document.getElementById("text-2");
+        var text3Pre = document.getElementById("text-3-pre");
+        var text3UlText = document.getElementById("text-3-ul-text");
+        var text3Underline = document.getElementById("text-3-underline");
+        var text4 = document.getElementById("text-4");
+
+        var prompt2 = document.getElementById("prompt-2");
+        var cursor2 = document.getElementById("cursor-2");
+
+        // Real content, verbatim from STORYBOARD.md — no paraphrasing.
+        var CMD =
+          'openexec run "Should we migrate our monolith to microservices?" --teams --research --research-mix web=0.7,kb=0.3';
+        var LINE1 = "Starting Simulation...";
+        var LINE2 = "=> Targeted simulation: cto";
+        // The ratio clause underlined for the Frame 6 handoff. Underline sits under
+        // the trailing "web:0.7 / kb:0.3" segment — split the line at that point.
+        var LINE3_MAIN = "=> Research grounding enabled -- ";
+        var LINE3_RATIO = "web:0.7 / kb:0.3";
+        var LINE4 = "-> Report: board_report.md";
+
+        var tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-1.0s): ink-black ground already painted by the .ground clip.
+        // Terminal window spring-pops into place, left-anchored — smooth power3 settle,
+        // no overshoot (house style; no bounce anywhere in this video per STORYBOARD.md).
+        tl.fromTo(
+          terminalWrap,
+          { scale: 0.92, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.6, ease: "power3.out" },
+          0.1
+        );
+        tl.fromTo(kickerWrap, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power3.out" }, 0.3);
+
+        // Command-prompt caret blinks from the moment the terminal is up (empty prompt).
+        // Deterministic sin-based blink drivers below cover the whole 12s; visibility of
+        // each caret element is gated by its own scene window via opacity toggles in onUpdate.
+
+        // Scene 2 (1.0-5.0s): the real command types on character-by-character behind the caret.
+        // Smooth-slice continuous typewriter (no edits/typos in this beat — it's a proof shot,
+        // not a "human fumbling" beat) per discrete-text-sequence.md's smooth-slice variation.
+        var CMD_START = 1.0;
+        var CMD_DUR = 4.0;
+        var cmdLen = { v: 0 };
+        tl.to(
+          cmdLen,
+          {
+            v: CMD.length,
+            duration: CMD_DUR,
+            ease: "none",
+            onUpdate: function () {
+              textCmd.textContent = CMD.substring(0, Math.floor(cmdLen.v));
+            },
+          },
+          CMD_START
+        );
+
+        // Scene 3 (5.0-6.0s): enter; caret drops to a new line; "Starting Simulation..." types on.
+        var L1_START = 5.0;
+        var L1_DUR = 0.9;
+        var l1Len = { v: 0 };
+        tl.to(
+          l1Len,
+          {
+            v: LINE1.length,
+            duration: L1_DUR,
+            ease: "none",
+            onUpdate: function () {
+              text1.textContent = LINE1.substring(0, Math.floor(l1Len.v));
+            },
+          },
+          L1_START
+        );
+
+        // Scene 4 (6.0-8.0s): hard-cut line-append (faster than character typing — varies pace).
+        tl.set(text2, { textContent: LINE2 }, 6.4);
+
+        // Scene 5 (8.0-10.0s): hard-cut line-append; on arrival a restrained fire-orange
+        // underline draws beneath "web:0.7 / kb:0.3" — seeds Frame 6's handoff.
+        tl.set(text3Pre, { textContent: LINE3_MAIN }, 8.4);
+        tl.set(text3UlText, { textContent: LINE3_RATIO }, 8.4);
+        tl.fromTo(
+          text3Underline,
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.5, ease: "power2.out" },
+          8.6
+        );
+
+        // Scene 6 (10.0-12.0s): final line reveals; caret settles blinking at the new prompt.
+        tl.set(text4, { textContent: LINE4 }, 10.4);
+        tl.set(prompt2, { opacity: 1 }, 10.4);
+        tl.set(cursor2, { opacity: 1 }, 10.4);
+
+        // --- Deterministic caret blink (sin-based, never CSS @keyframes) ---
+        // Command-line caret blinks while Scene 1-2 own it (0.1s - 5.0s), then the second
+        // prompt's caret (Scene 6, from 10.4s) takes over. Both driven off one sin sweep so
+        // there is a single source of blink truth across the whole 12s composition.
+        var TOTAL_DURATION = 12;
+        var BLINK_CYCLES = 15; // ~0.8s period across 12s — reads as terminal-idle, not glitchy
+        var blinkDriver = { p: 0 };
+        tl.to(
+          blinkDriver,
+          {
+            p: Math.PI * 2 * BLINK_CYCLES,
+            duration: TOTAL_DURATION,
+            ease: "none",
+            onUpdate: function () {
+              var on = Math.sin(blinkDriver.p) > 0 ? "1" : "0";
+              var t = blinkDriver.p / ((Math.PI * 2 * BLINK_CYCLES) / TOTAL_DURATION);
+              // Command-line caret: solid while actively typing (1.0-5.0s), blinks 0.1-1.0s
+              // and holds hidden once the enter/next line has happened (>=5.0s).
+              if (t < 0.1) {
+                cursorCmd.style.opacity = "0";
+              } else if (t < 1.0) {
+                cursorCmd.style.opacity = on;
+              } else if (t < 5.0) {
+                cursorCmd.style.opacity = "1"; // solid while typing, per context-sensitive-cursor "non-blinking during active typing"
+              } else {
+                cursorCmd.style.opacity = "0";
+              }
+              // Second-prompt caret: blinks once it appears at 10.4s.
+              if (t >= 10.4) {
+                cursor2.style.opacity = on;
+              }
+            },
+          },
+          0
+        );
+
+        window.__timelines["05-terminal"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

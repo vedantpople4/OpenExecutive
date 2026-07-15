@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>04-teams</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-400.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 600;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-600.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-700.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 800;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-800.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 900;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-900.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "IBM Plex Mono";
+          font-weight: 500;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/ibm-plex-mono-500.woff2") format("woff2");
+        }
+
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          overflow: hidden;
+          font-family: "Barlow", sans-serif;
+          container-type: size;
+        }
+
+        .ground {
+          position: absolute;
+          inset: 0;
+          background: #111111;
+        }
+
+        .stage {
+          position: absolute;
+          inset: 0;
+        }
+
+        /* Chrome — mono kicker top-left, per frame.md kicker component */
+        .kicker-wrap {
+          position: absolute;
+          top: 8cqh;
+          left: 5.5cqw;
+          display: flex;
+          align-items: center;
+          gap: 1cqw;
+          opacity: 0;
+        }
+
+        .rule-stub {
+          width: 36px;
+          height: 2px;
+          background: #e85d26;
+          flex: none;
+        }
+
+        .kicker {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.72cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #e85d26;
+          white-space: nowrap;
+        }
+
+        /* 4-column org-chart grid, top-anchored, filling the 83% keep-out region */
+        .org-grid {
+          position: absolute;
+          top: 22cqh;
+          left: 5.5cqw;
+          width: 89cqw;
+          height: 58cqh;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          column-gap: 3.5cqw;
+        }
+
+        .col {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        /* CXO node — Barlow h3 lowercase cream, top-border stub like stat-card */
+        .cxo-node {
+          position: relative;
+          width: 100%;
+          padding-top: 1.4cqh;
+          border-top: 1px solid #282826;
+          opacity: 0;
+        }
+
+        .cxo-name {
+          margin: 0;
+          font-family: "Barlow", sans-serif;
+          font-weight: 600;
+          font-size: 2.8cqw;
+          line-height: 1.2;
+          letter-spacing: -0.02em;
+          text-transform: lowercase;
+          color: #f0ece5;
+        }
+
+        /* Connector column — vertical hairline SVG drawn upward from sub-agents into CXO */
+        .connector-wrap {
+          position: relative;
+          width: 100%;
+          height: 5.2cqh;
+        }
+
+        .connector-svg {
+          position: absolute;
+          top: 0;
+          left: 1.2cqw;
+          width: 1px;
+          height: 100%;
+          overflow: visible;
+        }
+
+        .connector-svg path {
+          fill: none;
+          stroke: #282826;
+          stroke-width: 1.5;
+        }
+
+        /* Sub-agent list — IBM Plex Mono uppercase labels */
+        .sub-list {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5cqh;
+        }
+
+        .sub-item {
+          display: flex;
+          align-items: baseline;
+          gap: 0.6cqw;
+          opacity: 0;
+        }
+
+        .sub-marker {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.72cqw;
+          color: #e85d26;
+          flex: none;
+        }
+
+        .sub-label {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.85cqw;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: #888880;
+          white-space: nowrap;
+        }
+      </style>
+
+      <div data-hf-id="hf-3b4s" id="root" data-composition-id="04-teams" data-width="1920" data-height="1080" data-duration="12.5">
+        <div data-hf-id="hf-kwhc" id="ground-04-teams" class="clip ground" data-start="0" data-duration="12.5" data-track-index="0"></div>
+
+        <div data-hf-id="hf-tan6" class="stage">
+          <div data-hf-id="hf-hcte" class="kicker-wrap" id="kicker-wrap">
+            <div data-hf-id="hf-har7" class="rule-stub"></div>
+            <div data-hf-id="hf-9xno" class="kicker">Hierarchical Teams</div>
+          </div>
+
+          <div data-hf-id="hf-l76n" class="org-grid">
+            <!-- CEO column -->
+            <div data-hf-id="hf-rwam" class="col" id="col-ceo">
+              <div data-hf-id="hf-v2dr" class="cxo-node" id="node-ceo">
+                <h3 data-hf-id="hf-mrit" class="cxo-name">ceo</h3>
+              </div>
+              <div data-hf-id="hf-ok6i" class="connector-wrap">
+                <svg data-hf-id="hf-lxdr" class="connector-svg" viewBox="0 0 2 100" preserveAspectRatio="none">
+                  <path data-hf-id="hf-vr3e" id="conn-ceo" d="M 1 100 L 1 0" />
+                </svg>
+              </div>
+              <div data-hf-id="hf-mv7v" class="sub-list">
+                <div data-hf-id="hf-7knl" class="sub-item" id="sub-ceo-0"><span data-hf-id="hf-90hp" class="sub-marker">/</span><span data-hf-id="hf-fula" class="sub-label">chief_of_staff</span></div>
+                <div data-hf-id="hf-6szs" class="sub-item" id="sub-ceo-1"><span data-hf-id="hf-x3v5" class="sub-marker">/</span><span data-hf-id="hf-vcj8" class="sub-label">strategy_associate</span></div>
+              </div>
+            </div>
+
+            <!-- CFO column -->
+            <div data-hf-id="hf-r2vr" class="col" id="col-cfo">
+              <div data-hf-id="hf-0t06" class="cxo-node" id="node-cfo">
+                <h3 data-hf-id="hf-w80q" class="cxo-name">cfo</h3>
+              </div>
+              <div data-hf-id="hf-pvji" class="connector-wrap">
+                <svg data-hf-id="hf-zsqn" class="connector-svg" viewBox="0 0 2 100" preserveAspectRatio="none">
+                  <path data-hf-id="hf-rqv7" id="conn-cfo" d="M 1 100 L 1 0" />
+                </svg>
+              </div>
+              <div data-hf-id="hf-ncvf" class="sub-list">
+                <div data-hf-id="hf-wxzo" class="sub-item" id="sub-cfo-0"><span data-hf-id="hf-yas8" class="sub-marker">/</span><span data-hf-id="hf-n2ie" class="sub-label">financial_analyst</span></div>
+                <div data-hf-id="hf-xpnh" class="sub-item" id="sub-cfo-1"><span data-hf-id="hf-xwh7" class="sub-marker">/</span><span data-hf-id="hf-y0vi" class="sub-label">budget_planner</span></div>
+                <div data-hf-id="hf-3vda" class="sub-item" id="sub-cfo-2"><span data-hf-id="hf-vwy2" class="sub-marker">/</span><span data-hf-id="hf-h47m" class="sub-label">risk_analyst</span></div>
+              </div>
+            </div>
+
+            <!-- CTO column -->
+            <div data-hf-id="hf-4kax" class="col" id="col-cto">
+              <div data-hf-id="hf-ecec" class="cxo-node" id="node-cto">
+                <h3 data-hf-id="hf-8s7w" class="cxo-name">cto</h3>
+              </div>
+              <div data-hf-id="hf-q9uj" class="connector-wrap">
+                <svg data-hf-id="hf-zefm" class="connector-svg" viewBox="0 0 2 100" preserveAspectRatio="none">
+                  <path data-hf-id="hf-afpx" id="conn-cto" d="M 1 100 L 1 0" />
+                </svg>
+              </div>
+              <div data-hf-id="hf-myke" class="sub-list">
+                <div data-hf-id="hf-7hj2" class="sub-item" id="sub-cto-0"><span data-hf-id="hf-vin1" class="sub-marker">/</span><span data-hf-id="hf-5rsq" class="sub-label">engineering_lead</span></div>
+                <div data-hf-id="hf-bfn3" class="sub-item" id="sub-cto-1"><span data-hf-id="hf-wpk4" class="sub-marker">/</span><span data-hf-id="hf-3mk0" class="sub-label">solutions_architect</span></div>
+                <div data-hf-id="hf-2rr8" class="sub-item" id="sub-cto-2"><span data-hf-id="hf-wb93" class="sub-marker">/</span><span data-hf-id="hf-xcr0" class="sub-label">sre</span></div>
+              </div>
+            </div>
+
+            <!-- CMO column -->
+            <div data-hf-id="hf-ej9i" class="col" id="col-cmo">
+              <div data-hf-id="hf-4hev" class="cxo-node" id="node-cmo">
+                <h3 data-hf-id="hf-81q5" class="cxo-name">cmo</h3>
+              </div>
+              <div data-hf-id="hf-qo5k" class="connector-wrap">
+                <svg data-hf-id="hf-z04l" class="connector-svg" viewBox="0 0 2 100" preserveAspectRatio="none">
+                  <path data-hf-id="hf-7dqa" id="conn-cmo" d="M 1 100 L 1 0" />
+                </svg>
+              </div>
+              <div data-hf-id="hf-mk9d" class="sub-list">
+                <div data-hf-id="hf-14gp" class="sub-item" id="sub-cmo-0"><span data-hf-id="hf-0ome" class="sub-marker">/</span><span data-hf-id="hf-wrn3" class="sub-label">growth_marketer</span></div>
+                <div data-hf-id="hf-0csw" class="sub-item" id="sub-cmo-1"><span data-hf-id="hf-0abd" class="sub-marker">/</span><span data-hf-id="hf-zoag" class="sub-label">content_strategist</span></div>
+                <div data-hf-id="hf-90or" class="sub-item" id="sub-cmo-2"><span data-hf-id="hf-8i7n" class="sub-marker">/</span><span data-hf-id="hf-fznj" class="sub-label">seo_specialist</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        window.__timelines = window.__timelines || {};
+
+        var tl = gsap.timeline({ paused: true });
+
+        // Prep connector strokes: measure real geometry, start fully offset (invisible).
+        // Per svg-path-draw rule: dasharray = pathLength, dashoffset = pathLength -> 0.
+        ["ceo", "cfo", "cto", "cmo"].forEach(function (key) {
+          var path = document.getElementById("conn-" + key);
+          var len = path.getTotalLength();
+          path.style.strokeDasharray = len;
+          path.style.strokeDashoffset = len;
+        });
+
+        // Scene 1 (0.0-1.0s): ink-black ground already painted by the .ground clip.
+        // Mono kicker "HIERARCHICAL TEAMS" fades in top-left. Nothing else on screen.
+        tl.fromTo(
+          "#kicker-wrap",
+          { opacity: 0 },
+          { opacity: 1, duration: 0.6, ease: "power3.out" },
+          0.3
+        );
+
+        // Helper: build one CXO column's reveal — node lands via short slide+fade
+        // (center-outward-expansion flavor: node settles from a slightly raised,
+        // scaled-down state into place), then its hairline connector draws upward
+        // into the node (svg-path-draw), then sub-agents cascade in beneath.
+        function buildColumn(key, subCount, startAt) {
+          var nodeSel = "#node-" + key;
+          var connSel = "#conn-" + key;
+
+          // CXO node: slide + fade + slight scale settle, out-eased.
+          tl.fromTo(
+            nodeSel,
+            { opacity: 0, y: -14, scale: 0.92 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" },
+            startAt
+          );
+
+          // Connector hairline draws upward (dashoffset -> 0) right after the node lands.
+          tl.to(
+            connSel,
+            { strokeDashoffset: 0, duration: 0.45, ease: "power2.out" },
+            startAt + 0.35
+          );
+
+          // Sub-agents cascade in beneath, staggered, timed to land as the
+          // connector finishes drawing.
+          var subSelectors = [];
+          for (var i = 0; i < subCount; i++) {
+            subSelectors.push("#sub-" + key + "-" + i);
+          }
+          tl.fromTo(
+            subSelectors,
+            { opacity: 0, y: 10 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.4,
+              ease: "power3.out",
+              stagger: 0.12
+            },
+            startAt + 0.55
+          );
+        }
+
+        // Scene 2 (1.0-3.5s): CEO column — 2 sub-agents.
+        buildColumn("ceo", 2, 1.0);
+
+        // Scene 3 (3.5-6.5s): CFO column — 3 sub-agents.
+        buildColumn("cfo", 3, 3.5);
+
+        // Scene 4 (6.5-9.5s): CTO column — 3 sub-agents.
+        buildColumn("cto", 3, 6.5);
+
+        // Scene 5 (9.5-12.0s): CMO column — 3 sub-agents. All four columns now
+        // co-resident; the complete hierarchy holds static to end with a subtle
+        // deterministic jitter (sine-based, no Math.random/Date.now) on the full
+        // grid as a quiet settle breather.
+        buildColumn("cmo", 3, 9.5);
+
+        var jitterTarget = document.querySelector(".org-grid");
+        var jitterDriver = { t: 0 };
+        tl.to(
+          jitterDriver,
+          {
+            t: 12,
+            duration: 12,
+            ease: "none",
+            onUpdate: function () {
+              if (jitterDriver.t >= 11.0) {
+                var p = (jitterDriver.t - 11.0) * Math.PI * 2 * 0.5;
+                var jitterY = Math.sin(p) * 0.6;
+                jitterTarget.style.transform = "translateY(" + jitterY.toFixed(2) + "px)";
+              } else {
+                jitterTarget.style.transform = "translateY(0px)";
+              }
+            }
+          },
+          0
+        );
+
+        window.__timelines["04-teams"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

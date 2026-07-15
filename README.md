@@ -6,6 +6,22 @@
 
 **In short:** It replaces 3 hours of stakeholder meetings with a 60-second command - and gives you a report you can act on.
 
+## Demo
+
+https://github.com/user-attachments/assets/PLACEHOLDER-replace-after-first-push
+
+<!--
+  GitHub only renders an inline player for videos uploaded through its own
+  asset CDN (drag-and-drop in an issue/PR/release, or the URL above). A plain
+  relative path to a committed .mp4 renders as a download link, not a player.
+  To get the CDN URL: open a new GitHub issue on this repo, drag
+  videos/openexec-promo/renders/video.mp4 into the comment box, copy the
+  https://github.com/user-attachments/assets/... URL it generates, paste it
+  above in place of the placeholder, then discard the issue without submitting.
+-->
+
+Or watch/download the file directly: [`videos/openexec-promo/renders/video.mp4`](videos/openexec-promo/renders/video.mp4) (72s)
+
 **What do you get?**
 A single, structured markdown file that includes:
 *   **The Verdict:** The board's final decision and strategy.

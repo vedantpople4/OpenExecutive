@@ -49,4 +49,10 @@ memory/*
 # Installed skill packages (npx skills add)
 .agents/
 
+# HyperFrames video projects: keep source + rendered MP4, ignore build/preview artifacts
+videos/*/.hyperframes/
+videos/*/.thumbnails/
+videos/*/snapshots/
+videos/*/node_modules/
+
 
