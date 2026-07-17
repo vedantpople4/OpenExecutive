@@ -79,7 +79,7 @@ keyMessage: this isn't a yes-man.
 - voiceover: ""
 - duration: 8s
 - transition_in: crossfade
-- status: animated
+- status: built
 - src: compositions/frames/02-after-tease.html
 - type: benefit_highlight
 - persuasion: Future pacing
