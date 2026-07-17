@@ -8,13 +8,7 @@
 
 ## Demo
 
-<!--
-  GitHub renders an inline <video> player when the src is a raw.githubusercontent.com
-  URL to a file committed in this repo — no manual upload step needed, unlike a plain
-  relative path (which only renders as a download link). This points at the
-  `adding-teams` branch; once merged, update the branch segment to `main`.
--->
-<video src="https://raw.githubusercontent.com/vedantpople4/OpenExecutive/adding-teams/videos/openexec-promo/renders/video.mp4" controls muted width="720"></video>
+https://github.com/user-attachments/assets/2e66bc52-2a05-4dd3-9a2c-a73097de03db
 
 70s overview: the board's hierarchical teams, live research grounding, and a real
 decision (with dissent) from this project's own `board_report.md`. If the player
