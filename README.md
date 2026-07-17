@@ -8,19 +8,18 @@
 
 ## Demo
 
-https://github.com/user-attachments/assets/PLACEHOLDER-replace-after-first-push
-
 <!--
-  GitHub only renders an inline player for videos uploaded through its own
-  asset CDN (drag-and-drop in an issue/PR/release, or the URL above). A plain
-  relative path to a committed .mp4 renders as a download link, not a player.
-  To get the CDN URL: open a new GitHub issue on this repo, drag
-  videos/openexec-promo/renders/video.mp4 into the comment box, copy the
-  https://github.com/user-attachments/assets/... URL it generates, paste it
-  above in place of the placeholder, then discard the issue without submitting.
+  GitHub renders an inline <video> player when the src is a raw.githubusercontent.com
+  URL to a file committed in this repo — no manual upload step needed, unlike a plain
+  relative path (which only renders as a download link). This points at the
+  `adding-teams` branch; once merged, update the branch segment to `main`.
 -->
+<video src="https://raw.githubusercontent.com/vedantpople4/OpenExecutive/adding-teams/videos/openexec-promo/renders/video.mp4" controls muted width="720"></video>
 
-Or watch/download the file directly: [`videos/openexec-promo/renders/video.mp4`](videos/openexec-promo/renders/video.mp4) (72s)
+70s overview: the board's hierarchical teams, live research grounding, and a real
+decision (with dissent) from this project's own `board_report.md`. If the player
+above doesn't render for you, watch/download it directly:
+[`videos/openexec-promo/renders/video.mp4`](videos/openexec-promo/renders/video.mp4)
 
 **What do you get?**
 A single, structured markdown file that includes:
