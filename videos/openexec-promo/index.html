@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1920, height=1080">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
     <style>
       * {
@@ -33,22 +33,93 @@
     </style>
   </head>
   <body>
-    <div data-hf-id="hf-jamh" id="root" data-composition-id="main" data-start="0" data-duration="72" data-width="1920" data-height="1080">
-      <div data-hf-id="hf-d4d0" id="el-01-before" class="scene" data-composition-id="01-before" data-composition-src="compositions/frames/01-before.html" data-start="0" data-duration="7.5" data-track-index="0"></div>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="70.6"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="el-01-before"
+        class="scene"
+        data-composition-id="01-before"
+        data-composition-src="compositions/frames/01-before.html"
+        data-start="0"
+        data-duration="7.5"
+        data-track-index="0"
+      ></div>
 
-      <div data-hf-id="hf-zp8v" id="el-02-after-tease" class="scene" data-composition-id="02-after-tease" data-composition-src="compositions/frames/02-after-tease.html" data-start="7" data-duration="6.59" data-track-index="1"></div>
+      <div
+        id="el-02-after-tease"
+        class="scene"
+        data-composition-id="02-after-tease"
+        data-composition-src="compositions/frames/02-after-tease.html"
+        data-start="7"
+        data-duration="7"
+        data-track-index="1"
+      ></div>
 
-      <div data-hf-id="hf-i4fw" id="el-03-bridge-product" class="scene" data-composition-id="03-bridge-product" data-composition-src="compositions/frames/03-bridge-product.html" data-start="11.69" data-duration="7.5" data-track-index="0"></div>
+      <div
+        id="el-03-bridge-product"
+        class="scene"
+        data-composition-id="03-bridge-product"
+        data-composition-src="compositions/frames/03-bridge-product.html"
+        data-start="13.6"
+        data-duration="7.5"
+        data-track-index="0"
+      ></div>
 
-      <div data-hf-id="hf-qiby" id="el-04-teams" class="scene" data-composition-id="04-teams" data-composition-src="compositions/frames/04-teams.html" data-start="22" data-duration="12.5" data-track-index="1"></div>
+      <div
+        id="el-04-teams"
+        class="scene"
+        data-composition-id="04-teams"
+        data-composition-src="compositions/frames/04-teams.html"
+        data-start="20.6"
+        data-duration="12.5"
+        data-track-index="1"
+      ></div>
 
-      <div data-hf-id="hf-i368" id="el-05-terminal" class="scene" data-composition-id="05-terminal" data-composition-src="compositions/frames/05-terminal.html" data-start="34" data-duration="12.5" data-track-index="0"></div>
+      <div
+        id="el-05-terminal"
+        class="scene"
+        data-composition-id="05-terminal"
+        data-composition-src="compositions/frames/05-terminal.html"
+        data-start="32.6"
+        data-duration="12.5"
+        data-track-index="0"
+      ></div>
 
-      <div data-hf-id="hf-9m2x" id="el-06-research-mix" class="scene" data-composition-id="06-research-mix" data-composition-src="compositions/frames/06-research-mix.html" data-start="46" data-duration="8.4" data-track-index="1"></div>
+      <div
+        id="el-06-research-mix"
+        class="scene"
+        data-composition-id="06-research-mix"
+        data-composition-src="compositions/frames/06-research-mix.html"
+        data-start="44.6"
+        data-duration="8.4"
+        data-track-index="1"
+      ></div>
 
-      <div data-hf-id="hf-xo9u" id="el-07-resolution" class="scene" data-composition-id="07-resolution" data-composition-src="compositions/frames/07-resolution.html" data-start="54" data-duration="12.4" data-track-index="0"></div>
+      <div
+        id="el-07-resolution"
+        class="scene"
+        data-composition-id="07-resolution"
+        data-composition-src="compositions/frames/07-resolution.html"
+        data-start="52.6"
+        data-duration="12.4"
+        data-track-index="0"
+      ></div>
 
-      <div data-hf-id="hf-uuej" id="el-08-cta" class="scene" data-composition-id="08-cta" data-composition-src="compositions/frames/08-cta.html" data-start="66" data-duration="6" data-track-index="1"></div>
+      <div
+        id="el-08-cta"
+        class="scene"
+        data-composition-id="08-cta"
+        data-composition-src="compositions/frames/08-cta.html"
+        data-start="64.6"
+        data-duration="6"
+        data-track-index="1"
+      ></div>
 
     </div>
 
@@ -59,19 +130,19 @@
       (function () { var tl = window.__timelines["main"];
         tl.to("#el-01-before", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 7);
         tl.fromTo("#el-02-after-tease", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 7);
-        tl.to("#el-02-after-tease", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 15);
-        tl.fromTo("#el-03-bridge-product", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 15);
-        tl.to("#el-03-bridge-product", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 22);
-        tl.fromTo("#el-04-teams", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 22);
-        tl.to("#el-04-teams", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 34);
-        tl.fromTo("#el-05-terminal", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 34);
-        tl.to("#el-05-terminal", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 46);
-        tl.fromTo("#el-06-research-mix", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 46);
-        tl.to("#el-06-research-mix", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 54);
-        tl.fromTo("#el-07-resolution", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 54);
-        tl.to("#el-07-resolution", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 66);
-        tl.fromTo("#el-08-cta", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 66);
-        tl.to({}, { duration: 72 }, 0); // full-span anchor — main.duration() == composition total (Studio master duration)
+        tl.to("#el-02-after-tease", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 13.6);
+        tl.fromTo("#el-03-bridge-product", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 13.6);
+        tl.to("#el-03-bridge-product", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 20.6);
+        tl.fromTo("#el-04-teams", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 20.6);
+        tl.to("#el-04-teams", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 32.6);
+        tl.fromTo("#el-05-terminal", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 32.6);
+        tl.to("#el-05-terminal", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 44.6);
+        tl.fromTo("#el-06-research-mix", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 44.6);
+        tl.to("#el-06-research-mix", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 52.6);
+        tl.fromTo("#el-07-resolution", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 52.6);
+        tl.to("#el-07-resolution", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 64.6);
+        tl.fromTo("#el-08-cta", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 64.6);
+        tl.to({}, { duration: 70.6 }, 0); // full-span anchor — main.duration() == composition total (Studio master duration)
       })();
     </script>
   </body>

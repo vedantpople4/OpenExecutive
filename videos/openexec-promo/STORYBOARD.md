@@ -77,9 +77,9 @@ keyMessage: this isn't a yes-man.
 
 - scene: The two hook lines clear; two new lines assemble in their place.
 - voiceover: ""
-- duration: 8s
+- duration: 6.6s
 - transition_in: crossfade
-- status: built
+- status: animated
 - src: compositions/frames/02-after-tease.html
 - type: benefit_highlight
 - persuasion: Future pacing
