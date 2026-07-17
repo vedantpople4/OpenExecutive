@@ -6,6 +6,21 @@
 
 **In short:** It replaces 3 hours of stakeholder meetings with a 60-second command - and gives you a report you can act on.
 
+## Demo
+
+<!--
+  GitHub renders an inline <video> player when the src is a raw.githubusercontent.com
+  URL to a file committed in this repo — no manual upload step needed, unlike a plain
+  relative path (which only renders as a download link). This points at the
+  `adding-teams` branch; once merged, update the branch segment to `main`.
+-->
+<video src="https://raw.githubusercontent.com/vedantpople4/OpenExecutive/adding-teams/videos/openexec-promo/renders/video.mp4" controls muted width="720"></video>
+
+70s overview: the board's hierarchical teams, live research grounding, and a real
+decision (with dissent) from this project's own `board_report.md`. If the player
+above doesn't render for you, watch/download it directly:
+[`videos/openexec-promo/renders/video.mp4`](videos/openexec-promo/renders/video.mp4)
+
 **What do you get?**
 A single, structured markdown file that includes:
 *   **The Verdict:** The board's final decision and strategy.

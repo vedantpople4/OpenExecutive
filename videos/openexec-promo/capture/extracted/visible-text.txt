@@ -1,0 +1,54 @@
+PRODUCT: OpenExec — a CLI executive board decision simulator (Python/Typer).
+
+MESSAGE (the one thing this promo must communicate):
+OpenExec's board doesn't just agree with itself: hierarchical agent teams and
+research-grounded analysis produce real, defensible decisions — dissent included.
+
+ANGLE: Cold-open on real conflict, then reveal how the system got there.
+
+REAL ORG HIERARCHY (source: openexec/agents/__init__.py, TEAM_STRUCTURE):
+  CEO -> chief_of_staff, strategy_associate
+  CFO -> financial_analyst, budget_planner, risk_analyst
+  CTO -> engineering_lead, solutions_architect, sre
+  CMO -> growth_marketer, content_strategist, seo_specialist
+
+REAL CLI COMMAND:
+  openexec run "Should we migrate our monolith to microservices?" --teams --research --research-mix web=0.7,kb=0.3
+
+REAL PLAIN-TEXT TERMINAL OUTPUT LINES (product UX is intentionally plain text,
+no color, no markdown — this is a deliberate design decision, worth reflecting
+in the video's own visual restraint):
+  Starting Simulation...
+  => Targeted simulation: cto
+  => Research grounding enabled -- web:0.7 / kb:0.3
+  -> Report: board_report.md
+
+REAL EXCERPT FROM board_report.md (an actual generated report in this repo,
+decision: "Should we migrate our monolith to microservices?"):
+  Executive Summary: "The debate on microservices migration is stalled due to
+  a lack of consensus, but the constraints regarding phasing and resource
+  allocation are clear. We must immediately pivot from debate to execution
+  by mandating specific, time-bound actions to define the path forward."
+
+  Dissenting Points: CTO
+
+  Final Priority Actions:
+    - Define the phased migration blueprint (MVP scope) | Owner: CTO | Timeframe: 1 Week
+    - Finalize resource allocation for observability tooling | Owner: CFO | Timeframe: 3 Days
+    - Schedule a mandatory decision meeting focused solely on the integration
+      strategy | Owner: CEO | Timeframe: 48 Hours
+
+STORY BEATS (5, per approved angle):
+  1. Hook: the real CTO dissent — "the board didn't just agree with itself."
+  2. Reveal: org chart splits from 4 CXOs into their real sub-agent teams.
+  3. Proof: terminal — real command + real plain-text output.
+  4. Mechanism: a dial/gauge animates to the real research-mix ratio (web 0.7 / kb 0.3).
+  5. Close: real final priority actions with owners + timeframes; CTA (install command).
+
+AUDIO: Silent — no narration, no music (explicit user choice). All meaning
+carries through on-screen text and motion.
+
+VISUAL STYLE DIRECTION: monospace/terminal-native, dark background, minimal —
+match the product's own plain-text CLI aesthetic rather than generic corporate
+gloss. No invented statistics or logos; every on-screen claim traces to the
+real material above.

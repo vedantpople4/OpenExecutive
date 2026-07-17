@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>07-resolution</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-400.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 600;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-600.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-700.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 800;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-800.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "Barlow";
+          font-weight: 900;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/barlow-900.woff2") format("woff2");
+        }
+        @font-face {
+          font-family: "IBM Plex Mono";
+          font-weight: 500;
+          font-style: normal;
+          font-display: swap;
+          src: url("assets/fonts/ibm-plex-mono-500.woff2") format("woff2");
+        }
+
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          overflow: hidden;
+          font-family: "Barlow", sans-serif;
+          container-type: size;
+        }
+
+        .ground {
+          position: absolute;
+          inset: 0;
+          background: #111111;
+        }
+
+        .stage {
+          position: absolute;
+          inset: 0;
+        }
+
+        /* Chrome — mono kicker top-left, per frame.md kicker component */
+        .kicker-wrap {
+          position: absolute;
+          top: 8cqh;
+          left: 5.5cqw;
+          display: flex;
+          align-items: center;
+          gap: 1cqw;
+          opacity: 0;
+        }
+
+        .rule-stub {
+          width: 36px;
+          height: 2px;
+          background: #e85d26;
+          flex: none;
+        }
+
+        .kicker {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.72cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #e85d26;
+          white-space: nowrap;
+        }
+
+        /* Vertical list region — three Stat Grid-skinned cards, top-border-only chrome
+           per frame.md's "3 · Stat Grid" treatment, adapted to text rows instead of
+           numerals (per STORYBOARD's Adapt note). Sits left-anchored, fully inside the
+           top-83% keep-out (cutoff 900px on this 1080-tall canvas). */
+        .list-wrap {
+          position: absolute;
+          top: 20cqh;
+          left: 5.5cqw;
+          width: 78cqw;
+          display: flex;
+          flex-direction: column;
+          gap: 3.4cqh;
+        }
+
+        .action-card {
+          border-top: 1px solid #282826;
+          padding-top: 2cqh;
+          opacity: 0;
+        }
+
+        .action-index {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.72cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #888880;
+          margin-bottom: 1cqh;
+        }
+
+        .action-task {
+          font-family: "Barlow", sans-serif;
+          font-weight: 400;
+          font-size: 1.9cqw;
+          line-height: 1.35;
+          color: #f0ece5;
+          max-width: 68cqw;
+          margin-bottom: 1.4cqh;
+        }
+
+        .action-meta {
+          display: flex;
+          align-items: center;
+          gap: 2.4cqw;
+        }
+
+        .action-meta-item {
+          display: flex;
+          align-items: baseline;
+          gap: 0.6cqw;
+        }
+
+        .action-meta-label {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.72cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #505048;
+        }
+
+        .action-meta-value {
+          font-family: "IBM Plex Mono", monospace;
+          font-weight: 500;
+          font-size: 0.95cqw;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #e85d26;
+        }
+      </style>
+
+      <div data-hf-id="hf-mpxz" id="root" data-composition-id="07-resolution" data-width="1920" data-height="1080" data-duration="12.4">
+        <div data-hf-id="hf-kwhc" id="ground-07-resolution" class="clip ground" data-start="0" data-duration="12.4" data-track-index="0"></div>
+
+        <div data-hf-id="hf-tan6" class="stage">
+          <div data-hf-id="hf-hcte" class="kicker-wrap" id="kicker-wrap">
+            <div data-hf-id="hf-har7" class="rule-stub"></div>
+            <div data-hf-id="hf-dbmg" class="kicker">Final priority actions</div>
+          </div>
+
+          <div data-hf-id="hf-95qt" class="list-wrap">
+            <div data-hf-id="hf-z23z" class="action-card" id="card-1">
+              <div data-hf-id="hf-z5pq" class="action-index">01</div>
+              <div data-hf-id="hf-pbn2" class="action-task">Define the phased migration blueprint (MVP scope)</div>
+              <div data-hf-id="hf-a04o" class="action-meta">
+                <div data-hf-id="hf-d9qo" class="action-meta-item">
+                  <span data-hf-id="hf-jrp9" class="action-meta-label">Owner</span>
+                  <span data-hf-id="hf-ajo1" class="action-meta-value">CTO</span>
+                </div>
+                <div data-hf-id="hf-8ig8" class="action-meta-item">
+                  <span data-hf-id="hf-pp2g" class="action-meta-label">Timeframe</span>
+                  <span data-hf-id="hf-dq8m" class="action-meta-value">1 Week</span>
+                </div>
+              </div>
+            </div>
+
+            <div data-hf-id="hf-qe84" class="action-card" id="card-2">
+              <div data-hf-id="hf-zk0r" class="action-index">02</div>
+              <div data-hf-id="hf-dmv4" class="action-task">Finalize resource allocation for observability tooling</div>
+              <div data-hf-id="hf-83kw" class="action-meta">
+                <div data-hf-id="hf-7bj5" class="action-meta-item">
+                  <span data-hf-id="hf-w3kh" class="action-meta-label">Owner</span>
+                  <span data-hf-id="hf-iy33" class="action-meta-value">CFO</span>
+                </div>
+                <div data-hf-id="hf-7pu6" class="action-meta-item">
+                  <span data-hf-id="hf-sx7k" class="action-meta-label">Timeframe</span>
+                  <span data-hf-id="hf-s0rn" class="action-meta-value">3 Days</span>
+                </div>
+              </div>
+            </div>
+
+            <div data-hf-id="hf-r5vx" class="action-card" id="card-3">
+              <div data-hf-id="hf-zybs" class="action-index">03</div>
+              <div data-hf-id="hf-56h8" class="action-task">
+                Schedule a mandatory decision meeting on integration strategy
+              </div>
+              <div data-hf-id="hf-2uop" class="action-meta">
+                <div data-hf-id="hf-6ix3" class="action-meta-item">
+                  <span data-hf-id="hf-xahk" class="action-meta-label">Owner</span>
+                  <span data-hf-id="hf-wkd4" class="action-meta-value">CEO</span>
+                </div>
+                <div data-hf-id="hf-6x84" class="action-meta-item">
+                  <span data-hf-id="hf-rqah" class="action-meta-label">Timeframe</span>
+                  <span data-hf-id="hf-pduk" class="action-meta-value">48 Hours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        window.__timelines = window.__timelines || {};
+
+        var kickerWrap = document.getElementById("kicker-wrap");
+        var card1 = document.getElementById("card-1");
+        var card2 = document.getElementById("card-2");
+        var card3 = document.getElementById("card-3");
+
+        var tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-1.0s): ink-black ground already painted by the .ground clip.
+        // Mono kicker fades in top-left, per frame.md's kicker component + Frame 4/5's
+        // chrome placement convention.
+        tl.fromTo(kickerWrap, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power3.out" }, 0.2);
+
+        // Scenes 2-4: three real board_report.md action items populate the vertical
+        // list, one at a time (~1 item/sec pacing per grid-card-assemble's Benefits
+        // vertical-list BUILD sub-mode), each fully co-resident once it lands — the
+        // earlier cards stay fully lit while the next arrives (accumulating, not
+        // dimming). Each card is skinned as a Stat Grid top-border card: 1px hairline
+        // top + mono index/labels, per the Adapt note. Entrance = spring-pop-entrance
+        // (smooth power3.out settle, no overshoot — house style) combined with a short
+        // center-outward-expansion-style slide-into-slot (small y-rise, no real burst
+        // since these are single co-resident list rows, not a clustered group).
+
+        // Scene 2 (1.0-4.5s): card 1 enters.
+        tl.fromTo(
+          card1,
+          { opacity: 0, y: 28, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" },
+          1.2
+        );
+
+        // Scene 3 (4.5-8.0s): card 2 enters beneath; card 1 remains fully lit.
+        tl.fromTo(
+          card2,
+          { opacity: 0, y: 28, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" },
+          4.7
+        );
+
+        // Scene 4 (8.0-11.0s): card 3 enters; all three now co-resident.
+        tl.fromTo(
+          card3,
+          { opacity: 0, y: 28, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" },
+          8.2
+        );
+
+        // Scene 5 (11.0-12.0s): all three hold, static, full read. A subtle
+        // deterministic jitter (sin-driven, not CSS) keeps the frame alive without
+        // introducing any new motion event — settle-and-hold per the blueprint's
+        // "near-static hold" beat, amplitude kept tiny since three cards are
+        // concurrently alive (/N-damped per sine-wave-loop convention).
+        var jitterDriver = { p: 0 };
+        tl.to(
+          jitterDriver,
+          {
+            p: Math.PI * 2 * 2,
+            duration: 1.0,
+            ease: "none",
+            onUpdate: function () {
+              var amp = 1.2; // px, damped for three concurrent elements
+              var offset = Math.sin(jitterDriver.p) * amp;
+              // gsap.set (not raw style.transform) so this composes with the
+              // GSAP-owned transform cache from each card's earlier fromTo
+              // (scale settles to 1, y settles to 0) instead of clobbering it.
+              gsap.set(card1, { y: offset * 0.6 });
+              gsap.set(card2, { y: offset * 0.8 });
+              gsap.set(card3, { y: offset * 1.0 });
+            },
+          },
+          11.0
+        );
+
+        window.__timelines["07-resolution"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
