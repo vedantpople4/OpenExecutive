@@ -56,3 +56,4 @@ videos/*/snapshots/
 videos/*/node_modules/
 
 
+.gstack/
