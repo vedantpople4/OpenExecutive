@@ -17,10 +17,13 @@ above doesn't render for you, watch/download it directly:
 
 ### Product Walkthrough
 
-A literal, unstyled walkthrough of the real CLI — config, the `openexec run` command,
-the actual streamed board deliberation, and the generated `board_report.md` — captured
-live from an actual run of this tool, no invented content:
-[`videos/openexec-demo/renders/video.mp4`](videos/openexec-demo/renders/video.mp4)
+https://github.com/user-attachments/assets/1e0799bc-539b-4e32-95a9-33257cdf833b
+
+A literal, unstyled walkthrough of the real CLI — config, the `openexec run --teams
+--research` command, the actual streamed hierarchical team deliberation, and the
+generated `board_report.md` — captured live from an actual run of this tool, no
+invented content. If the player above doesn't render for you, watch/download it
+directly: [`videos/openexec-demo/renders/video.mp4`](videos/openexec-demo/renders/video.mp4)
 
 **What do you get?**
 A single, structured markdown file that includes:
