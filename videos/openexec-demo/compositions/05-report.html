@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: #0a130f;
+          overflow: hidden;
+          font-family: "JetBrains Mono", monospace;
+        }
+        .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(#20302a 1px, transparent 1px),
+            linear-gradient(90deg, #20302a 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+        .term {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 1560px;
+          height: 940px;
+          background: #0f1b15;
+          border: 1px solid #20302a;
+        }
+        .chrome {
+          height: 52px;
+          border-bottom: 1px solid #20302a;
+          display: flex;
+          align-items: center;
+          padding: 0 20px;
+          gap: 10px;
+        }
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 1px solid #8a9690;
+        }
+        .chrome-label {
+          margin-left: 16px;
+          font-size: 18px;
+          color: #8a9690;
+        }
+        .body {
+          padding: 36px 48px;
+        }
+        .row {
+          opacity: 0;
+        }
+        .h1 {
+          font-family: "Oswald", sans-serif;
+          font-weight: 700;
+          font-size: 32px;
+          color: #ecefea;
+          letter-spacing: 0.01em;
+        }
+        .h2 {
+          font-family: "Oswald", sans-serif;
+          font-weight: 700;
+          font-size: 22px;
+          color: #34c77b;
+          margin-top: 22px;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+        }
+        .p {
+          font-size: 21px;
+          line-height: 1.5;
+          color: #ecefea;
+          margin-top: 8px;
+        }
+        .item {
+          font-size: 20px;
+          line-height: 1.55;
+          color: #ecefea;
+          margin-top: 7px;
+        }
+        .owner {
+          color: #34c77b;
+        }
+        .stat {
+          margin-top: 24px;
+          padding-top: 18px;
+          border-top: 1px solid #20302a;
+          font-size: 19px;
+          color: #8a9690;
+        }
+        .stat b {
+          color: #34c77b;
+          font-weight: 700;
+        }
+      </style>
+
+      <div id="root" data-composition-id="scene-report" data-width="1920" data-height="1080">
+        <div class="grid"></div>
+        <div class="term">
+          <div class="chrome">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <span class="chrome-label">board_report.md</span>
+          </div>
+          <div class="body">
+            <div id="r-h1" class="row h1"># Executive Board Simulation Report</div>
+
+            <div id="r-h2a" class="row h2">Board Decision</div>
+            <div id="r-p1" class="row p">
+              Pivoting immediately to a defensive Paid-Only GTM strategy — non-negotiable
+              for financial prudence, with the focus solely on a mandatory 6-week
+              architectural audit before pursuing any new growth vectors.
+            </div>
+
+            <div id="r-h2b" class="row h2">Dissenting Points</div>
+            <div id="r-d1" class="row item">
+              CEO vs. CFO — the fundamental disagreement on Free Tier vs. Paid-Only
+              remains unresolved, even after the board's tactical consensus.
+            </div>
+
+            <div id="r-h2c" class="row h2">Final Priority Actions</div>
+            <div id="r-a1" class="row item">
+              Initiate the mandatory 6-week architectural audit immediately
+              <span class="owner">— ENGINEERING_LEAD, within 48 hours</span>
+            </div>
+            <div id="r-a2" class="row item">
+              Develop a detailed timeline for the architectural audit scope
+              <span class="owner">— SOLUTIONS_ARCHITECT, within 1 week</span>
+            </div>
+
+            <div id="r-stat" class="row stat">
+              CFO Report — <b>Grounding: 5/7</b> numeric claims found in source data ·
+              <b>Alignment Score: 0.85</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        tl.fromTo(
+          ".term",
+          { xPercent: -50, yPercent: -50, y: 16, autoAlpha: 0 },
+          { xPercent: -50, yPercent: -50, y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+          0.2
+        );
+
+        const seq = [
+          ["#r-h1", 0.9],
+          ["#r-h2a", 1.55],
+          ["#r-p1", 2.15],
+          ["#r-h2b", 3.6],
+          ["#r-d1", 4.2],
+          ["#r-h2c", 5.6],
+          ["#r-a1", 6.2],
+          ["#r-a2", 6.85],
+          ["#r-stat", 7.9],
+        ];
+        seq.forEach(([id, t]) => {
+          tl.fromTo(
+            id,
+            { autoAlpha: 0, y: 10 },
+            { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            t
+          );
+        });
+
+        window.__timelines["scene-report"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

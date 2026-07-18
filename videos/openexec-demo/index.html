@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0a130f;
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0a130f;
+      }
+      #root > div[data-composition-src] {
+        position: absolute;
+        inset: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-32aq" id="root" data-composition-id="main" data-start="0" data-duration="80" data-width="1920" data-height="1080">
+      <!-- Scene 1 — Open (5s): blank terminal, product name types in -->
+      <div data-hf-id="hf-31xo" id="el-open" data-composition-id="scene-open" data-composition-src="compositions/01-open.html" data-start="0" data-duration="5" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <!-- Scene 2 — Config (12s): real settings.json + openexec.yaml -->
+      <div data-hf-id="hf-6ui2" id="el-config" data-composition-id="scene-config" data-composition-src="compositions/02-config.html" data-start="5" data-duration="12" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <!-- Scene 3 — Command (8s): the real `openexec run "..."` command types in -->
+      <div data-hf-id="hf-5o9m" id="el-command" data-composition-id="scene-command" data-composition-src="compositions/03-command.html" data-start="17" data-duration="9" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <!-- Scene 4 — Thinking (30s): real streamed board debate output -->
+      <div data-hf-id="hf-j02s" id="el-thinking" data-composition-id="scene-thinking" data-composition-src="compositions/04-thinking.html" data-start="26" data-duration="32" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <!-- Scene 5 — Report (15s): real generated board_report.md excerpt -->
+      <div data-hf-id="hf-oafv" id="el-report" data-composition-id="scene-report" data-composition-src="compositions/05-report.html" data-start="58" data-duration="17" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <!-- Scene 6 — CTA (5s): close on the real command, held -->
+      <div data-hf-id="hf-tzs4" id="el-cta" data-composition-id="scene-cta" data-composition-src="compositions/06-cta.html" data-start="75" data-duration="5" data-track-index="1" data-width="1920" data-height="1080"></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

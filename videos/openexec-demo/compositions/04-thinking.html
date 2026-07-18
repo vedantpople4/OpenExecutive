@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: #0a130f;
+          overflow: hidden;
+          font-family: "JetBrains Mono", monospace;
+        }
+        .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(#20302a 1px, transparent 1px),
+            linear-gradient(90deg, #20302a 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+        .term {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 1600px;
+          height: 940px;
+          background: #0f1b15;
+          border: 1px solid #20302a;
+        }
+        .chrome {
+          height: 52px;
+          border-bottom: 1px solid #20302a;
+          display: flex;
+          align-items: center;
+          padding: 0 20px;
+          gap: 10px;
+        }
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 1px solid #8a9690;
+        }
+        .chrome-label {
+          margin-left: 16px;
+          font-size: 18px;
+          color: #8a9690;
+        }
+        .body {
+          position: relative;
+          padding: 28px 40px;
+          font-size: 21px;
+          line-height: 1.45;
+          height: calc(100% - 52px);
+        }
+        .block {
+          position: absolute;
+          left: 40px;
+          right: 40px;
+          top: 28px;
+          opacity: 0;
+        }
+        .l {
+          white-space: pre-wrap;
+        }
+        .hdr {
+          color: #34c77b;
+          font-weight: 700;
+        }
+        .dim {
+          color: #8a9690;
+        }
+        .out {
+          color: #ecefea;
+        }
+      </style>
+
+      <div id="root" data-composition-id="scene-thinking" data-width="1920" data-height="1080">
+        <div class="grid"></div>
+        <div class="term">
+          <div class="chrome">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <span class="chrome-label">zsh — openexec run --teams --research --verbose</span>
+          </div>
+          <div class="body">
+            <!-- Block A: phases 1 + 2 -->
+            <div id="blk-a" class="block">
+              <div class="l hdr">--- Phase 1: INCEPTION ---</div>
+              <div class="l out">CEO Analyzing: Defining the overarching strategic direction...</div>
+              <div class="l hdr" style="margin-top: 16px">--- Phase 2: ANALYSIS ---</div>
+              <div class="l out">Delegating analysis to cfo, cto, cmo...</div>
+              <div class="l dim">Delegating analysis to financial_analyst, engineering_lead,</div>
+              <div class="l dim">growth_marketer, risk_analyst, sre, chief_of_staff...</div>
+              <div class="l hdr" style="margin-top: 16px">--- Analysis Complete. Reports Collected ---</div>
+            </div>
+
+            <!-- Block B: real hierarchical team deliberation -->
+            <div id="blk-b" class="block">
+              <div class="l hdr">--- Phase 2.5: TEAM DELIBERATION ---</div>
+              <div class="l out" style="margin-top: 12px">Processing CFO team...</div>
+              <div class="l dim">  -&gt; financial_analyst analyzing...</div>
+              <div class="l dim">  -&gt; budget_planner analyzing...</div>
+              <div class="l dim">  -&gt; risk_analyst analyzing...</div>
+              <div class="l out">  -&gt; CFO synthesizing team position...</div>
+              <div class="l out" style="margin-top: 12px">Processing CTO team...</div>
+              <div class="l dim">  -&gt; engineering_lead analyzing...</div>
+              <div class="l dim">  -&gt; solutions_architect analyzing...</div>
+              <div class="l dim">  -&gt; sre analyzing...</div>
+              <div class="l out">  -&gt; CTO synthesizing team position...</div>
+              <div class="l hdr" style="margin-top: 16px">--- Team Deliberation Complete. CXO positions updated. ---</div>
+            </div>
+
+            <!-- Block C: real Phase 3 deliberation excerpt -->
+            <div id="blk-c" class="block">
+              <div class="l hdr">--- Phase 3: DELIBERATION ---</div>
+              <div class="l out" style="margin-top: 12px">Round 1/10</div>
+              <div class="l dim">  -&gt; CEO speaking...  [prompt sys 2406t | usr 7839t]</div>
+              <div class="l out">     summary: The core conflict is between pursuing speculative</div>
+              <div class="l out">     user growth and maintaining financial/technical stability.</div>
+              <div class="l out">     The CFO fears operational burn, the CTO fears system</div>
+              <div class="l out">     collapse, the CMO fears damaging enterprise trust.</div>
+              <div class="l out" style="margin-top: 12px">Round 2/10</div>
+              <div class="l dim">  -&gt; CFO speaking...</div>
+              <div class="l out">     summary: I agree with the core directive to halt speculative</div>
+              <div class="l out">     growth and prioritize infrastructure stability.</div>
+              <div class="l dim">  -&gt; CTO speaking...</div>
+              <div class="l out">     summary: Implementing any change requires dedicated engineering</div>
+              <div class="l out">     time to address existing system strain.</div>
+            </div>
+
+            <!-- Block D: scribe + completion -->
+            <div id="blk-d" class="block">
+              <div class="l dim">  -&gt; Scribe synthesizing round 4 summary...</div>
+              <div class="l out">  [OK] Board summary updated.</div>
+              <div class="l out" style="margin-top: 12px">Round 5/10</div>
+              <div class="l dim">  -&gt; CEO synthesising board decision...</div>
+              <div class="l out">  [OK] Board decision produced — writing to state.</div>
+              <div class="l hdr" style="margin-top: 16px">✓ Deliberation rounds complete</div>
+              <div class="l hdr">SIMULATION COMPLETE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        tl.fromTo(
+          ".term",
+          { xPercent: -50, yPercent: -50, y: 16, autoAlpha: 0 },
+          { xPercent: -50, yPercent: -50, y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+          0.2
+        );
+
+        function revealLines(blockId, start, stagger) {
+          const lines = document.querySelectorAll("#" + blockId + " .l");
+          tl.to("#" + blockId, { autoAlpha: 1, duration: 0.01 }, start);
+          lines.forEach((el, i) => {
+            tl.fromTo(
+              el,
+              { autoAlpha: 0, y: 6 },
+              { autoAlpha: 1, y: 0, duration: 0.22, ease: "power2.out" },
+              start + i * stagger
+            );
+          });
+        }
+
+        function hideBlock(blockId, at) {
+          tl.to("#" + blockId, { autoAlpha: 0, duration: 0.3 }, at);
+        }
+
+        gsap.set(".l", { autoAlpha: 0 });
+
+        revealLines("blk-a", 0.6, 0.34);
+        hideBlock("blk-a", 7.6);
+
+        revealLines("blk-b", 8.0, 0.42);
+        hideBlock("blk-b", 17.4);
+
+        revealLines("blk-c", 17.8, 0.5);
+        hideBlock("blk-c", 27.6);
+
+        revealLines("blk-d", 28.0, 0.42);
+
+        window.__timelines["scene-thinking"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

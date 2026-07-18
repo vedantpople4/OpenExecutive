@@ -15,6 +15,13 @@ decision (with dissent) from this project's own `board_report.md`. If the player
 above doesn't render for you, watch/download it directly:
 [`videos/openexec-promo/renders/video.mp4`](videos/openexec-promo/renders/video.mp4)
 
+### Product Walkthrough
+
+A literal, unstyled walkthrough of the real CLI — config, the `openexec run` command,
+the actual streamed board deliberation, and the generated `board_report.md` — captured
+live from an actual run of this tool, no invented content:
+[`videos/openexec-demo/renders/video.mp4`](videos/openexec-demo/renders/video.mp4)
+
 **What do you get?**
 A single, structured markdown file that includes:
 *   **The Verdict:** The board's final decision and strategy.

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: #0a130f;
+          overflow: hidden;
+          font-family: "JetBrains Mono", monospace;
+        }
+        .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(#20302a 1px, transparent 1px),
+            linear-gradient(90deg, #20302a 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+        .stage {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          text-align: center;
+        }
+        .brand {
+          font-family: "Oswald", sans-serif;
+          font-weight: 700;
+          font-size: 92px;
+          color: #ecefea;
+          letter-spacing: 0.01em;
+        }
+        .cmd {
+          margin-top: 28px;
+          font-size: 26px;
+          color: #34c77b;
+        }
+        .cmd .dim {
+          color: #8a9690;
+        }
+      </style>
+
+      <div data-hf-id="hf-h8vq" id="root" data-composition-id="scene-cta" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-kxq8" class="grid"></div>
+        <div data-hf-id="hf-tan6" class="stage">
+          <div data-hf-id="hf-15v0" id="cta-brand" class="brand">openexec</div>
+          <div data-hf-id="hf-qkv7" id="cta-cmd" class="cmd">$ openexec run <span data-hf-id="hf-xlxa" class="dim">"&lt;your decision&gt;" --teams --research</span></div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        gsap.set(["#cta-brand", "#cta-cmd"], { autoAlpha: 0, y: 20 });
+        tl.to("#cta-brand", { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.2);
+        tl.to("#cta-cmd", { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.7);
+
+        window.__timelines["scene-cta"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
