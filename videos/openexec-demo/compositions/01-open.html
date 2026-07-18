@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: #0a130f;
+          overflow: hidden;
+          font-family: "JetBrains Mono", monospace;
+        }
+        .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(#20302a 1px, transparent 1px),
+            linear-gradient(90deg, #20302a 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+        .stage {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          display: flex;
+          align-items: baseline;
+          gap: 18px;
+        }
+        .prompt {
+          font-size: 44px;
+          color: #34c77b;
+          font-weight: 700;
+        }
+        .typed {
+          font-size: 44px;
+          color: #ecefea;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+        .caret {
+          display: inline-block;
+          width: 20px;
+          height: 46px;
+          background: #34c77b;
+          transform: translateY(6px);
+        }
+      </style>
+
+      <div data-hf-id="hf-2sqk" id="root" data-composition-id="scene-open" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-kxq8" class="grid"></div>
+        <div data-hf-id="hf-tan6" class="stage">
+          <span data-hf-id="hf-99ip" class="prompt">$</span>
+          <span data-hf-id="hf-5sbi" id="open-typed" class="typed"></span>
+          <span data-hf-id="hf-05ju" id="open-caret" class="caret"></span>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        const word = "openexec";
+        const typedEl = document.getElementById("open-typed");
+        const start = 0.4;
+        const charDur = 0.11;
+
+        for (let i = 0; i <= word.length; i++) {
+          tl.call(
+            () => {
+              typedEl.textContent = word.slice(0, i);
+            },
+            null,
+            start + i * charDur
+          );
+        }
+
+        const caretCycle = 0.5;
+        tl.to(
+          "#open-caret",
+          {
+            duration: 5,
+            ease: "none",
+            onUpdate: function () {
+              const t = tl.time();
+              const on = t < start ? true : (t % caretCycle) < caretCycle / 2;
+              gsap.set("#open-caret", { autoAlpha: on ? 1 : 0 });
+            },
+          },
+          0
+        );
+
+        window.__timelines["scene-open"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

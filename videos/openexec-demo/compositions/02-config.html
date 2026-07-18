@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: #0a130f;
+          overflow: hidden;
+          font-family: "JetBrains Mono", monospace;
+        }
+        .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(#20302a 1px, transparent 1px),
+            linear-gradient(90deg, #20302a 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+        .term {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 1440px;
+          height: 860px;
+          background: #0f1b15;
+          border: 1px solid #20302a;
+        }
+        .chrome {
+          height: 52px;
+          border-bottom: 1px solid #20302a;
+          display: flex;
+          align-items: center;
+          padding: 0 20px;
+          gap: 10px;
+        }
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 1px solid #8a9690;
+        }
+        .chrome-label {
+          margin-left: 16px;
+          font-size: 18px;
+          color: #8a9690;
+        }
+        .body {
+          padding: 32px 40px;
+          font-size: 24px;
+          line-height: 1.55;
+        }
+        .line {
+          opacity: 0;
+          white-space: pre;
+        }
+        .cmd {
+          color: #34c77b;
+          font-weight: 700;
+        }
+        .out {
+          color: #ecefea;
+        }
+        .dim {
+          color: #8a9690;
+        }
+      </style>
+
+      <div data-hf-id="hf-eg52" id="root" data-composition-id="scene-config" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-kxq8" class="grid"></div>
+        <div data-hf-id="hf-d8se" class="term">
+          <div data-hf-id="hf-6ex2" class="chrome">
+            <div data-hf-id="hf-lu65" class="dot"></div>
+            <div data-hf-id="hf-ww7l" class="dot"></div>
+            <div data-hf-id="hf-y34o" class="dot"></div>
+            <span data-hf-id="hf-d7b3" class="chrome-label">zsh</span>
+          </div>
+          <div data-hf-id="hf-2t3w" class="body">
+            <div data-hf-id="hf-k3fe" id="cfg-l1" class="line"><span data-hf-id="hf-bfpl" class="cmd">$</span> <span data-hf-id="hf-u5oc" id="cfg-cmd1"></span></div>
+            <div data-hf-id="hf-yxg0" id="cfg-l2" class="line dim"># real project config — config/openexec.yaml</div>
+            <div data-hf-id="hf-rbhw" id="cfg-l3" class="line out">agents:</div>
+            <div data-hf-id="hf-vzna" id="cfg-l4" class="line out">&#160;&#160;enabled: [ceo, cfo, cto, cmo]</div>
+            <div data-hf-id="hf-en6b" id="cfg-l5" class="line out">&#160;&#160;settings:</div>
+            <div data-hf-id="hf-isks" id="cfg-l6" class="line out">&#160;&#160;&#160;&#160;analysis_depth: medium</div>
+            <div data-hf-id="hf-gt26" id="cfg-l7" class="line out">&#160;&#160;&#160;&#160;confidence_threshold: 0.6</div>
+            <div data-hf-id="hf-5s9b" id="cfg-l8" class="line" style="margin-top: 22px"><span data-hf-id="hf-i24d" class="cmd">$</span> <span data-hf-id="hf-2tk7" id="cfg-cmd2"></span></div>
+            <div data-hf-id="hf-pog9" id="cfg-l9" class="line dim"># real provider config — settings.json</div>
+            <div data-hf-id="hf-1ikh" id="cfg-l10" class="line out">"ai": { "base_url": "http://127.0.0.1:1234/v1",</div>
+            <div data-hf-id="hf-bwl6" id="cfg-l11" class="line out">&#160;&#160;&#160;&#160;&#160;"model": "google/gemma-4-e2b", "temperature": 0.7 }</div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        function typeInto(elId, text, start, charDur) {
+          const el = document.getElementById(elId);
+          for (let i = 0; i <= text.length; i++) {
+            tl.call(() => { el.textContent = text.slice(0, i); }, null, start + i * charDur);
+          }
+        }
+
+        tl.fromTo(
+          ".term",
+          { xPercent: -50, yPercent: -50, y: 16, autoAlpha: 0 },
+          { xPercent: -50, yPercent: -50, y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+          0.2
+        );
+
+        tl.set("#cfg-l1", { autoAlpha: 1 }, 0.4);
+        typeInto("cfg-cmd1", "cat config/openexec.yaml", 0.5, 0.035);
+
+        tl.to("#cfg-l2", { autoAlpha: 1, duration: 0.3 }, 1.5);
+        tl.to("#cfg-l3", { autoAlpha: 1, duration: 0.3 }, 1.9);
+        tl.to("#cfg-l4", { autoAlpha: 1, duration: 0.3 }, 2.3);
+        tl.to("#cfg-l5", { autoAlpha: 1, duration: 0.3 }, 2.7);
+        tl.to("#cfg-l6", { autoAlpha: 1, duration: 0.3 }, 3.1);
+        tl.to("#cfg-l7", { autoAlpha: 1, duration: 0.3 }, 3.5);
+
+        tl.set("#cfg-l8", { autoAlpha: 1 }, 5.5);
+        typeInto("cfg-cmd2", "cat settings.json", 5.6, 0.035);
+
+        tl.to("#cfg-l9", { autoAlpha: 1, duration: 0.3 }, 6.5);
+        tl.to("#cfg-l10", { autoAlpha: 1, duration: 0.3 }, 6.9);
+        tl.to("#cfg-l11", { autoAlpha: 1, duration: 0.3 }, 7.3);
+
+        window.__timelines["scene-config"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

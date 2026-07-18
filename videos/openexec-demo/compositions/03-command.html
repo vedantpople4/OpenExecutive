@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          background: #0a130f;
+          overflow: hidden;
+          font-family: "JetBrains Mono", monospace;
+        }
+        .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(#20302a 1px, transparent 1px),
+            linear-gradient(90deg, #20302a 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+        .term {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 1440px;
+          height: 860px;
+          background: #0f1b15;
+          border: 1px solid #20302a;
+        }
+        .chrome {
+          height: 52px;
+          border-bottom: 1px solid #20302a;
+          display: flex;
+          align-items: center;
+          padding: 0 20px;
+          gap: 10px;
+        }
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 1px solid #8a9690;
+        }
+        .chrome-label {
+          margin-left: 16px;
+          font-size: 18px;
+          color: #8a9690;
+        }
+        .body {
+          padding: 32px 40px;
+          font-size: 24px;
+          line-height: 1.55;
+        }
+        .cmdline {
+          color: #34c77b;
+          font-weight: 700;
+          white-space: pre-wrap;
+          max-width: 1300px;
+        }
+        .flag {
+          color: #ecefea;
+        }
+        .out {
+          opacity: 0;
+          color: #ecefea;
+          white-space: pre;
+        }
+        .out.dim {
+          color: #8a9690;
+        }
+        .out.hdr {
+          color: #34c77b;
+        }
+        .caret {
+          display: inline-block;
+          width: 14px;
+          height: 26px;
+          background: #34c77b;
+          transform: translateY(5px);
+        }
+      </style>
+
+      <div id="root" data-composition-id="scene-command" data-width="1920" data-height="1080">
+        <div class="grid"></div>
+        <div class="term">
+          <div class="chrome">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <span class="chrome-label">zsh</span>
+          </div>
+          <div class="body">
+            <div class="cmdline">$ <span id="cmd-typed"></span><span id="cmd-caret" class="caret"></span></div>
+            <div id="cmd-o1" class="out" style="margin-top: 22px">Starting Simulation...</div>
+            <div id="cmd-o2" class="out dim">------------------------------------------------------------</div>
+            <div id="cmd-o3" class="out">OpenExec Simulation</div>
+            <div id="cmd-o4" class="out dim">------------------------------------------------------------</div>
+            <div id="cmd-o5" class="out">Decision: Should we launch a free tier to drive user growth,</div>
+            <div id="cmd-o6" class="out">to protect margins?</div>
+            <div id="cmd-o7" class="out hdr">=&gt; Research grounding enabled -- web:0.5 / kb:0.5</div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        const cmd =
+          'openexec run "Should we launch a free tier to drive user\ngrowth, or stay paid-only to protect margins?" --teams --research';
+        const typedEl = document.getElementById("cmd-typed");
+        const start = 0.4;
+        const charDur = 0.02;
+
+        for (let i = 0; i <= cmd.length; i++) {
+          tl.call(() => { typedEl.textContent = cmd.slice(0, i); }, null, start + i * charDur);
+        }
+        const typeEnd = start + cmd.length * charDur;
+
+        tl.fromTo(
+          ".term",
+          { xPercent: -50, yPercent: -50, y: 16, autoAlpha: 0 },
+          { xPercent: -50, yPercent: -50, y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+          0.1
+        );
+
+        const caretCycle = 0.5;
+        tl.to("#cmd-caret", {
+          duration: 9,
+          ease: "none",
+          onUpdate: function () {
+            const t = tl.time();
+            const on = t < typeEnd + 0.3 ? true : (t % caretCycle) < caretCycle / 2;
+            gsap.set("#cmd-caret", { autoAlpha: on ? 1 : 0 });
+          },
+        }, 0);
+
+        let ot = typeEnd + 0.4;
+        ["#cmd-o1", "#cmd-o2", "#cmd-o3", "#cmd-o4", "#cmd-o5", "#cmd-o6", "#cmd-o7"].forEach((id) => {
+          tl.to(id, { autoAlpha: 1, duration: 0.25 }, ot);
+          ot += 0.3;
+        });
+
+        window.__timelines["scene-command"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

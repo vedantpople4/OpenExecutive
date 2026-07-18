@@ -8,12 +8,13 @@
 
 ## Demo
 
-https://github.com/user-attachments/assets/2e66bc52-2a05-4dd3-9a2c-a73097de03db
+https://github.com/user-attachments/assets/1e0799bc-539b-4e32-95a9-33257cdf833b
 
-70s overview: the board's hierarchical teams, live research grounding, and a real
-decision (with dissent) from this project's own `board_report.md`. If the player
-above doesn't render for you, watch/download it directly:
-[`videos/openexec-promo/renders/video.mp4`](videos/openexec-promo/renders/video.mp4)
+A literal, unstyled walkthrough of the real CLI — config, the `openexec run --teams
+--research` command, the actual streamed hierarchical team deliberation, and the
+generated `board_report.md` — captured live from an actual run of this tool, no
+invented content. If the player above doesn't render for you, watch/download it
+directly: [`videos/openexec-demo/renders/video.mp4`](videos/openexec-demo/renders/video.mp4)
 
 **What do you get?**
 A single, structured markdown file that includes:
