@@ -9,6 +9,12 @@ from typing import Any, Dict, List, Tuple
 from openexec.data.websearch import web_search
 from openexec.knowledge_base import knowledge_base
 
+# Per-process cache so every agent analyzing the same core_prompt in a single
+# simulation shares one fetch instead of re-running web_search() per agent
+# (up to ~12x in --teams --research mode). Keyed on the inputs that actually
+# affect the result; a fresh `openexec run` process starts with an empty cache.
+_cache: Dict[Tuple[Any, ...], Tuple[str, Dict[str, Any]]] = {}
+
 
 def build_research_context(
     query: str,
@@ -37,6 +43,9 @@ def build_research_context(
         return "", {}
 
     max_chars = cfg.get("max_context_chars", 3000)
+    cache_key = (query, web_weight, kb_weight, max_chars)
+    if cache_key in _cache:
+        return _cache[cache_key]
     web_budget = int(max_chars * web_weight / total_weight)
     kb_budget = int(max_chars * kb_weight / total_weight)
 
@@ -62,11 +71,13 @@ def build_research_context(
             sections.append("### Knowledge Base\n" + "\n".join(lines)[:kb_budget])
 
     if not sections:
-        return "", {}
+        _cache[cache_key] = ("", {})
+        return _cache[cache_key]
 
     block = (
         "## Research Context\n"
         "Use the following for grounding. Synthesize the insight, do not quote verbatim.\n\n"
         + "\n\n".join(sections)
     )
-    return block, {"research_sources": sources_used}
+    _cache[cache_key] = (block, {"research_sources": sources_used})
+    return _cache[cache_key]

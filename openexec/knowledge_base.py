@@ -2,10 +2,20 @@
 """Custom knowledge base system for OpenExec - RAG over proprietary company data."""
 
 import json
+import math
+import re
+from collections import Counter
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 import hashlib
+
+_TOKEN_RE = re.compile(r"[a-z0-9]+")
+
+
+def _tokenize(text: str) -> List[str]:
+    """Lowercase word/number tokens, stripping punctuation."""
+    return _TOKEN_RE.findall(text.lower())
 
 
 class KnowledgeBase:
@@ -23,6 +33,22 @@ class KnowledgeBase:
         # Knowledge base index
         self.index_path = self.kb_dir / "kb_index.json"
         self.index = self._load_index()
+
+        # In-memory cache of chunk files, keyed by doc_id, to avoid re-reading
+        # the same JSON from disk on every retrieve_relevant() call.
+        self._chunk_cache: Dict[str, Dict[str, Any]] = {}
+
+    def _get_chunk_data(self, doc_id: str) -> Optional[Dict[str, Any]]:
+        """Load a document's chunk data, from the in-memory cache if present."""
+        if doc_id in self._chunk_cache:
+            return self._chunk_cache[doc_id]
+        chunk_path = self.kb_dir / "chunks" / f"{doc_id}.json"
+        if not chunk_path.exists():
+            return None
+        with open(chunk_path, 'r') as f:
+            chunk_data = json.load(f)
+        self._chunk_cache[doc_id] = chunk_data
+        return chunk_data
 
     def _load_index(self) -> Dict[str, Any]:
         """Load knowledge base index from disk."""
@@ -179,7 +205,8 @@ class KnowledgeBase:
     def retrieve_relevant(self, query: str, category: Optional[str] = None,
                          limit: int = 5) -> List[Dict[str, Any]]:
         """
-        Retrieve relevant chunks based on a query.
+        Retrieve relevant chunks based on a query, ranked by TF-IDF cosine
+        similarity (pure stdlib -- no numpy/sklearn dependency).
 
         Args:
             query: Search query
@@ -187,12 +214,11 @@ class KnowledgeBase:
             limit: Maximum number of results
 
         Returns:
-            List of relevant chunks with metadata
+            List of relevant chunks with metadata, "score" in [0, 1]
         """
-        query_lower = query.lower()
-        query_keywords = set(query_lower.split())
-
-        results = []
+        query_terms = _tokenize(query)
+        if not query_terms:
+            return []
 
         # Get documents to search
         doc_ids = self.index["documents"]
@@ -202,34 +228,53 @@ class KnowledgeBase:
                 if doc["category"] == category
             ]
 
-        # Search through chunks
+        # Gather every candidate chunk up front so document frequency (df)
+        # can be computed across the whole searched set.
+        candidates = []  # (chunk_text, tokens, doc, chunk_index)
         for doc in doc_ids:
-            chunk_path = self.kb_dir / "chunks" / f"{doc['id']}.json"
-            if not chunk_path.exists():
+            chunk_data = self._get_chunk_data(doc["id"])
+            if not chunk_data:
                 continue
-
-            with open(chunk_path, 'r') as f:
-                chunk_data = json.load(f)
-
-            # Score each chunk
             for i, chunk in enumerate(chunk_data["chunks"]):
-                chunk_lower = chunk.lower()
+                candidates.append((chunk, _tokenize(chunk), doc, i))
 
-                # Calculate relevance score
-                score = 0
-                for keyword in query_keywords:
-                    if keyword in chunk_lower:
-                        score += 1
+        if not candidates:
+            return []
 
-                if score > 0:
-                    results.append({
-                        "chunk": chunk,
-                        "score": score,
-                        "doc_id": doc["id"],
-                        "doc_title": doc.get("title", doc.get("filename", "Unknown")),
-                        "category": doc["category"],
-                        "chunk_index": i
-                    })
+        n_chunks = len(candidates)
+        df: Counter = Counter()
+        for _, tokens, _, _ in candidates:
+            df.update(set(tokens))
+
+        def idf(term: str) -> float:
+            # Smoothed idf: terms absent from every chunk still get a (high)
+            # finite weight instead of dividing by zero.
+            return math.log((n_chunks + 1) / (df.get(term, 0) + 1)) + 1
+
+        query_tf = Counter(query_terms)
+        query_vec = {t: tf * idf(t) for t, tf in query_tf.items()}
+        query_norm = math.sqrt(sum(w * w for w in query_vec.values())) or 1.0
+
+        results = []
+        for chunk, tokens, doc, chunk_index in candidates:
+            if not tokens:
+                continue
+            chunk_tf = Counter(tokens)
+            chunk_vec = {t: tf * idf(t) for t, tf in chunk_tf.items()}
+            chunk_norm = math.sqrt(sum(w * w for w in chunk_vec.values())) or 1.0
+
+            dot = sum(w * chunk_vec.get(t, 0.0) for t, w in query_vec.items())
+            score = dot / (query_norm * chunk_norm)
+
+            if score > 0:
+                results.append({
+                    "chunk": chunk,
+                    "score": round(score, 4),
+                    "doc_id": doc["id"],
+                    "doc_title": doc.get("title", doc.get("filename", "Unknown")),
+                    "category": doc["category"],
+                    "chunk_index": chunk_index
+                })
 
         # Sort by score and return top results
         results.sort(key=lambda x: x["score"], reverse=True)

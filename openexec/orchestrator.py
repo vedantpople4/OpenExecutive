@@ -314,6 +314,15 @@ class Orchestrator:
                 all_available_sources.add(filename)
                 all_sources_accessed.add(filename)
 
+        # Research sources actually fetched by --research (real URLs/KB docs,
+        # not the LLM self-reported sources_accessed above). build_research_context
+        # is memoized per (query, weights), so this is a cache hit, not a new fetch.
+        research_sources_consulted: list[str] = []
+        if self.state.research_cfg.get("enabled"):
+            from openexec.research import build_research_context
+            _, research_metadata = build_research_context(self.state.core_prompt, self.state.research_cfg)
+            research_sources_consulted = research_metadata.get("research_sources", [])
+
         ceo_r5 = self.state.deliberation_outputs.get(5, {}).get("ceo")
         if ceo_r5 and hasattr(ceo_r5, "board_decision") and ceo_r5.board_decision:
             final_report["board_decision"] = ceo_r5.board_decision
@@ -340,7 +349,8 @@ class Orchestrator:
             "sources_failed": list(all_sources_failed),
             "all_available_sources": list(all_available_sources),
             "access_success_rate": self._calculate_success_rate(all_sources_accessed, all_sources_failed),
-            "timestamp": data_timestamps[0] if data_timestamps else "Unknown"
+            "timestamp": data_timestamps[0] if data_timestamps else "Unknown",
+            "research_sources_consulted": research_sources_consulted,
         }
 
         self._emit_event(SynthesisCompleted(

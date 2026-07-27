@@ -390,6 +390,14 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
                     f.write(f"- {source}\n")
                 f.write("\n")
 
+            if data_sources.get('research_sources_consulted'):
+                f.write("### Research Sources Consulted (--research)\n\n")
+                f.write("Fetched programmatically via live web search / knowledge base "
+                        "retrieval -- not self-reported by the model.\n\n")
+                for source in data_sources['research_sources_consulted']:
+                    f.write(f"- {source}\n")
+                f.write("\n")
+
 
 def main() -> int:
     """Main entry point."""
