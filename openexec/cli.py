@@ -12,7 +12,7 @@ from rich.console import Console
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import OpenExec modules
-from openexec.agents import register_default_agents, registry
+from openexec.agents import register_default_agents, registry, DEFAULT_AGENTS
 from openexec.orchestrator import Orchestrator, SimulationState
 from openexec.utils import extract_action_items, sanitize_prompt
 from openexec.main import write_report
@@ -243,6 +243,11 @@ def run(
         None,
         "-c", "--config",
         help="Use specific config file"
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Print an estimated LLM call count and exit without running anything"
     )
 ):
     """
@@ -276,6 +281,7 @@ def run(
         temperature=temperature,
         verbose=verbose,
         config_override=config_override,
+        dry_run=dry_run,
     )
 
 
@@ -297,6 +303,7 @@ def _run_simulation(
     temperature: Optional[float] = None,
     verbose: bool = False,
     config_override: Optional[Path] = None,
+    dry_run: bool = False,
 ):
     """
     Core simulation logic behind the `run` command.
@@ -328,6 +335,32 @@ def _run_simulation(
     if not prompt:
         console.print("ERROR: Prompt was empty after sanitization")
         raise typer.Exit(1)
+
+    if dry_run:
+        # No settings.json, output dir, or state/orchestrator setup needed --
+        # this is pure arithmetic over which agents/modes were requested.
+        resolved_agents = (
+            [a.strip().lower() for a in agents.split(",")] if agents else list(DEFAULT_AGENTS)
+        )
+        from openexec.estimate import estimate_llm_calls
+
+        min_calls, max_calls = estimate_llm_calls(resolved_agents, teams)
+        print_section("Dry Run -- No Simulation Executed", f"Decision: {prompt}")
+        console.print(f"Active agents: {', '.join(resolved_agents)}")
+        console.print(f"Teams: {teams}  |  Research: {research}")
+        console.print(f"\nEstimated LLM calls: {min_calls}-{max_calls}")
+        console.print(
+            f"({max_calls} is a hard ceiling -- every scheduled agent speaks "
+            f"at most once per round. {min_calls} is a typical floor assuming "
+            "normal early convergence; per-round content-based pruning can "
+            "occasionally push the real count even lower, never higher.)"
+        )
+        if research:
+            console.print(
+                "Note: --research adds no extra LLM calls (fetched once per "
+                "simulation, cached), but does add one-time web-fetch latency."
+            )
+        raise typer.Exit(0)
 
     # Load configuration
     if config_override:
@@ -409,8 +442,11 @@ def _run_simulation(
         state.active_agents = [a.strip().lower() for a in agents.split(",")]
         console.print(f"=> Targeted simulation: {', '.join(state.active_agents)}")
     else:
-        # Default to all registered agents
-        state.active_agents = list(registry.list_names())
+        # Default to the 4 CXOs. Team specialists (registered in the same
+        # registry) are only analyzed via --teams's own Phase 2.5 loop, which
+        # iterates TEAM_STRUCTURE directly -- they must not also be in
+        # active_agents, or Phase 2 would analyze them a second, wasted time.
+        state.active_agents = list(DEFAULT_AGENTS)
 
     # Parse assumptions
     if assume:
