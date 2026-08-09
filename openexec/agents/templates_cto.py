@@ -1,6 +1,9 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 from .interface import AgentReport
+
+if TYPE_CHECKING:
+    from openexec.orchestrator import SimulationState
 
 
 class CTOTemplate:
@@ -53,7 +56,7 @@ class CTOTemplate:
 
         # Hardcoded fallback analysis
         summary = f"The proposed solution for {state.core_prompt} requires assessing the current system's capacity against projected growth."
-        key_findings = [f"Current architecture shows potential bottlenecks related to scaling."]
+        key_findings = ["Current architecture shows potential bottlenecks related to scaling."]
 
         if state.data_corpus:
             for filename, content in state.data_corpus.items():

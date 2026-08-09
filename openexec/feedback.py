@@ -159,10 +159,6 @@ class FeedbackSystem:
             return f"No feedback data available for {agent}."
 
         scores = self.agent_scores[agent]
-        agent_feedback = [
-            feedback for feedback in self.feedback_log
-            if feedback["agent"] == agent
-        ]
 
         insights = [f"## {agent.upper()} Performance Insights\n\n"]
 

@@ -51,7 +51,6 @@ class OllamaProvider:
 
         max_retries = self.ai_config.get("max_retries", 2)
         timeout = self.ai_config.get("timeout", 120)
-        last_error = None
         for attempt in range(max_retries + 1):
             try:
                 response = requests.post(
@@ -63,17 +62,15 @@ class OllamaProvider:
                 message = result["choices"][0]["message"]
                 content = message.get("content") or message.get("reasoning_content", "")
                 return content
-            except requests.exceptions.Timeout as e:
-                last_error = e
+            except requests.exceptions.Timeout:
                 if attempt < max_retries:
                     wait = 2 ** attempt
                     import time
                     time.sleep(wait)
                     continue
-                break
+                raise RuntimeError(f"LLM API timed out after {max_retries + 1} attempts (timeout={timeout}s each). Consider using a faster model or increasing timeout.")
             except requests.exceptions.RequestException as e:
                 raise RuntimeError(f"LLM API call failed: {e}")
-        raise RuntimeError(f"LLM API timed out after {max_retries + 1} attempts (timeout={timeout}s each). Consider using a faster model or increasing timeout.")
 
     def complete_json(self, prompt: str, system_prompt: Optional[str] = None, max_tokens: Optional[int] = None, temperature: Optional[float] = None) -> Dict[str, Any]:
         """Complete a prompt and parse the response as JSON."""

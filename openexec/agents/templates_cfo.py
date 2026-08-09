@@ -1,6 +1,9 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 from .interface import AgentReport
+
+if TYPE_CHECKING:
+    from openexec.orchestrator import SimulationState
 
 
 class CFOTemplate:
@@ -53,7 +56,7 @@ class CFOTemplate:
 
         # Hardcoded fallback analysis
         summary = f"The potential opportunity is {state.core_prompt}. Financial viability depends on aligning projected costs with the Data Corpus."
-        key_findings = [f"Financial viability hinges on cost projections from data sources."]
+        key_findings = ["Financial viability hinges on cost projections from data sources."]
 
         if state.data_corpus:
             for filename, content in state.data_corpus.items():
@@ -123,7 +126,7 @@ class CFOTemplate:
             technical_risk = cto_report.risks
             market_risk = cmo_report.risks
 
-            print(f"Risk Cross-check: Financial vs. Technical risk assessment")
+            print("Risk Cross-check: Financial vs. Technical risk assessment")
             if technical_risk and market_risk:
                 print("High Risk Detected: Financial and Technical projections need alignment.")
 

@@ -1,6 +1,9 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 from .interface import AgentReport
+
+if TYPE_CHECKING:
+    from openexec.orchestrator import SimulationState
 
 
 class CEOTemplate:

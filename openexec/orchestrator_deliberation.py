@@ -1,8 +1,12 @@
 """Deliberation orchestration — multi-round board meeting workflow."""
 
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any, Dict
 
 from openexec.agents.interface import AgentReport
+
+if TYPE_CHECKING:
+    from openexec.ai.client import AIClient
+    from openexec.orchestrator import SimulationState
 
 
 # ------------------------------------------------------------------
@@ -206,7 +210,6 @@ class DeliberationOrchestrator:
         print("  -> CEO synthesising board decision...")
         try:
             report = self._call_agent("ceo", 5)
-            r5_dict = self._report_to_dict(report)
             # Persist the board_decision to state so run_synthesis can find it
             self.state.deliberation_outputs[5] = {"ceo": report}
             print("  [OK] Board decision produced — writing to state.")

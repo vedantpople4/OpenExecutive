@@ -644,7 +644,7 @@ def build_review_prompt(
         Formatted review prompt string.
     """
     parts = [
-        f"## Cross-Functional Review",
+        "## Cross-Functional Review",
         f"You are the {agent_name.upper()}. Review the following reports from other executives:",
         "Be direct. Flag conflicts. Do not soften your assessment.",
     ]
@@ -744,12 +744,6 @@ def build_deliberation_prompt(
     Returns:
         Formatted prompt string for the LLM.
     """
-    decision_type = _classify_decision(core_prompt)
-    guidance = DECISION_TYPE_GUIDANCE.get(decision_type, DECISION_TYPE_GUIDANCE["generic"])
-
-    decision_type = _classify_decision(core_prompt)
-    guidance = DECISION_TYPE_GUIDANCE.get(decision_type, DECISION_TYPE_GUIDANCE["generic"])
-
     def _format_report(name: str, r: Dict[str, Any]) -> List[str]:
         lines = []
         lines.append(f"### {name.upper()} Report")
@@ -796,9 +790,9 @@ def build_deliberation_prompt(
             f"## BOARD DELIBERATION — ROUND {round_num}",
             "You are the CEO. This board meeting is convened to address:",
             f"**{core_prompt}**",
-            f"\nThe CFO, CTO, and CMO have each produced independent analyses. "
-            f"Read across them and identify the three sharpest conflicts — "
-            f"where two executives disagree on facts, priorities, or what to do.",
+            "\nThe CFO, CTO, and CMO have each produced independent analyses. "
+            "Read across them and identify the three sharpest conflicts — "
+            "where two executives disagree on facts, priorities, or what to do.",
             "\nYour job is to frame the board, name the real disagreements, "
             "and direct specific questions to the CFO, CTO, and CMO that "
             "would cut through the most important conflict. "
