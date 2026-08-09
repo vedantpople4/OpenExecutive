@@ -200,6 +200,8 @@ class DeliberationOrchestrator:
 
     def _run_ceo_synthesis(self) -> None:
         """Run CEO's round-5 synthesis to produce board_decision."""
+        if "ceo" not in (getattr(self.state, 'active_agents', None) or []):
+            return
 
         print("  -> CEO synthesising board decision...")
         try:

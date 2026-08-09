@@ -98,24 +98,25 @@ class Orchestrator:
 
         print("\n--- Phase 1: INCEPTION ---")
 
-        self._delegate_task(
-            "ceo",
-            state=self.state,
-            phase="inception"
-        )
-
         ceo_report_dict = None
-        if "ceo" in self.state.agent_outputs:
-            report = self.state.agent_outputs["ceo"]
-            if hasattr(report, 'title'):
-                ceo_report_dict = {
-                    "title": report.title,
-                    "summary": report.summary,
-                    "key_findings": report.key_findings,
-                    "recommendations": report.recommendations,
-                    "risks": report.risks,
-                    "alignment_score": report.alignment_score,
-                }
+        if "ceo" in (self.state.active_agents or []):
+            self._delegate_task(
+                "ceo",
+                state=self.state,
+                phase="inception"
+            )
+
+            if "ceo" in self.state.agent_outputs:
+                report = self.state.agent_outputs["ceo"]
+                if hasattr(report, 'title'):
+                    ceo_report_dict = {
+                        "title": report.title,
+                        "summary": report.summary,
+                        "key_findings": report.key_findings,
+                        "recommendations": report.recommendations,
+                        "risks": report.risks,
+                        "alignment_score": report.alignment_score,
+                    }
 
         self._emit_event(InceptionCompleted(
             event_id=str(uuid.uuid4()),

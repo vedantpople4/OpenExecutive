@@ -81,8 +81,9 @@ class TestOrchestrator:
         assert hasattr(orchestrator, 'run_synthesis')
 
     def test_run_inception_calls_ceo(self, orchestrator, simulation_state):
-        """run_inception() delegates to CEO."""
+        """run_inception() delegates to CEO when CEO is active."""
         orchestrator.initialize(simulation_state)
+        orchestrator.state.active_agents = ["ceo"]
         with patch.object(orchestrator.registry, 'get') as mock_get:
             mock_agent = Mock()
             mock_get.return_value = mock_agent
