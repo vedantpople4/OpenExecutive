@@ -107,6 +107,19 @@ class TestStoreConversation:
         assert len(temp_memory_system.index["conversations"]) == 1
         assert temp_memory_system.index["conversations"][0]["prompt"] == "Test prompt"
 
+    def test_restore_same_prompt_updates_in_place(self, temp_memory_system, sample_results):
+        """Re-storing the same prompt should replace the record, not duplicate it."""
+        updated = dict(sample_results, executive_summary="Second run summary")
+        conv_id = temp_memory_system.store_conversation("Test prompt", sample_results)
+        conv_id2 = temp_memory_system.store_conversation("Test prompt", updated)
+
+        assert conv_id == conv_id2
+        assert len(temp_memory_system.index["conversations"]) == 1
+        conv_path = temp_memory_system.memory_dir / "conversations" / f"{conv_id}.json"
+        with open(conv_path, 'r') as f:
+            data = json.load(f)
+        assert data["executive_summary"] == "Second run summary"
+
     def test_truncates_long_prompts_in_index(self, temp_memory_system, sample_results):
         """Should truncate long prompts in index."""
         long_prompt = "a" * 150

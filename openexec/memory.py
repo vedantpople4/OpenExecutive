@@ -46,7 +46,12 @@ class MemorySystem:
         return hashlib.md5(prompt.encode()).hexdigest()[:12]
 
     def store_conversation(self, prompt: str, results: Dict[str, Any]) -> str:
-        """Store a conversation and its results in memory."""
+        """Store a conversation and its results in memory.
+
+        Re-running the identical prompt updates the existing record in place
+        (same md5-derived id) instead of appending a duplicate index entry, so
+        history stays free of dupes and prior decisions are not silently lost.
+        """
         conv_id = self._generate_id(prompt)
         timestamp = datetime.now().isoformat()
 
@@ -76,12 +81,14 @@ class MemorySystem:
         with open(conv_path, 'w') as f:
             json.dump(conversation_data, f, indent=2)
 
-        # Update index
-        self.index["conversations"].append({
-            "id": conv_id,
-            "timestamp": timestamp,
-            "prompt": prompt[:100] + "..." if len(prompt) > 100 else prompt
-        })
+        # Update index — replace an existing row for the same id, don't append
+        prompt_trunc = prompt[:100] + "..." if len(prompt) > 100 else prompt
+        entry = {"id": conv_id, "timestamp": timestamp, "prompt": prompt_trunc}
+        idx = next((i for i, e in enumerate(self.index["conversations"]) if e.get("id") == conv_id), None)
+        if idx is not None:
+            self.index["conversations"][idx] = entry
+        else:
+            self.index["conversations"].append(entry)
 
         self._save_index()
         return conv_id
