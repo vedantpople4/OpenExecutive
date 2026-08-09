@@ -601,6 +601,23 @@ def build_analysis_prompt(
     return "\n".join(parts)
 
 
+def _report_verdict(name: str, r: Dict[str, Any]) -> str:
+    """Resolve an agent's verdict from a serialized report dict.
+
+    AgentReport.to_dict() flattens the verdict under 'verdict' plus role fields
+    via extra_fields. Older code looked up f"{name}_verdict" / role-specific
+    keys that to_dict() never emits, so the verdict silently fell back to the
+    summary. Prefer 'verdict', then legacy role keys (for raw LLM dicts), then
+    summary.
+    """
+    for key in ("verdict", f"{name}_verdict", "strategic_verdict",
+                "financial_verdict", "technical_verdict", "market_verdict"):
+        verdict = r.get(key)
+        if isinstance(verdict, str) and verdict.strip():
+            return verdict
+    return str(r.get("summary", "N/A"))
+
+
 def build_review_prompt(
     agent_name: str,
     other_reports: Dict[str, Any],
@@ -626,20 +643,7 @@ def build_review_prompt(
 
         parts.append(f"\n### {other_agent.upper()} Report")
         parts.append(f"**Title:** {report.get('title', 'N/A')}")
-        # Check for role-specific verdicts (technical_verdict, market_verdict, etc.) or agent_verdict
-        verdict_key = f'{other_agent}_verdict'
-        verdict = report.get(verdict_key)
-        if verdict is None:
-            # Try role-specific verdicts
-            verdict_map = {
-                'ceo': 'strategic_verdict',
-                'cfo': 'financial_verdict',
-                'cto': 'technical_verdict',
-                'cmo': 'market_verdict',
-            }
-            verdict = report.get(verdict_map.get(other_agent, 'summary'))
-        verdict = verdict or report.get('summary', 'N/A')
-        parts.append(f"**Verdict:** {verdict}")
+        parts.append(f"**Verdict:** {_report_verdict(other_agent, report)}")
         parts.append(f"**Summary:** {report.get('summary', 'N/A')}")
 
         if report.get("key_findings"):
@@ -738,12 +742,7 @@ def build_deliberation_prompt(
         lines = []
         lines.append(f"### {name.upper()} Report")
         lines.append(f"**Title:** {r.get('title', 'N/A')}")
-        # Verdict field differs by agent
-        verdict_key = f"{name}_verdict" if name != "cmo" else "market_verdict"
-        if name == "cto":
-            verdict_key = "technical_verdict"
-        verdict = r.get(verdict_key) or r.get("summary", "N/A")
-        lines.append(f"**Verdict:** {verdict}")
+        lines.append(f"**Verdict:** {_report_verdict(name, r)}")
         lines.append(f"**Summary:** {r.get('summary', 'N/A')}")
         if r.get("key_findings"):
             lines.append("**Key Findings:**")
@@ -757,12 +756,8 @@ def build_deliberation_prompt(
             lines.append("**Risks:**")
             for risk in r["risks"]:
                 lines.append(f"- {risk}")
-        # Role-specific fields
-        role_fields = r.get("role_specific", {})
-        for k, v in role_fields.items():
-            if v and k not in ("reasoning", "verdict"):
-                lines.append(f"**{k}:** {v}")
-        # Deliberation fields
+        # Role-specific fields (verdict, extra_fields) are already flattened
+        # top-level by to_dict(). Deliberation fields:
         if r.get("agreements"):
             lines.append("**Agreements:**")
             for a in r["agreements"]:
@@ -1047,12 +1042,7 @@ def build_deliberation_prompt(
                 parts.append(f"\n[Round {rnd_num}]")
                 for name, r in rnd_data.items():
                     summary = r.get("summary", "")[:300] if r.get("summary") else ""
-                    verdicts = [
-                        r.get(f"{name}_verdict"),
-                        r.get("technical_verdict"),
-                        r.get("market_verdict"),
-                    ]
-                    verdict = next((v for v in verdicts if v), "")
+                    verdict = _report_verdict(name, r)
                     parts.append(f"  {name.upper()}: {verdict or summary}")
                     agreements = r.get("agreements", [])
                     if agreements:

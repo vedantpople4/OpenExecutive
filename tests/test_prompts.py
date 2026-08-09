@@ -152,6 +152,14 @@ class TestBuildReviewPrompt:
         assert "CFO Financial Report" not in prompt
         assert "CTO Technical Report" in prompt
 
+    def test_flattened_verdict_key_used(self):
+        """Serialized reports (to_dict) flatten verdict under 'verdict'."""
+        other_reports = {
+            "cto": {"title": "CTO Report", "summary": "S", "verdict": "Green"},
+        }
+        prompt = build_review_prompt("cfo", other_reports)
+        assert "Verdict:** Green" in prompt
+
     def test_output_schema_mentions_agreements_conflicts_required_changes(self):
         prompt = build_review_prompt("cmo", {
             "cfo": {"title": "T", "summary": "S"},
