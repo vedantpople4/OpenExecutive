@@ -188,16 +188,23 @@ class Orchestrator:
         print("\n--- Phase 3: DELIBERATION ---")
         delib = DeliberationOrchestrator(self.state, self.registry, verbose=self.verbose)
 
-        for round_num in range(1, 6):
+        delib.run_deliberation()
+
+        # Emit a truthful round-started/round-completed pair per round that
+        # actually ran. Rounds pruned by convergence or active_agents never
+        # emitted a "started" event, so the audit trail matches what happened
+        # (round 0 is the Phase-2 blind-report seed, not a real round).
+        actual_rounds = sorted(
+            r for r in self.state.deliberation_outputs if r != 0
+        )
+        for round_num in actual_rounds:
             self._emit_event(DeliberationRoundStarted(
                 event_id=str(uuid.uuid4()),
                 aggregate_id=self.state.simulation_id,
                 round_number=round_num
             ))
 
-        delib.run_deliberation()
-
-        for round_num, round_reports in self.state.deliberation_outputs.items():
+            round_reports = self.state.deliberation_outputs.get(round_num, {})
             self._emit_event(DeliberationRoundCompleted(
                 event_id=str(uuid.uuid4()),
                 aggregate_id=self.state.simulation_id,
@@ -217,7 +224,7 @@ class Orchestrator:
         self._emit_event(DeliberationCompleted(
             event_id=str(uuid.uuid4()),
             aggregate_id=self.state.simulation_id,
-            total_rounds=5
+            total_rounds=actual_rounds[-1] if actual_rounds else 0
         ))
 
         print("\n--- Deliberation Rounds Complete ---")

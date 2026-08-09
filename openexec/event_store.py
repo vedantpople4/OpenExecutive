@@ -20,7 +20,7 @@ class EventStore:
     Events are stored to disk for auditability and can be replayed to reconstruct state.
     """
 
-    def __init__(self, storage_path: str = "memory/"):
+    def __init__(self, storage_path: str = "memory/events/"):
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
         self.events: List[Event] = []

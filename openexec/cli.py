@@ -548,8 +548,10 @@ def _run_simulation(
             state.data_corpus["memory_context.md"] = memory_context
 
     # Run simulation
+    from openexec.event_store import EventStore
     orchestrator = Orchestrator(registry, verbose=verbose)
     orchestrator.teams_enabled = teams
+    orchestrator.set_event_store(EventStore(storage_path="memory/events/"))
     orchestrator.initialize(state)
 
     try:
