@@ -155,6 +155,27 @@ def detect_export_format(output_path: str) -> Optional[str]:
     return None
 
 
+def parse_active_agents(agents: Optional[str]) -> List[str]:
+    """Parse and validate the --agents flag, returning the agent name list.
+
+    Valid names are the 4 CXOs plus every --teams specialist. Raises
+    typer.Exit with a clear message on unknown names (mirrors --weight's
+    validation) so a typo'd --agents can't silently drop an agent the user
+    believed would participate.
+    """
+    if not agents:
+        return list(DEFAULT_AGENTS)
+    from openexec.agents import TEAM_STRUCTURE
+    requested = [a.strip().lower() for a in agents.split(",")]
+    valid_agents = set(DEFAULT_AGENTS) | {m for members in TEAM_STRUCTURE.values() for m in members}
+    invalid = [a for a in requested if a not in valid_agents]
+    if invalid:
+        console.print(f"ERROR: Invalid agent name(s): {', '.join(invalid)}")
+        console.print(f"Valid agents: {', '.join(sorted(valid_agents))}")
+        raise typer.Exit(1)
+    return requested
+
+
 # ==============================
 # Main Simulation Command
 # ==============================
@@ -340,9 +361,7 @@ def _run_simulation(
     if dry_run:
         # No settings.json, output dir, or state/orchestrator setup needed --
         # this is pure arithmetic over which agents/modes were requested.
-        resolved_agents = (
-            [a.strip().lower() for a in agents.split(",")] if agents else list(DEFAULT_AGENTS)
-        )
+        resolved_agents = parse_active_agents(agents)
         from openexec.estimate import estimate_llm_calls
 
         min_calls, max_calls = estimate_llm_calls(resolved_agents, teams)
@@ -440,7 +459,7 @@ def _run_simulation(
 
     # Set active agents if provided
     if agents:
-        state.active_agents = [a.strip().lower() for a in agents.split(",")]
+        state.active_agents = parse_active_agents(agents)
         console.print(f"=> Targeted simulation: {', '.join(state.active_agents)}")
     else:
         # Default to the 4 CXOs. Team specialists (registered in the same

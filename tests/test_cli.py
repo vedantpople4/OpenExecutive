@@ -7,7 +7,31 @@ from unittest.mock import patch
 
 import pytest
 
-from openexec.cli import main
+from openexec.cli import main, parse_active_agents
+
+
+class TestParseActiveAgents:
+    """--agents validation: valid CXO/specialist names pass, unknown names error."""
+
+    def test_defaults_to_all_cxos(self):
+        assert parse_active_agents(None) == ["ceo", "cfo", "cto", "cmo"]
+
+    def test_accepts_cxo_names(self):
+        assert parse_active_agents("ceo,cfo,cto,cmo") == ["ceo", "cfo", "cto", "cmo"]
+
+    def test_accepts_teams_specialists(self):
+        # Specialists are valid names (they participate in --teams Phase 2.5),
+        # so they must never raise here even though plain runs filter them.
+        assert parse_active_agents("financial_analyst") == ["financial_analyst"]
+
+    def test_normalizes_case_and_whitespace(self):
+        assert parse_active_agents("CEO, CFO") == ["ceo", "cfo"]
+
+    def test_rejects_unknown_agent(self):
+        import typer
+        with pytest.raises(typer.Exit) as exc_info:
+            parse_active_agents("ceo,cfo,typo")
+        assert exc_info.value.exit_code == 1
 
 
 class TestCLIEntryPoints:
