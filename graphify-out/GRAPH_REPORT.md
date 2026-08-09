@@ -1,12 +1,12 @@
 # Graph Report - /Users/vedantpople/Documents/OpenExec  (2026-08-09)
 
 ## Corpus Check
-- 56 files · ~337,629 words
+- 61 files · ~366,941 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1801 nodes · 4217 edges · 135 communities detected
-- Extraction: 35% EXTRACTED · 65% INFERRED · 0% AMBIGUOUS · INFERRED: 2754 edges (avg confidence: 0.57)
+- 2013 nodes · 4773 edges · 196 communities detected
+- Extraction: 32% EXTRACTED · 68% INFERRED · 0% AMBIGUOUS · INFERRED: 3246 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -145,40 +145,101 @@
 - [[_COMMUNITY_Community 132|Community 132]]
 - [[_COMMUNITY_Community 133|Community 133]]
 - [[_COMMUNITY_Community 134|Community 134]]
+- [[_COMMUNITY_Community 135|Community 135]]
+- [[_COMMUNITY_Community 136|Community 136]]
+- [[_COMMUNITY_Community 137|Community 137]]
+- [[_COMMUNITY_Community 138|Community 138]]
+- [[_COMMUNITY_Community 139|Community 139]]
+- [[_COMMUNITY_Community 140|Community 140]]
+- [[_COMMUNITY_Community 141|Community 141]]
+- [[_COMMUNITY_Community 142|Community 142]]
+- [[_COMMUNITY_Community 143|Community 143]]
+- [[_COMMUNITY_Community 144|Community 144]]
+- [[_COMMUNITY_Community 145|Community 145]]
+- [[_COMMUNITY_Community 146|Community 146]]
+- [[_COMMUNITY_Community 147|Community 147]]
+- [[_COMMUNITY_Community 148|Community 148]]
+- [[_COMMUNITY_Community 149|Community 149]]
+- [[_COMMUNITY_Community 150|Community 150]]
+- [[_COMMUNITY_Community 151|Community 151]]
+- [[_COMMUNITY_Community 152|Community 152]]
+- [[_COMMUNITY_Community 153|Community 153]]
+- [[_COMMUNITY_Community 154|Community 154]]
+- [[_COMMUNITY_Community 155|Community 155]]
+- [[_COMMUNITY_Community 156|Community 156]]
+- [[_COMMUNITY_Community 157|Community 157]]
+- [[_COMMUNITY_Community 158|Community 158]]
+- [[_COMMUNITY_Community 159|Community 159]]
+- [[_COMMUNITY_Community 160|Community 160]]
+- [[_COMMUNITY_Community 161|Community 161]]
+- [[_COMMUNITY_Community 162|Community 162]]
+- [[_COMMUNITY_Community 163|Community 163]]
+- [[_COMMUNITY_Community 164|Community 164]]
+- [[_COMMUNITY_Community 165|Community 165]]
+- [[_COMMUNITY_Community 166|Community 166]]
+- [[_COMMUNITY_Community 167|Community 167]]
+- [[_COMMUNITY_Community 168|Community 168]]
+- [[_COMMUNITY_Community 169|Community 169]]
+- [[_COMMUNITY_Community 170|Community 170]]
+- [[_COMMUNITY_Community 171|Community 171]]
+- [[_COMMUNITY_Community 172|Community 172]]
+- [[_COMMUNITY_Community 173|Community 173]]
+- [[_COMMUNITY_Community 174|Community 174]]
+- [[_COMMUNITY_Community 175|Community 175]]
+- [[_COMMUNITY_Community 176|Community 176]]
+- [[_COMMUNITY_Community 177|Community 177]]
+- [[_COMMUNITY_Community 178|Community 178]]
+- [[_COMMUNITY_Community 179|Community 179]]
+- [[_COMMUNITY_Community 180|Community 180]]
+- [[_COMMUNITY_Community 181|Community 181]]
+- [[_COMMUNITY_Community 182|Community 182]]
+- [[_COMMUNITY_Community 183|Community 183]]
+- [[_COMMUNITY_Community 184|Community 184]]
+- [[_COMMUNITY_Community 185|Community 185]]
+- [[_COMMUNITY_Community 186|Community 186]]
+- [[_COMMUNITY_Community 187|Community 187]]
+- [[_COMMUNITY_Community 188|Community 188]]
+- [[_COMMUNITY_Community 189|Community 189]]
+- [[_COMMUNITY_Community 190|Community 190]]
+- [[_COMMUNITY_Community 191|Community 191]]
+- [[_COMMUNITY_Community 192|Community 192]]
+- [[_COMMUNITY_Community 193|Community 193]]
+- [[_COMMUNITY_Community 194|Community 194]]
+- [[_COMMUNITY_Community 195|Community 195]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `AgentReport` - 369 edges
-2. `Orchestrator` - 288 edges
-3. `AIClient` - 241 edges
-4. `SimulationState` - 156 edges
-5. `DeliberationOrchestrator` - 132 edges
-6. `MemorySystem` - 113 edges
+1. `AgentReport` - 402 edges
+2. `Orchestrator` - 315 edges
+3. `AIClient` - 265 edges
+4. `SimulationState` - 203 edges
+5. `DeliberationOrchestrator` - 147 edges
+6. `MemorySystem` - 141 edges
 7. `FeedbackSystem` - 106 edges
-8. `DecisionTracker` - 82 edges
-9. `EventStore` - 55 edges
-10. `ExportFormat` - 54 edges
+8. `EventStore` - 98 edges
+9. `DecisionTracker` - 82 edges
+10. `Event` - 69 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Concrete CEO implementation focusing on Vision and Strategy (Why?).` --uses--> `AgentReport`  [INFERRED]
-  /Users/vedantpople/Documents/OpenExec/openexec/agents/templates_ceo.py → /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py
-- `Initialize CEO agent with AI client.` --uses--> `AgentReport`  [INFERRED]
-  /Users/vedantpople/Documents/OpenExec/openexec/agents/templates_ceo.py → /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py
-- `CEO analysis - define vision, strategic direction, high-level goals.` --uses--> `AgentReport`  [INFERRED]
-  /Users/vedantpople/Documents/OpenExec/openexec/agents/templates_ceo.py → /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py
-- `Synthesize reports from the CEO's team into a consolidated strategic position.` --uses--> `AgentReport`  [INFERRED]
-  /Users/vedantpople/Documents/OpenExec/openexec/agents/templates_ceo.py → /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py
-- `Delegation handled by DeliberationOrchestrator. See Orchestrator.run_deliberatio` --uses--> `AgentReport`  [INFERRED]
-  /Users/vedantpople/Documents/OpenExec/openexec/agents/templates_ceo.py → /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py
+- `AgentReport` --uses--> `Shared pytest fixtures for all tests.`  [INFERRED]
+  /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py → /Users/vedantpople/Documents/OpenExec/tests/conftest.py
+- `AgentReport` --uses--> `Minimal AgentReport stand-in used for orchestrator state tests.`  [INFERRED]
+  /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py → /Users/vedantpople/Documents/OpenExec/tests/conftest.py
+- `AgentReport` --uses--> `Return non-None role-specific fields.`  [INFERRED]
+  /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py → /Users/vedantpople/Documents/OpenExec/tests/conftest.py
+- `AgentReport` --uses--> `Get project root path.`  [INFERRED]
+  /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py → /Users/vedantpople/Documents/OpenExec/tests/conftest.py
+- `AgentReport` --uses--> `A complete, valid LLM response for the CEO agent.`  [INFERRED]
+  /Users/vedantpople/Documents/OpenExec/openexec/agents/interface.py → /Users/vedantpople/Documents/OpenExec/tests/conftest.py
 
 ## Communities
 
 ### Community 0 - "Community 0"
 Cohesion: 0.01
-Nodes (341): batch(), detect_export_format(), print_section(), quick(), Search knowledge base for relevant content., Search knowledge base for relevant content., List all knowledge base categories., List all knowledge base categories. (+333 more)
+Nodes (387): Ingest document into knowledge base., Search knowledge base for relevant content., Search knowledge base for relevant content., List all knowledge base categories., List all knowledge base categories., Search knowledge base for relevant content., Save configuration to file., Show knowledge base statistics. (+379 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.02
-Nodes (116): discuss(), feedback(), history(), review(), search(), MemorySystem, Manages conversation memory and embeddings for multi-session learning., Get recent conversation history. (+108 more)
+Nodes (143): feedback(), history(), review(), MemorySystem, Find conversations related to a query using keyword matching., Manages conversation memory and embeddings for multi-session learning., Generate memory context string for new simulations., Get recent conversation history. (+135 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.02
@@ -186,51 +247,51 @@ Nodes (106): performance(), FeedbackSystem, Manages feedback on agent recommenda
 
 ### Community 3 - "Community 3"
 Cohesion: 0.03
-Nodes (62): Return a JSON-serialisable dict representation., Return non-None role-specific fields as a dict. Useful for synthesis., DeliberationOrchestrator, Deliberation orchestration — multi-round board meeting workflow., Call agents for this round, dynamically selected based on conflicts and active_a, Run CEO's round-5 synthesis to produce board_decision., Runs the multi-round deliberation loop.      Each round compiles the prior outpu, Return a minimal AgentReport when the LLM is unavailable. (+54 more)
+Nodes (62): Return a JSON-serialisable dict representation., Return non-None role-specific fields as a dict. Useful for synthesis., DeliberationOrchestrator, Call agents for this round, dynamically selected based on conflicts and active_a, Run CEO's round-5 synthesis to produce board_decision., Build prompt, call LLM, return AgentReport.          Tries a lean context first,, Runs the multi-round deliberation loop.      Each round compiles the prior outpu, Call Scribe agent to synthesize current round's outputs into state.board_summary (+54 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.02
-Nodes (90): ExportFormat, Supported export formats., main(), Tests for the openexec CLI., Test decision logging functionality., Test decision logging functionality., Test that decisions are logged to decision directory., Test that decisions are logged to decision directory. (+82 more)
-
-### Community 5 - "Community 5"
 Cohesion: 0.03
 Nodes (84): DecisionTracker, Decision tracking and logging system for OpenExec.  This module provides functio, Get decision history.          Returns:             List of decision records, Get recent decisions.          Args:             limit: Number of recent decisio, Tracks and logs decisions made during simulations., Find decisions related to a query.          Args:             query: Search quer, Initialize decision tracker.          Args:             log_dir: Directory to st, Log a decision with its results and action items.          Args:             pro (+76 more)
 
+### Community 5 - "Community 5"
+Cohesion: 0.02
+Nodes (76): ExportFormat, Supported export formats., Tests for the openexec CLI., Test CLI runner integration., Test that required data files exist., Test decision logging functionality., Test that decisions are logged to decision directory., Test that data files have meaningful content. (+68 more)
+
 ### Community 6 - "Community 6"
-Cohesion: 0.03
-Nodes (62): Delegates completion to the configured provider., Delegates JSON completion to the configured provider and runs parsing., Delegates JSON completion with explicit retry control., getCellValue(), rowComparator(), sortColumn(), estimate_llm_calls(), Estimate the LLM call count for a simulation before running it.  Reuses PHASE_RO (+54 more)
+Cohesion: 0.19
+Nodes (82): Enum, EventStore, Replay events to reconstruct the state of a simulation.          Args:, Apply a single event to a state dictionary.          Args:             event: Th, Manages event storage, retrieval, and state reconstruction.      Implements an a, Load all events for an aggregate from disk.          Args:             aggregate, Clear events from the store.          Args:             aggregate_id: If provide, Append an event to the store and persist to disk.          Args:             eve (+74 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.08
-Nodes (45): evaluate_agent(), MockState, run_eval(), AgentRegistry, Registry for managing executive agent instances., Register an agent class., Unregister an agent by name. Returns True if successful., Get an agent instance by name, creating one if needed. (+37 more)
+Cohesion: 0.03
+Nodes (44): Data module for OpenExec - Real-time data fetching and integration., build_analysis_prompt(), build_deliberation_prompt(), build_review_prompt(), _classify_decision(), get_agent_system_prompt(), Agent-specific prompts for OpenExec executive agents., Classify decision type from prompt keywords.      Args:         prompt: The busi (+36 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.19
-Nodes (67): Enum, EventStore, Replay events to reconstruct the state of a simulation.          Args:, Apply a single event to a state dictionary.          Args:             event: Th, Manages event storage, retrieval, and state reconstruction.      Implements an a, Load all events for an aggregate from disk.          Args:             aggregate, Clear events from the store.          Args:             aggregate_id: If provide, Append an event to the store and persist to disk.          Args:             eve (+59 more)
+Cohesion: 0.07
+Nodes (45): AgentTemplate, evaluate_agent(), MockState, run_eval(), AgentRegistry, Registry for managing executive agent instances., Register an agent class., Unregister an agent by name. Returns True if successful. (+37 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.04
-Nodes (49): config_command(), ensure_config_dir(), get_default_config(), get_nested_config(), ingest(), kb_categories(), kb_ingest(), kb_list() (+41 more)
+Nodes (59): batch(), config_command(), detect_export_format(), discuss(), ensure_config_dir(), get_default_config(), get_nested_config(), ingest() (+51 more)
 
 ### Community 10 - "Community 10"
+Cohesion: 0.06
+Nodes (42): Delegates completion to the configured provider., Delegates JSON completion to the configured provider and runs parsing., Delegates JSON completion with explicit retry control., getCellValue(), rowComparator(), sortColumn(), JSONPipeline, Shared JSON parsing pipeline for robust LLM response handling. (+34 more)
+
+### Community 11 - "Community 11"
+Cohesion: 0.06
+Nodes (33): kb_categories(), kb_stats(), check_report_grounding(), extract_numeric_claims(), _normalize(), Deterministic grounding check — do agents' numeric claims appear in the source d, Lowercase and strip whitespace/commas so '$2 M' matches '$2m'., Return numeric claims found in text, in order of appearance. (+25 more)
+
+### Community 12 - "Community 12"
+Cohesion: 0.04
+Nodes (37): Entry point for running OpenExec as a module., Write the final report to a markdown file., write_report(), Tests for openexec/utils.py — utility functions., Empty results should return empty list., Lowercase recommendations should be capitalized., Due dates should be calculated based on priority: HIGH=2 weeks, MEDIUM=4 weeks,, Medium priority items should have a 4-week due date. (+29 more)
+
+### Community 13 - "Community 13"
 Cohesion: 0.05
 Nodes (34): generate_executive_summary(), Write executive summary to file., Generate a 1-page executive summary from simulation results., write_executive_summary(), Tests for openexec/summary.py — executive summary generation., Should limit recommendations to top 5., Should include critical risks section., Should limit risks to top 3. (+26 more)
 
-### Community 11 - "Community 11"
-Cohesion: 0.05
-Nodes (34): Tests for openexec/utils.py — utility functions., Empty results should return empty list., Lowercase recommendations should be capitalized., Due dates should be calculated based on priority: HIGH=2 weeks, MEDIUM=4 weeks,, Medium priority items should have a 4-week due date., Results without synthesized recommendations should still extract from agent repo, Should extract from both synthesized and agent recommendations., Should handle malformed recommendation format gracefully. (+26 more)
-
-### Community 12 - "Community 12"
-Cohesion: 0.05
-Nodes (26): build_analysis_prompt(), build_deliberation_prompt(), build_review_prompt(), _classify_decision(), Agent-specific prompts for OpenExec executive agents., Classify decision type from prompt keywords.      Args:         prompt: The busi, Build the user-side prompt injected into each agent's LLM call.      Includes de, # IMPORTANT: Instruct agent to synthesize, NOT repeat raw data (+18 more)
-
-### Community 13 - "Community 13"
-Cohesion: 0.06
-Nodes (27): FakeAgentReport, FakeSimulationState, project_root(), Shared pytest fixtures for all tests., A complete, valid LLM response for the CEO agent., A complete, valid LLM response for the CFO agent., A complete, valid LLM response for the CTO agent., A complete, valid LLM response for the CMO agent. (+19 more)
-
 ### Community 14 - "Community 14"
-Cohesion: 0.18
-Nodes (9): quantify_risks(), Quantifies risks with probability and impact scoring., Add risk quantification to results., Quantify a single risk based on text analysis., Get priority based on risk score., Map impact score to band label., Map probability to band label., Generate dynamic ASCII risk matrix with plotted risks. (+1 more)
+Cohesion: 0.05
+Nodes (36): FakeAgentReport, FakeSimulationState, project_root(), Shared pytest fixtures for all tests., A complete, valid LLM response for the CEO agent., A complete, valid LLM response for the CFO agent., A complete, valid LLM response for the CTO agent., A complete, valid LLM response for the CMO agent. (+28 more)
 
 ### Community 15 - "Community 15"
 Cohesion: 0.33
@@ -262,7 +323,7 @@ Nodes (1): Create a temporary directory for testing.
 
 ### Community 22 - "Community 22"
 Cohesion: 1.0
-Nodes (1): Get list of sample data files.
+Nodes (0): 
 
 ### Community 23 - "Community 23"
 Cohesion: 1.0
@@ -270,450 +331,694 @@ Nodes (0):
 
 ### Community 24 - "Community 24"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (1): Ingest a document into the knowledge base.          Args:             file_path:
 
 ### Community 25 - "Community 25"
 Cohesion: 1.0
-Nodes (1): Manages conversation memory and embeddings for multi-session learning.
+Nodes (1): Ingest text directly into the knowledge base.          Args:             text: T
 
 ### Community 26 - "Community 26"
 Cohesion: 1.0
-Nodes (1): Load memory index from disk.
+Nodes (1): Retrieve relevant chunks based on a query, ranked by TF-IDF cosine         simil
 
 ### Community 27 - "Community 27"
 Cohesion: 1.0
-Nodes (1): Save memory index to disk.
+Nodes (1): Generate context string for a query from the knowledge base.
 
 ### Community 28 - "Community 28"
 Cohesion: 1.0
-Nodes (1): Generate a unique ID for a conversation based on prompt hash.
+Nodes (1): List all documents in the knowledge base.
 
 ### Community 29 - "Community 29"
 Cohesion: 1.0
-Nodes (1): Store a conversation and its results in memory.
+Nodes (1): List all categories in the knowledge base.
 
 ### Community 30 - "Community 30"
 Cohesion: 1.0
-Nodes (1): Retrieve a conversation by ID.
+Nodes (1): Delete a document from the knowledge base.
 
 ### Community 31 - "Community 31"
 Cohesion: 1.0
-Nodes (1): Find conversations related to a query using keyword matching.
+Nodes (1): Get statistics about the knowledge base.
 
 ### Community 32 - "Community 32"
 Cohesion: 1.0
-Nodes (1): Generate memory context string for new simulations.
+Nodes (1): Retrieve a conversation by ID.
 
 ### Community 33 - "Community 33"
 Cohesion: 1.0
-Nodes (1): Get recent conversation history.
+Nodes (1): Find conversations related to a query using keyword matching.
 
 ### Community 34 - "Community 34"
 Cohesion: 1.0
-Nodes (1): Search memory for specific topics.
+Nodes (1): Generate memory context string for new simulations.
 
 ### Community 35 - "Community 35"
 Cohesion: 1.0
-Nodes (1): Tracks and logs decisions made during simulations.
+Nodes (1): Get recent conversation history.
 
 ### Community 36 - "Community 36"
 Cohesion: 1.0
-Nodes (1): Initialize decision tracker.          Args:             log_dir: Directory to st
+Nodes (1): Search memory for specific topics.
 
 ### Community 37 - "Community 37"
 Cohesion: 1.0
-Nodes (1): Log a decision with its results and action items.          Args:             pro
+Nodes (1): Generate a prompt for collecting feedback on a decision.
 
 ### Community 38 - "Community 38"
 Cohesion: 1.0
-Nodes (1): Extract key summary information from results.          Args:             results
+Nodes (1): Remove duplicate action items based on normalized task text.
 
 ### Community 39 - "Community 39"
 Cohesion: 1.0
-Nodes (1): Update the decision log with a new decision record.          Args:             d
+Nodes (1): Calculate a due date string based on priority.
 
 ### Community 40 - "Community 40"
 Cohesion: 1.0
-Nodes (1): Get decision history.          Returns:             List of decision records
+Nodes (1): Extract action items from the simulation results.      Args:         results: Th
 
 ### Community 41 - "Community 41"
 Cohesion: 1.0
-Nodes (1): Get recent decisions.          Args:             limit: Number of recent decisio
+Nodes (1): Build the user-side prompt injected into each agent's LLM call.      Includes de
 
 ### Community 42 - "Community 42"
 Cohesion: 1.0
-Nodes (1): Find decisions related to a query.          Args:             query: Search quer
+Nodes (1): Build a review prompt for cross-functional analysis.      Args:         agent_na
 
 ### Community 43 - "Community 43"
 Cohesion: 1.0
-Nodes (1): extract_action_items() — action item extraction from results.
+Nodes (1): Build a deliberative round prompt for a specific agent.      Args:         agent
 
 ### Community 44 - "Community 44"
 Cohesion: 1.0
-Nodes (1): Empty results should return empty list.
+Nodes (1): # IMPORTANT: Instruct agent to synthesize, NOT repeat raw data
 
 ### Community 45 - "Community 45"
 Cohesion: 1.0
-Nodes (1): Results without synthesized recommendations should still extract from agent repo
+Nodes (1): Agent reviewing itself should not appear in the prompt.
 
 ### Community 46 - "Community 46"
 Cohesion: 1.0
-Nodes (1): Synthesized recommendations with [OWNER] format should be parsed correctly.
+Nodes (1): build_deliberation_prompt() — round-specific deliberation prompts.
 
 ### Community 47 - "Community 47"
 Cohesion: 1.0
-Nodes (1): Priority should be mapped correctly based on owner.
+Nodes (1): CMO round 3 receives CFO, CTO, CEO round-1, CFO+CTO round-2.
 
 ### Community 48 - "Community 48"
 Cohesion: 1.0
-Nodes (1): Actionable language should be detected in agent recommendations.
+Nodes (1): Round 4 uses lean context: Board State Summary + R-1 only (not full history).
 
 ### Community 49 - "Community 49"
 Cohesion: 1.0
-Nodes (1): Lowercase recommendations should be capitalized.
+Nodes (1): Round 5 skips round-0 blind reports.
 
 ### Community 50 - "Community 50"
 Cohesion: 1.0
-Nodes (1): Due dates should be calculated based on priority: HIGH=2 weeks, MEDIUM=4 weeks,
+Nodes (1): Round 5 prompt length should be manageable — summaries are capped.
 
 ### Community 51 - "Community 51"
 Cohesion: 1.0
-Nodes (1): Medium priority items should have a 4-week due date.
+Nodes (1): Test that --help works and displays usage.
 
 ### Community 52 - "Community 52"
 Cohesion: 1.0
-Nodes (1): Should extract from both synthesized and agent recommendations.
+Nodes (1): Test that run subcommand --help works.
 
 ### Community 53 - "Community 53"
 Cohesion: 1.0
-Nodes (1): Should handle malformed recommendation format gracefully.
+Nodes (1): Test that setup subcommand --help works.
 
 ### Community 54 - "Community 54"
 Cohesion: 1.0
-Nodes (1): Empty agent reports should not cause errors.
+Nodes (1): Test the run command functionality.
 
 ### Community 55 - "Community 55"
 Cohesion: 1.0
-Nodes (1): Owner matching should be case-insensitive.
+Nodes (1): Create a temporary directory for testing.
 
 ### Community 56 - "Community 56"
 Cohesion: 1.0
-Nodes (1): sanitize_prompt() — prompt injection defense.
+Nodes (1): Test that run command loads data files from data directory.
 
 ### Community 57 - "Community 57"
 Cohesion: 1.0
-Nodes (1): Full <script>...</script> tags should be replaced with [FILTERED].
+Nodes (1): Test CLI runner integration.
 
 ### Community 58 - "Community 58"
 Cohesion: 1.0
-Nodes (1): Multi-line <script>...</script> tags should be replaced.
+Nodes (1): Test that required data files exist.
 
 ### Community 59 - "Community 59"
 Cohesion: 1.0
-Nodes (1): javascript: protocol should be filtered.
+Nodes (1): Test that data files have meaningful content.
 
 ### Community 60 - "Community 60"
 Cohesion: 1.0
-Nodes (1): Event handlers like onclick= should be filtered.
+Nodes (1): Test decision logging functionality.
 
 ### Community 61 - "Community 61"
 Cohesion: 1.0
-Nodes (1): Ignore instructions patterns should be filtered.
+Nodes (1): Test that decisions are logged to decision directory.
 
 ### Community 62 - "Community 62"
 Cohesion: 1.0
-Nodes (1): Markdown image links should be replaced.
+Nodes (1): Test CLI export formats.
 
 ### Community 63 - "Community 63"
 Cohesion: 1.0
-Nodes (1): Prompt should be truncated to max_length.
+Nodes (1): Create a temporary directory for testing.
 
 ### Community 64 - "Community 64"
 Cohesion: 1.0
-Nodes (1): Empty prompt should return empty string.
+Nodes (1): Test that recognized export formats are documented.
 
 ### Community 65 - "Community 65"
 Cohesion: 1.0
-Nodes (1): Normal business prompt should remain mostly intact.
+Nodes (1): Test that package structure is correct for pip install.
 
 ### Community 66 - "Community 66"
 Cohesion: 1.0
-Nodes (1): Decision type routing.
+Nodes (1): Test that openexec package directory exists.
 
 ### Community 67 - "Community 67"
 Cohesion: 1.0
-Nodes (1): memory_context.md should be skipped from data_corpus injection.
+Nodes (1): Test that cli.py exists in openexec package.
 
 ### Community 68 - "Community 68"
 Cohesion: 1.0
-Nodes (1): Agent reviewing itself should not appear in the prompt.
+Nodes (1): Test that main function exists in cli module.
 
 ### Community 69 - "Community 69"
 Cohesion: 1.0
-Nodes (1): build_deliberation_prompt() — round-specific deliberation prompts.
+Nodes (1): Test that setup.py exists and is valid.
 
 ### Community 70 - "Community 70"
 Cohesion: 1.0
-Nodes (1): CMO round 3 receives CFO, CTO, CEO round-1, CFO+CTO round-2.
+Nodes (1): Test CLI configuration management.
 
 ### Community 71 - "Community 71"
 Cohesion: 1.0
-Nodes (1): Round 4 uses lean context: Board State Summary + R-1 only (not full history).
+Nodes (1): Test that AI provider configuration exists.
 
 ### Community 72 - "Community 72"
 Cohesion: 1.0
-Nodes (1): Round 5 skips round-0 blind reports.
+Nodes (1): Test data corpus loading functionality.
 
 ### Community 73 - "Community 73"
 Cohesion: 1.0
-Nodes (1): Round 5 prompt length should be manageable — summaries are capped.
+Nodes (1): Get list of sample data files.
 
 ### Community 74 - "Community 74"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (1): Test CLI command documentation.
 
 ### Community 75 - "Community 75"
 Cohesion: 1.0
-Nodes (1): Manages custom knowledge base with RAG capabilities.
+Nodes (1): Test that README.md exists.
 
 ### Community 76 - "Community 76"
 Cohesion: 1.0
-Nodes (1): Load knowledge base index from disk.
+Nodes (1): Test that README contains installation instructions.
 
 ### Community 77 - "Community 77"
 Cohesion: 1.0
-Nodes (1): Save knowledge base index to disk.
+Nodes (1): Test that README contains usage examples.
 
 ### Community 78 - "Community 78"
 Cohesion: 1.0
-Nodes (1): Generate a unique ID for a document.
+Nodes (1): Test --weight flag validation in run command.
 
 ### Community 79 - "Community 79"
 Cohesion: 1.0
-Nodes (1): Split text into chunks for better retrieval.
+Nodes (1): Invalid agent name should exit with error.
 
 ### Community 80 - "Community 80"
 Cohesion: 1.0
-Nodes (1): Ingest a document into the knowledge base.          Args:             file_path:
+Nodes (1): Non-numeric weight should exit with error.
 
 ### Community 81 - "Community 81"
 Cohesion: 1.0
-Nodes (1): Ingest text directly into the knowledge base.          Args:             text: T
+Nodes (1): Weight > 1.0 should exit with error.
 
 ### Community 82 - "Community 82"
 Cohesion: 1.0
-Nodes (1): Retrieve relevant chunks based on a query.          Args:             query: Sea
+Nodes (1): Test output path validation in run command.
 
 ### Community 83 - "Community 83"
 Cohesion: 1.0
-Nodes (1): Generate context string for a query from the knowledge base.
+Nodes (1): Non-existent output directory should exit before simulation.
 
 ### Community 84 - "Community 84"
 Cohesion: 1.0
-Nodes (1): List all documents in the knowledge base.
+Nodes (1): Valid output directory should proceed (but may fail later in simulation).
 
 ### Community 85 - "Community 85"
 Cohesion: 1.0
-Nodes (1): List all categories in the knowledge base.
+Nodes (0): 
 
 ### Community 86 - "Community 86"
 Cohesion: 1.0
-Nodes (1): Delete a document from the knowledge base.
+Nodes (1): Manages conversation memory and embeddings for multi-session learning.
 
 ### Community 87 - "Community 87"
 Cohesion: 1.0
-Nodes (1): Get statistics about the knowledge base.
+Nodes (1): Load memory index from disk.
 
 ### Community 88 - "Community 88"
 Cohesion: 1.0
-Nodes (1): Export action items to JSON.
+Nodes (1): Save memory index to disk.
 
 ### Community 89 - "Community 89"
 Cohesion: 1.0
-Nodes (1): Export action items to CSV.
+Nodes (1): Generate a unique ID for a conversation based on prompt hash.
 
 ### Community 90 - "Community 90"
 Cohesion: 1.0
-Nodes (1): Export action items as markdown checklist.
+Nodes (1): Store a conversation and its results in memory.
 
 ### Community 91 - "Community 91"
 Cohesion: 1.0
-Nodes (1): Write executive summary to file.
+Nodes (1): Retrieve a conversation by ID.
 
 ### Community 92 - "Community 92"
 Cohesion: 1.0
-Nodes (1): Extract action items from the simulation results.      Args:         results: Th
+Nodes (1): Find conversations related to a query using keyword matching.
 
 ### Community 93 - "Community 93"
 Cohesion: 1.0
-Nodes (1): Quantifies risks with probability and impact scoring.
+Nodes (1): Generate memory context string for new simulations.
 
 ### Community 94 - "Community 94"
 Cohesion: 1.0
-Nodes (1): Quantify a single risk based on text analysis.
+Nodes (1): Get recent conversation history.
 
 ### Community 95 - "Community 95"
 Cohesion: 1.0
-Nodes (1): Get priority based on risk score.
+Nodes (1): Search memory for specific topics.
 
 ### Community 96 - "Community 96"
 Cohesion: 1.0
-Nodes (1): Generate ASCII risk matrix.
+Nodes (1): Tracks and logs decisions made during simulations.
 
 ### Community 97 - "Community 97"
 Cohesion: 1.0
-Nodes (1): Add risk quantification to results.
+Nodes (1): Initialize decision tracker.          Args:             log_dir: Directory to st
 
 ### Community 98 - "Community 98"
 Cohesion: 1.0
-Nodes (1): Find decisions related to a query.          Args:             query: Search quer
+Nodes (1): Log a decision with its results and action items.          Args:             pro
 
 ### Community 99 - "Community 99"
 Cohesion: 1.0
-Nodes (1): Standard report format for agent insights.
+Nodes (1): Extract key summary information from results.          Args:             results
 
 ### Community 100 - "Community 100"
 Cohesion: 1.0
-Nodes (1): Construct AgentReport from LLM JSON response, mapping role-specific fields.
+Nodes (1): Update the decision log with a new decision record.          Args:             d
 
 ### Community 101 - "Community 101"
 Cohesion: 1.0
-Nodes (1): Return non-None role-specific fields as a dict. Useful for synthesis.          R
+Nodes (1): Get decision history.          Returns:             List of decision records
 
 ### Community 102 - "Community 102"
 Cohesion: 1.0
-Nodes (1): LLM Client Wrapper for OpenExec - OpenAI Compatible Format.
+Nodes (1): Get recent decisions.          Args:             limit: Number of recent decisio
 
 ### Community 103 - "Community 103"
 Cohesion: 1.0
-Nodes (1): Wrapper for LLM API calls using OpenAI-compatible format.      Supports:     - L
+Nodes (1): Find decisions related to a query.          Args:             query: Search quer
 
 ### Community 104 - "Community 104"
 Cohesion: 1.0
-Nodes (1): Complete a prompt using the LLM (OpenAI-compatible format).
+Nodes (1): extract_action_items() — action item extraction from results.
 
 ### Community 105 - "Community 105"
 Cohesion: 1.0
-Nodes (1): Complete a prompt and parse response as JSON, with 4-layer robustness.
+Nodes (1): Empty results should return empty list.
 
 ### Community 106 - "Community 106"
 Cohesion: 1.0
-Nodes (1): Same as complete_json but with explicit retry loop for callers who want control.
+Nodes (1): Results without synthesized recommendations should still extract from agent repo
 
 ### Community 107 - "Community 107"
 Cohesion: 1.0
-Nodes (1): Run the 4-layer JSON extraction pipeline.          Args:             raw_text: R
+Nodes (1): Synthesized recommendations with [OWNER] format should be parsed correctly.
 
 ### Community 108 - "Community 108"
 Cohesion: 1.0
-Nodes (1): Layer 1: Sanitize raw LLM output before parsing.          Handles:         - Mar
+Nodes (1): Priority should be mapped correctly based on owner.
 
 ### Community 109 - "Community 109"
 Cohesion: 1.0
-Nodes (1): Layer 2: Fix known structural issues in LLM-generated JSON.          Handles:
+Nodes (1): Actionable language should be detected in agent recommendations.
 
 ### Community 110 - "Community 110"
 Cohesion: 1.0
-Nodes (1): Attempt to parse text as JSON. Returns None on failure.
+Nodes (1): Lowercase recommendations should be capitalized.
 
 ### Community 111 - "Community 111"
 Cohesion: 1.0
-Nodes (1): Lazy-load json5 on first use.
+Nodes (1): Due dates should be calculated based on priority: HIGH=2 weeks, MEDIUM=4 weeks,
 
 ### Community 112 - "Community 112"
 Cohesion: 1.0
-Nodes (1): Layer 3: Try parsing with json5.          json5 handles: trailing commas, unquot
+Nodes (1): Medium priority items should have a 4-week due date.
 
 ### Community 113 - "Community 113"
 Cohesion: 1.0
-Nodes (1): Layer 4: Send broken JSON back to LLM for correction.          Args:
+Nodes (1): Should extract from both synthesized and agent recommendations.
 
 ### Community 114 - "Community 114"
 Cohesion: 1.0
-Nodes (1): Classify decision type from prompt keywords.      Args:         prompt: The busi
+Nodes (1): Should handle malformed recommendation format gracefully.
 
 ### Community 115 - "Community 115"
 Cohesion: 1.0
-Nodes (1): Get the system prompt for a specific agent.      Args:         agent_name: Name
+Nodes (1): Empty agent reports should not cause errors.
 
 ### Community 116 - "Community 116"
 Cohesion: 1.0
-Nodes (1): Build the user-side prompt injected into each agent's LLM call.      Includes de
+Nodes (1): Owner matching should be case-insensitive.
 
 ### Community 117 - "Community 117"
 Cohesion: 1.0
-Nodes (1): Build a review prompt for cross-functional analysis.      Args:         agent_na
+Nodes (1): sanitize_prompt() — prompt injection defense.
 
 ### Community 118 - "Community 118"
 Cohesion: 1.0
-Nodes (1): Build a deliberative round prompt for a specific agent.      Args:         agent
+Nodes (1): Full <script>...</script> tags should be replaced with [FILTERED].
 
 ### Community 119 - "Community 119"
 Cohesion: 1.0
-Nodes (1): Real-time data fetching service for OpenExec.
+Nodes (1): Multi-line <script>...</script> tags should be replaced.
 
 ### Community 120 - "Community 120"
 Cohesion: 1.0
-Nodes (1): Result from web data fetching.
+Nodes (1): javascript: protocol should be filtered.
 
 ### Community 121 - "Community 121"
 Cohesion: 1.0
-Nodes (1): Data source configuration.
+Nodes (1): Event handlers like onclick= should be filtered.
 
 ### Community 122 - "Community 122"
 Cohesion: 1.0
-Nodes (1): Service for fetching real-time data from the internet.
+Nodes (1): Ignore instructions patterns should be filtered.
 
 ### Community 123 - "Community 123"
 Cohesion: 1.0
-Nodes (1): Initialize the data fetcher.          Args:             config: Optional configu
+Nodes (1): Markdown image links should be replaced.
 
 ### Community 124 - "Community 124"
 Cohesion: 1.0
-Nodes (1): Load default data sources.
+Nodes (1): Prompt should be truncated to max_length.
 
 ### Community 125 - "Community 125"
 Cohesion: 1.0
-Nodes (1): Fetch current market trends for specific industry.          Args:             in
+Nodes (1): Empty prompt should return empty string.
 
 ### Community 126 - "Community 126"
 Cohesion: 1.0
-Nodes (1): Fetch recent news and developments about competitors.          Args:
+Nodes (1): Normal business prompt should remain mostly intact.
 
 ### Community 127 - "Community 127"
 Cohesion: 1.0
-Nodes (1): Fetch current technology trends and developments.          Args:             dom
+Nodes (1): Decision type routing.
 
 ### Community 128 - "Community 128"
 Cohesion: 1.0
-Nodes (1): Fetch recent regulatory changes and compliance updates.          Args:
+Nodes (1): memory_context.md should be skipped from data_corpus injection.
 
 ### Community 129 - "Community 129"
 Cohesion: 1.0
-Nodes (1): Fetch data from a specific source.          Args:             source: Data sourc
+Nodes (1): Agent reviewing itself should not appear in the prompt.
 
 ### Community 130 - "Community 130"
 Cohesion: 1.0
-Nodes (1): Extract relevant content from HTML.          Args:             html: HTML conten
+Nodes (1): build_deliberation_prompt() — round-specific deliberation prompts.
 
 ### Community 131 - "Community 131"
 Cohesion: 1.0
-Nodes (1): Get relevant context for a business decision.          Args:             busines
+Nodes (1): CMO round 3 receives CFO, CTO, CEO round-1, CFO+CTO round-2.
 
 ### Community 132 - "Community 132"
 Cohesion: 1.0
-Nodes (1): Format context data for inclusion in AI prompts.          Args:             cont
+Nodes (1): Round 4 uses lean context: Board State Summary + R-1 only (not full history).
 
 ### Community 133 - "Community 133"
 Cohesion: 1.0
-Nodes (1): Get summary of sources accessed and failed.          Args:             context:
+Nodes (1): Round 5 skips round-0 blind reports.
 
 ### Community 134 - "Community 134"
+Cohesion: 1.0
+Nodes (1): Round 5 prompt length should be manageable — summaries are capped.
+
+### Community 135 - "Community 135"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 136 - "Community 136"
+Cohesion: 1.0
+Nodes (1): Manages custom knowledge base with RAG capabilities.
+
+### Community 137 - "Community 137"
+Cohesion: 1.0
+Nodes (1): Load knowledge base index from disk.
+
+### Community 138 - "Community 138"
+Cohesion: 1.0
+Nodes (1): Save knowledge base index to disk.
+
+### Community 139 - "Community 139"
+Cohesion: 1.0
+Nodes (1): Generate a unique ID for a document.
+
+### Community 140 - "Community 140"
+Cohesion: 1.0
+Nodes (1): Split text into chunks for better retrieval.
+
+### Community 141 - "Community 141"
+Cohesion: 1.0
+Nodes (1): Ingest a document into the knowledge base.          Args:             file_path:
+
+### Community 142 - "Community 142"
+Cohesion: 1.0
+Nodes (1): Ingest text directly into the knowledge base.          Args:             text: T
+
+### Community 143 - "Community 143"
+Cohesion: 1.0
+Nodes (1): Retrieve relevant chunks based on a query.          Args:             query: Sea
+
+### Community 144 - "Community 144"
+Cohesion: 1.0
+Nodes (1): Generate context string for a query from the knowledge base.
+
+### Community 145 - "Community 145"
+Cohesion: 1.0
+Nodes (1): List all documents in the knowledge base.
+
+### Community 146 - "Community 146"
+Cohesion: 1.0
+Nodes (1): List all categories in the knowledge base.
+
+### Community 147 - "Community 147"
+Cohesion: 1.0
+Nodes (1): Delete a document from the knowledge base.
+
+### Community 148 - "Community 148"
+Cohesion: 1.0
+Nodes (1): Get statistics about the knowledge base.
+
+### Community 149 - "Community 149"
+Cohesion: 1.0
+Nodes (1): Export action items to JSON.
+
+### Community 150 - "Community 150"
+Cohesion: 1.0
+Nodes (1): Export action items to CSV.
+
+### Community 151 - "Community 151"
+Cohesion: 1.0
+Nodes (1): Export action items as markdown checklist.
+
+### Community 152 - "Community 152"
+Cohesion: 1.0
+Nodes (1): Write executive summary to file.
+
+### Community 153 - "Community 153"
+Cohesion: 1.0
+Nodes (1): Extract action items from the simulation results.      Args:         results: Th
+
+### Community 154 - "Community 154"
+Cohesion: 1.0
+Nodes (1): Quantifies risks with probability and impact scoring.
+
+### Community 155 - "Community 155"
+Cohesion: 1.0
+Nodes (1): Quantify a single risk based on text analysis.
+
+### Community 156 - "Community 156"
+Cohesion: 1.0
+Nodes (1): Get priority based on risk score.
+
+### Community 157 - "Community 157"
+Cohesion: 1.0
+Nodes (1): Generate ASCII risk matrix.
+
+### Community 158 - "Community 158"
+Cohesion: 1.0
+Nodes (1): Add risk quantification to results.
+
+### Community 159 - "Community 159"
+Cohesion: 1.0
+Nodes (1): Find decisions related to a query.          Args:             query: Search quer
+
+### Community 160 - "Community 160"
+Cohesion: 1.0
+Nodes (1): Standard report format for agent insights.
+
+### Community 161 - "Community 161"
+Cohesion: 1.0
+Nodes (1): Construct AgentReport from LLM JSON response, mapping role-specific fields.
+
+### Community 162 - "Community 162"
+Cohesion: 1.0
+Nodes (1): Return non-None role-specific fields as a dict. Useful for synthesis.          R
+
+### Community 163 - "Community 163"
+Cohesion: 1.0
+Nodes (1): LLM Client Wrapper for OpenExec - OpenAI Compatible Format.
+
+### Community 164 - "Community 164"
+Cohesion: 1.0
+Nodes (1): Wrapper for LLM API calls using OpenAI-compatible format.      Supports:     - L
+
+### Community 165 - "Community 165"
+Cohesion: 1.0
+Nodes (1): Complete a prompt using the LLM (OpenAI-compatible format).
+
+### Community 166 - "Community 166"
+Cohesion: 1.0
+Nodes (1): Complete a prompt and parse response as JSON, with 4-layer robustness.
+
+### Community 167 - "Community 167"
+Cohesion: 1.0
+Nodes (1): Same as complete_json but with explicit retry loop for callers who want control.
+
+### Community 168 - "Community 168"
+Cohesion: 1.0
+Nodes (1): Run the 4-layer JSON extraction pipeline.          Args:             raw_text: R
+
+### Community 169 - "Community 169"
+Cohesion: 1.0
+Nodes (1): Layer 1: Sanitize raw LLM output before parsing.          Handles:         - Mar
+
+### Community 170 - "Community 170"
+Cohesion: 1.0
+Nodes (1): Layer 2: Fix known structural issues in LLM-generated JSON.          Handles:
+
+### Community 171 - "Community 171"
+Cohesion: 1.0
+Nodes (1): Attempt to parse text as JSON. Returns None on failure.
+
+### Community 172 - "Community 172"
+Cohesion: 1.0
+Nodes (1): Lazy-load json5 on first use.
+
+### Community 173 - "Community 173"
+Cohesion: 1.0
+Nodes (1): Layer 3: Try parsing with json5.          json5 handles: trailing commas, unquot
+
+### Community 174 - "Community 174"
+Cohesion: 1.0
+Nodes (1): Layer 4: Send broken JSON back to LLM for correction.          Args:
+
+### Community 175 - "Community 175"
+Cohesion: 1.0
+Nodes (1): Classify decision type from prompt keywords.      Args:         prompt: The busi
+
+### Community 176 - "Community 176"
+Cohesion: 1.0
+Nodes (1): Get the system prompt for a specific agent.      Args:         agent_name: Name
+
+### Community 177 - "Community 177"
+Cohesion: 1.0
+Nodes (1): Build the user-side prompt injected into each agent's LLM call.      Includes de
+
+### Community 178 - "Community 178"
+Cohesion: 1.0
+Nodes (1): Build a review prompt for cross-functional analysis.      Args:         agent_na
+
+### Community 179 - "Community 179"
+Cohesion: 1.0
+Nodes (1): Build a deliberative round prompt for a specific agent.      Args:         agent
+
+### Community 180 - "Community 180"
+Cohesion: 1.0
+Nodes (1): Real-time data fetching service for OpenExec.
+
+### Community 181 - "Community 181"
+Cohesion: 1.0
+Nodes (1): Result from web data fetching.
+
+### Community 182 - "Community 182"
+Cohesion: 1.0
+Nodes (1): Data source configuration.
+
+### Community 183 - "Community 183"
+Cohesion: 1.0
+Nodes (1): Service for fetching real-time data from the internet.
+
+### Community 184 - "Community 184"
+Cohesion: 1.0
+Nodes (1): Initialize the data fetcher.          Args:             config: Optional configu
+
+### Community 185 - "Community 185"
+Cohesion: 1.0
+Nodes (1): Load default data sources.
+
+### Community 186 - "Community 186"
+Cohesion: 1.0
+Nodes (1): Fetch current market trends for specific industry.          Args:             in
+
+### Community 187 - "Community 187"
+Cohesion: 1.0
+Nodes (1): Fetch recent news and developments about competitors.          Args:
+
+### Community 188 - "Community 188"
+Cohesion: 1.0
+Nodes (1): Fetch current technology trends and developments.          Args:             dom
+
+### Community 189 - "Community 189"
+Cohesion: 1.0
+Nodes (1): Fetch recent regulatory changes and compliance updates.          Args:
+
+### Community 190 - "Community 190"
+Cohesion: 1.0
+Nodes (1): Fetch data from a specific source.          Args:             source: Data sourc
+
+### Community 191 - "Community 191"
+Cohesion: 1.0
+Nodes (1): Extract relevant content from HTML.          Args:             html: HTML conten
+
+### Community 192 - "Community 192"
+Cohesion: 1.0
+Nodes (1): Get relevant context for a business decision.          Args:             busines
+
+### Community 193 - "Community 193"
+Cohesion: 1.0
+Nodes (1): Format context data for inclusion in AI prompts.          Args:             cont
+
+### Community 194 - "Community 194"
+Cohesion: 1.0
+Nodes (1): Get summary of sources accessed and failed.          Args:             context:
+
+### Community 195 - "Community 195"
 Cohesion: 1.0
 Nodes (1): Calculate data fetch success rate.          Args:             context: Context d
 
 ## Knowledge Gaps
-- **537 isolated node(s):** `Setup script for OpenExec.`, `Get README content for PyPI.`, `Get requirements list.`, `Lowercase word/number tokens, stripping punctuation.`, `Manages custom knowledge base with RAG capabilities.` (+532 more)
+- **650 isolated node(s):** `Setup script for OpenExec.`, `Get README content for PyPI.`, `Get requirements list.`, `Lowercase word/number tokens, stripping punctuation.`, `Manages custom knowledge base with RAG capabilities.` (+645 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Community 16`** (2 nodes): `Shared prompt fragments for JSON correction and self-correction.`, `prompts_constants.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -727,247 +1032,369 @@ Nodes (1): Calculate data fetch success rate.          Args:             context
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 21`** (1 nodes): `Create a temporary directory for testing.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 22`** (1 nodes): `Get list of sample data files.`
+- **Thin community `Community 22`** (1 nodes): `__init__.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 23`** (1 nodes): `__init__.py`
+- **Thin community `Community 23`** (1 nodes): `Convert AgentReport objects to dicts so build_deliberation_prompt can use .get()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 24`** (1 nodes): `Convert AgentReport objects to dicts so build_deliberation_prompt can use .get()`
+- **Thin community `Community 24`** (1 nodes): `Ingest a document into the knowledge base.          Args:             file_path:`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 25`** (1 nodes): `Manages conversation memory and embeddings for multi-session learning.`
+- **Thin community `Community 25`** (1 nodes): `Ingest text directly into the knowledge base.          Args:             text: T`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 26`** (1 nodes): `Load memory index from disk.`
+- **Thin community `Community 26`** (1 nodes): `Retrieve relevant chunks based on a query, ranked by TF-IDF cosine         simil`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 27`** (1 nodes): `Save memory index to disk.`
+- **Thin community `Community 27`** (1 nodes): `Generate context string for a query from the knowledge base.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 28`** (1 nodes): `Generate a unique ID for a conversation based on prompt hash.`
+- **Thin community `Community 28`** (1 nodes): `List all documents in the knowledge base.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 29`** (1 nodes): `Store a conversation and its results in memory.`
+- **Thin community `Community 29`** (1 nodes): `List all categories in the knowledge base.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 30`** (1 nodes): `Retrieve a conversation by ID.`
+- **Thin community `Community 30`** (1 nodes): `Delete a document from the knowledge base.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 31`** (1 nodes): `Find conversations related to a query using keyword matching.`
+- **Thin community `Community 31`** (1 nodes): `Get statistics about the knowledge base.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 32`** (1 nodes): `Generate memory context string for new simulations.`
+- **Thin community `Community 32`** (1 nodes): `Retrieve a conversation by ID.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 33`** (1 nodes): `Get recent conversation history.`
+- **Thin community `Community 33`** (1 nodes): `Find conversations related to a query using keyword matching.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 34`** (1 nodes): `Search memory for specific topics.`
+- **Thin community `Community 34`** (1 nodes): `Generate memory context string for new simulations.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 35`** (1 nodes): `Tracks and logs decisions made during simulations.`
+- **Thin community `Community 35`** (1 nodes): `Get recent conversation history.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 36`** (1 nodes): `Initialize decision tracker.          Args:             log_dir: Directory to st`
+- **Thin community `Community 36`** (1 nodes): `Search memory for specific topics.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 37`** (1 nodes): `Log a decision with its results and action items.          Args:             pro`
+- **Thin community `Community 37`** (1 nodes): `Generate a prompt for collecting feedback on a decision.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 38`** (1 nodes): `Extract key summary information from results.          Args:             results`
+- **Thin community `Community 38`** (1 nodes): `Remove duplicate action items based on normalized task text.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 39`** (1 nodes): `Update the decision log with a new decision record.          Args:             d`
+- **Thin community `Community 39`** (1 nodes): `Calculate a due date string based on priority.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 40`** (1 nodes): `Get decision history.          Returns:             List of decision records`
+- **Thin community `Community 40`** (1 nodes): `Extract action items from the simulation results.      Args:         results: Th`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 41`** (1 nodes): `Get recent decisions.          Args:             limit: Number of recent decisio`
+- **Thin community `Community 41`** (1 nodes): `Build the user-side prompt injected into each agent's LLM call.      Includes de`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 42`** (1 nodes): `Find decisions related to a query.          Args:             query: Search quer`
+- **Thin community `Community 42`** (1 nodes): `Build a review prompt for cross-functional analysis.      Args:         agent_na`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 43`** (1 nodes): `extract_action_items() — action item extraction from results.`
+- **Thin community `Community 43`** (1 nodes): `Build a deliberative round prompt for a specific agent.      Args:         agent`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 44`** (1 nodes): `Empty results should return empty list.`
+- **Thin community `Community 44`** (1 nodes): `# IMPORTANT: Instruct agent to synthesize, NOT repeat raw data`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 45`** (1 nodes): `Results without synthesized recommendations should still extract from agent repo`
+- **Thin community `Community 45`** (1 nodes): `Agent reviewing itself should not appear in the prompt.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 46`** (1 nodes): `Synthesized recommendations with [OWNER] format should be parsed correctly.`
+- **Thin community `Community 46`** (1 nodes): `build_deliberation_prompt() — round-specific deliberation prompts.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 47`** (1 nodes): `Priority should be mapped correctly based on owner.`
+- **Thin community `Community 47`** (1 nodes): `CMO round 3 receives CFO, CTO, CEO round-1, CFO+CTO round-2.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 48`** (1 nodes): `Actionable language should be detected in agent recommendations.`
+- **Thin community `Community 48`** (1 nodes): `Round 4 uses lean context: Board State Summary + R-1 only (not full history).`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 49`** (1 nodes): `Lowercase recommendations should be capitalized.`
+- **Thin community `Community 49`** (1 nodes): `Round 5 skips round-0 blind reports.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 50`** (1 nodes): `Due dates should be calculated based on priority: HIGH=2 weeks, MEDIUM=4 weeks,`
+- **Thin community `Community 50`** (1 nodes): `Round 5 prompt length should be manageable — summaries are capped.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 51`** (1 nodes): `Medium priority items should have a 4-week due date.`
+- **Thin community `Community 51`** (1 nodes): `Test that --help works and displays usage.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 52`** (1 nodes): `Should extract from both synthesized and agent recommendations.`
+- **Thin community `Community 52`** (1 nodes): `Test that run subcommand --help works.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 53`** (1 nodes): `Should handle malformed recommendation format gracefully.`
+- **Thin community `Community 53`** (1 nodes): `Test that setup subcommand --help works.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 54`** (1 nodes): `Empty agent reports should not cause errors.`
+- **Thin community `Community 54`** (1 nodes): `Test the run command functionality.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 55`** (1 nodes): `Owner matching should be case-insensitive.`
+- **Thin community `Community 55`** (1 nodes): `Create a temporary directory for testing.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 56`** (1 nodes): `sanitize_prompt() — prompt injection defense.`
+- **Thin community `Community 56`** (1 nodes): `Test that run command loads data files from data directory.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 57`** (1 nodes): `Full <script>...</script> tags should be replaced with [FILTERED].`
+- **Thin community `Community 57`** (1 nodes): `Test CLI runner integration.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 58`** (1 nodes): `Multi-line <script>...</script> tags should be replaced.`
+- **Thin community `Community 58`** (1 nodes): `Test that required data files exist.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 59`** (1 nodes): `javascript: protocol should be filtered.`
+- **Thin community `Community 59`** (1 nodes): `Test that data files have meaningful content.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 60`** (1 nodes): `Event handlers like onclick= should be filtered.`
+- **Thin community `Community 60`** (1 nodes): `Test decision logging functionality.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 61`** (1 nodes): `Ignore instructions patterns should be filtered.`
+- **Thin community `Community 61`** (1 nodes): `Test that decisions are logged to decision directory.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 62`** (1 nodes): `Markdown image links should be replaced.`
+- **Thin community `Community 62`** (1 nodes): `Test CLI export formats.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 63`** (1 nodes): `Prompt should be truncated to max_length.`
+- **Thin community `Community 63`** (1 nodes): `Create a temporary directory for testing.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 64`** (1 nodes): `Empty prompt should return empty string.`
+- **Thin community `Community 64`** (1 nodes): `Test that recognized export formats are documented.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 65`** (1 nodes): `Normal business prompt should remain mostly intact.`
+- **Thin community `Community 65`** (1 nodes): `Test that package structure is correct for pip install.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 66`** (1 nodes): `Decision type routing.`
+- **Thin community `Community 66`** (1 nodes): `Test that openexec package directory exists.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 67`** (1 nodes): `memory_context.md should be skipped from data_corpus injection.`
+- **Thin community `Community 67`** (1 nodes): `Test that cli.py exists in openexec package.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 68`** (1 nodes): `Agent reviewing itself should not appear in the prompt.`
+- **Thin community `Community 68`** (1 nodes): `Test that main function exists in cli module.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 69`** (1 nodes): `build_deliberation_prompt() — round-specific deliberation prompts.`
+- **Thin community `Community 69`** (1 nodes): `Test that setup.py exists and is valid.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 70`** (1 nodes): `CMO round 3 receives CFO, CTO, CEO round-1, CFO+CTO round-2.`
+- **Thin community `Community 70`** (1 nodes): `Test CLI configuration management.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 71`** (1 nodes): `Round 4 uses lean context: Board State Summary + R-1 only (not full history).`
+- **Thin community `Community 71`** (1 nodes): `Test that AI provider configuration exists.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 72`** (1 nodes): `Round 5 skips round-0 blind reports.`
+- **Thin community `Community 72`** (1 nodes): `Test data corpus loading functionality.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 73`** (1 nodes): `Round 5 prompt length should be manageable — summaries are capped.`
+- **Thin community `Community 73`** (1 nodes): `Get list of sample data files.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 74`** (1 nodes): `Convert AgentReport objects to dicts so build_deliberation_prompt can use .get()`
+- **Thin community `Community 74`** (1 nodes): `Test CLI command documentation.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 75`** (1 nodes): `Manages custom knowledge base with RAG capabilities.`
+- **Thin community `Community 75`** (1 nodes): `Test that README.md exists.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 76`** (1 nodes): `Load knowledge base index from disk.`
+- **Thin community `Community 76`** (1 nodes): `Test that README contains installation instructions.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 77`** (1 nodes): `Save knowledge base index to disk.`
+- **Thin community `Community 77`** (1 nodes): `Test that README contains usage examples.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 78`** (1 nodes): `Generate a unique ID for a document.`
+- **Thin community `Community 78`** (1 nodes): `Test --weight flag validation in run command.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 79`** (1 nodes): `Split text into chunks for better retrieval.`
+- **Thin community `Community 79`** (1 nodes): `Invalid agent name should exit with error.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 80`** (1 nodes): `Ingest a document into the knowledge base.          Args:             file_path:`
+- **Thin community `Community 80`** (1 nodes): `Non-numeric weight should exit with error.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 81`** (1 nodes): `Ingest text directly into the knowledge base.          Args:             text: T`
+- **Thin community `Community 81`** (1 nodes): `Weight > 1.0 should exit with error.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 82`** (1 nodes): `Retrieve relevant chunks based on a query.          Args:             query: Sea`
+- **Thin community `Community 82`** (1 nodes): `Test output path validation in run command.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 83`** (1 nodes): `Generate context string for a query from the knowledge base.`
+- **Thin community `Community 83`** (1 nodes): `Non-existent output directory should exit before simulation.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 84`** (1 nodes): `List all documents in the knowledge base.`
+- **Thin community `Community 84`** (1 nodes): `Valid output directory should proceed (but may fail later in simulation).`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 85`** (1 nodes): `List all categories in the knowledge base.`
+- **Thin community `Community 85`** (1 nodes): `Convert AgentReport objects to dicts so build_deliberation_prompt can use .get()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 86`** (1 nodes): `Delete a document from the knowledge base.`
+- **Thin community `Community 86`** (1 nodes): `Manages conversation memory and embeddings for multi-session learning.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 87`** (1 nodes): `Get statistics about the knowledge base.`
+- **Thin community `Community 87`** (1 nodes): `Load memory index from disk.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 88`** (1 nodes): `Export action items to JSON.`
+- **Thin community `Community 88`** (1 nodes): `Save memory index to disk.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 89`** (1 nodes): `Export action items to CSV.`
+- **Thin community `Community 89`** (1 nodes): `Generate a unique ID for a conversation based on prompt hash.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 90`** (1 nodes): `Export action items as markdown checklist.`
+- **Thin community `Community 90`** (1 nodes): `Store a conversation and its results in memory.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 91`** (1 nodes): `Write executive summary to file.`
+- **Thin community `Community 91`** (1 nodes): `Retrieve a conversation by ID.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 92`** (1 nodes): `Extract action items from the simulation results.      Args:         results: Th`
+- **Thin community `Community 92`** (1 nodes): `Find conversations related to a query using keyword matching.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 93`** (1 nodes): `Quantifies risks with probability and impact scoring.`
+- **Thin community `Community 93`** (1 nodes): `Generate memory context string for new simulations.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 94`** (1 nodes): `Quantify a single risk based on text analysis.`
+- **Thin community `Community 94`** (1 nodes): `Get recent conversation history.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 95`** (1 nodes): `Get priority based on risk score.`
+- **Thin community `Community 95`** (1 nodes): `Search memory for specific topics.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 96`** (1 nodes): `Generate ASCII risk matrix.`
+- **Thin community `Community 96`** (1 nodes): `Tracks and logs decisions made during simulations.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 97`** (1 nodes): `Add risk quantification to results.`
+- **Thin community `Community 97`** (1 nodes): `Initialize decision tracker.          Args:             log_dir: Directory to st`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 98`** (1 nodes): `Find decisions related to a query.          Args:             query: Search quer`
+- **Thin community `Community 98`** (1 nodes): `Log a decision with its results and action items.          Args:             pro`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 99`** (1 nodes): `Standard report format for agent insights.`
+- **Thin community `Community 99`** (1 nodes): `Extract key summary information from results.          Args:             results`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 100`** (1 nodes): `Construct AgentReport from LLM JSON response, mapping role-specific fields.`
+- **Thin community `Community 100`** (1 nodes): `Update the decision log with a new decision record.          Args:             d`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 101`** (1 nodes): `Return non-None role-specific fields as a dict. Useful for synthesis.          R`
+- **Thin community `Community 101`** (1 nodes): `Get decision history.          Returns:             List of decision records`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 102`** (1 nodes): `LLM Client Wrapper for OpenExec - OpenAI Compatible Format.`
+- **Thin community `Community 102`** (1 nodes): `Get recent decisions.          Args:             limit: Number of recent decisio`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 103`** (1 nodes): `Wrapper for LLM API calls using OpenAI-compatible format.      Supports:     - L`
+- **Thin community `Community 103`** (1 nodes): `Find decisions related to a query.          Args:             query: Search quer`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 104`** (1 nodes): `Complete a prompt using the LLM (OpenAI-compatible format).`
+- **Thin community `Community 104`** (1 nodes): `extract_action_items() — action item extraction from results.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 105`** (1 nodes): `Complete a prompt and parse response as JSON, with 4-layer robustness.`
+- **Thin community `Community 105`** (1 nodes): `Empty results should return empty list.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 106`** (1 nodes): `Same as complete_json but with explicit retry loop for callers who want control.`
+- **Thin community `Community 106`** (1 nodes): `Results without synthesized recommendations should still extract from agent repo`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 107`** (1 nodes): `Run the 4-layer JSON extraction pipeline.          Args:             raw_text: R`
+- **Thin community `Community 107`** (1 nodes): `Synthesized recommendations with [OWNER] format should be parsed correctly.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 108`** (1 nodes): `Layer 1: Sanitize raw LLM output before parsing.          Handles:         - Mar`
+- **Thin community `Community 108`** (1 nodes): `Priority should be mapped correctly based on owner.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 109`** (1 nodes): `Layer 2: Fix known structural issues in LLM-generated JSON.          Handles:`
+- **Thin community `Community 109`** (1 nodes): `Actionable language should be detected in agent recommendations.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 110`** (1 nodes): `Attempt to parse text as JSON. Returns None on failure.`
+- **Thin community `Community 110`** (1 nodes): `Lowercase recommendations should be capitalized.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 111`** (1 nodes): `Lazy-load json5 on first use.`
+- **Thin community `Community 111`** (1 nodes): `Due dates should be calculated based on priority: HIGH=2 weeks, MEDIUM=4 weeks,`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 112`** (1 nodes): `Layer 3: Try parsing with json5.          json5 handles: trailing commas, unquot`
+- **Thin community `Community 112`** (1 nodes): `Medium priority items should have a 4-week due date.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 113`** (1 nodes): `Layer 4: Send broken JSON back to LLM for correction.          Args:`
+- **Thin community `Community 113`** (1 nodes): `Should extract from both synthesized and agent recommendations.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 114`** (1 nodes): `Classify decision type from prompt keywords.      Args:         prompt: The busi`
+- **Thin community `Community 114`** (1 nodes): `Should handle malformed recommendation format gracefully.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 115`** (1 nodes): `Get the system prompt for a specific agent.      Args:         agent_name: Name`
+- **Thin community `Community 115`** (1 nodes): `Empty agent reports should not cause errors.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 116`** (1 nodes): `Build the user-side prompt injected into each agent's LLM call.      Includes de`
+- **Thin community `Community 116`** (1 nodes): `Owner matching should be case-insensitive.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 117`** (1 nodes): `Build a review prompt for cross-functional analysis.      Args:         agent_na`
+- **Thin community `Community 117`** (1 nodes): `sanitize_prompt() — prompt injection defense.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 118`** (1 nodes): `Build a deliberative round prompt for a specific agent.      Args:         agent`
+- **Thin community `Community 118`** (1 nodes): `Full <script>...</script> tags should be replaced with [FILTERED].`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 119`** (1 nodes): `Real-time data fetching service for OpenExec.`
+- **Thin community `Community 119`** (1 nodes): `Multi-line <script>...</script> tags should be replaced.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 120`** (1 nodes): `Result from web data fetching.`
+- **Thin community `Community 120`** (1 nodes): `javascript: protocol should be filtered.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 121`** (1 nodes): `Data source configuration.`
+- **Thin community `Community 121`** (1 nodes): `Event handlers like onclick= should be filtered.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 122`** (1 nodes): `Service for fetching real-time data from the internet.`
+- **Thin community `Community 122`** (1 nodes): `Ignore instructions patterns should be filtered.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 123`** (1 nodes): `Initialize the data fetcher.          Args:             config: Optional configu`
+- **Thin community `Community 123`** (1 nodes): `Markdown image links should be replaced.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 124`** (1 nodes): `Load default data sources.`
+- **Thin community `Community 124`** (1 nodes): `Prompt should be truncated to max_length.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 125`** (1 nodes): `Fetch current market trends for specific industry.          Args:             in`
+- **Thin community `Community 125`** (1 nodes): `Empty prompt should return empty string.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 126`** (1 nodes): `Fetch recent news and developments about competitors.          Args:`
+- **Thin community `Community 126`** (1 nodes): `Normal business prompt should remain mostly intact.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 127`** (1 nodes): `Fetch current technology trends and developments.          Args:             dom`
+- **Thin community `Community 127`** (1 nodes): `Decision type routing.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 128`** (1 nodes): `Fetch recent regulatory changes and compliance updates.          Args:`
+- **Thin community `Community 128`** (1 nodes): `memory_context.md should be skipped from data_corpus injection.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 129`** (1 nodes): `Fetch data from a specific source.          Args:             source: Data sourc`
+- **Thin community `Community 129`** (1 nodes): `Agent reviewing itself should not appear in the prompt.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 130`** (1 nodes): `Extract relevant content from HTML.          Args:             html: HTML conten`
+- **Thin community `Community 130`** (1 nodes): `build_deliberation_prompt() — round-specific deliberation prompts.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 131`** (1 nodes): `Get relevant context for a business decision.          Args:             busines`
+- **Thin community `Community 131`** (1 nodes): `CMO round 3 receives CFO, CTO, CEO round-1, CFO+CTO round-2.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 132`** (1 nodes): `Format context data for inclusion in AI prompts.          Args:             cont`
+- **Thin community `Community 132`** (1 nodes): `Round 4 uses lean context: Board State Summary + R-1 only (not full history).`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 133`** (1 nodes): `Get summary of sources accessed and failed.          Args:             context:`
+- **Thin community `Community 133`** (1 nodes): `Round 5 skips round-0 blind reports.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 134`** (1 nodes): `Calculate data fetch success rate.          Args:             context: Context d`
+- **Thin community `Community 134`** (1 nodes): `Round 5 prompt length should be manageable — summaries are capped.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 135`** (1 nodes): `Convert AgentReport objects to dicts so build_deliberation_prompt can use .get()`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 136`** (1 nodes): `Manages custom knowledge base with RAG capabilities.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 137`** (1 nodes): `Load knowledge base index from disk.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 138`** (1 nodes): `Save knowledge base index to disk.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 139`** (1 nodes): `Generate a unique ID for a document.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 140`** (1 nodes): `Split text into chunks for better retrieval.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 141`** (1 nodes): `Ingest a document into the knowledge base.          Args:             file_path:`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 142`** (1 nodes): `Ingest text directly into the knowledge base.          Args:             text: T`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 143`** (1 nodes): `Retrieve relevant chunks based on a query.          Args:             query: Sea`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 144`** (1 nodes): `Generate context string for a query from the knowledge base.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 145`** (1 nodes): `List all documents in the knowledge base.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 146`** (1 nodes): `List all categories in the knowledge base.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 147`** (1 nodes): `Delete a document from the knowledge base.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 148`** (1 nodes): `Get statistics about the knowledge base.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 149`** (1 nodes): `Export action items to JSON.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 150`** (1 nodes): `Export action items to CSV.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 151`** (1 nodes): `Export action items as markdown checklist.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 152`** (1 nodes): `Write executive summary to file.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 153`** (1 nodes): `Extract action items from the simulation results.      Args:         results: Th`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 154`** (1 nodes): `Quantifies risks with probability and impact scoring.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 155`** (1 nodes): `Quantify a single risk based on text analysis.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 156`** (1 nodes): `Get priority based on risk score.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 157`** (1 nodes): `Generate ASCII risk matrix.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 158`** (1 nodes): `Add risk quantification to results.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 159`** (1 nodes): `Find decisions related to a query.          Args:             query: Search quer`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 160`** (1 nodes): `Standard report format for agent insights.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 161`** (1 nodes): `Construct AgentReport from LLM JSON response, mapping role-specific fields.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 162`** (1 nodes): `Return non-None role-specific fields as a dict. Useful for synthesis.          R`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 163`** (1 nodes): `LLM Client Wrapper for OpenExec - OpenAI Compatible Format.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 164`** (1 nodes): `Wrapper for LLM API calls using OpenAI-compatible format.      Supports:     - L`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 165`** (1 nodes): `Complete a prompt using the LLM (OpenAI-compatible format).`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 166`** (1 nodes): `Complete a prompt and parse response as JSON, with 4-layer robustness.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 167`** (1 nodes): `Same as complete_json but with explicit retry loop for callers who want control.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 168`** (1 nodes): `Run the 4-layer JSON extraction pipeline.          Args:             raw_text: R`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 169`** (1 nodes): `Layer 1: Sanitize raw LLM output before parsing.          Handles:         - Mar`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 170`** (1 nodes): `Layer 2: Fix known structural issues in LLM-generated JSON.          Handles:`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 171`** (1 nodes): `Attempt to parse text as JSON. Returns None on failure.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 172`** (1 nodes): `Lazy-load json5 on first use.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 173`** (1 nodes): `Layer 3: Try parsing with json5.          json5 handles: trailing commas, unquot`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 174`** (1 nodes): `Layer 4: Send broken JSON back to LLM for correction.          Args:`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 175`** (1 nodes): `Classify decision type from prompt keywords.      Args:         prompt: The busi`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 176`** (1 nodes): `Get the system prompt for a specific agent.      Args:         agent_name: Name`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 177`** (1 nodes): `Build the user-side prompt injected into each agent's LLM call.      Includes de`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 178`** (1 nodes): `Build a review prompt for cross-functional analysis.      Args:         agent_na`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 179`** (1 nodes): `Build a deliberative round prompt for a specific agent.      Args:         agent`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 180`** (1 nodes): `Real-time data fetching service for OpenExec.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 181`** (1 nodes): `Result from web data fetching.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 182`** (1 nodes): `Data source configuration.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 183`** (1 nodes): `Service for fetching real-time data from the internet.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 184`** (1 nodes): `Initialize the data fetcher.          Args:             config: Optional configu`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 185`** (1 nodes): `Load default data sources.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 186`** (1 nodes): `Fetch current market trends for specific industry.          Args:             in`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 187`** (1 nodes): `Fetch recent news and developments about competitors.          Args:`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 188`** (1 nodes): `Fetch current technology trends and developments.          Args:             dom`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 189`** (1 nodes): `Fetch recent regulatory changes and compliance updates.          Args:`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 190`** (1 nodes): `Fetch data from a specific source.          Args:             source: Data sourc`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 191`** (1 nodes): `Extract relevant content from HTML.          Args:             html: HTML conten`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 192`** (1 nodes): `Get relevant context for a business decision.          Args:             busines`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 193`** (1 nodes): `Format context data for inclusion in AI prompts.          Args:             cont`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 194`** (1 nodes): `Get summary of sources accessed and failed.          Args:             context:`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 195`** (1 nodes): `Calculate data fetch success rate.          Args:             context: Context d`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `AgentReport` connect `Community 0` to `Community 3`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 13`?**
-  _High betweenness centrality (0.192) - this node is a cross-community bridge._
-- **Why does `Orchestrator` connect `Community 0` to `Community 3`, `Community 6`, `Community 7`, `Community 8`, `Community 9`?**
-  _High betweenness centrality (0.163) - this node is a cross-community bridge._
-- **Are the 365 inferred relationships involving `AgentReport` (e.g. with `DeliberationOrchestrator` and `Deliberation orchestration — multi-round board meeting workflow.`) actually correct?**
-  _`AgentReport` has 365 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 271 inferred relationships involving `Orchestrator` (e.g. with `Data module for OpenExec - Real-time data fetching and integration.` and `Print a plain-text section: a title framed by separator lines.`) actually correct?**
-  _`Orchestrator` has 271 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 233 inferred relationships involving `AIClient` (e.g. with `DeliberationOrchestrator` and `Deliberation orchestration — multi-round board meeting workflow.`) actually correct?**
-  _`AIClient` has 233 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 154 inferred relationships involving `SimulationState` (e.g. with `Print a plain-text section: a title framed by separator lines.` and `Ensure config directory exists.`) actually correct?**
-  _`SimulationState` has 154 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 115 inferred relationships involving `DeliberationOrchestrator` (e.g. with `AgentReport` and `AIClient`) actually correct?**
-  _`DeliberationOrchestrator` has 115 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `AgentReport` connect `Community 0` to `Community 3`, `Community 6`, `Community 7`, `Community 8`, `Community 14`?**
+  _High betweenness centrality (0.164) - this node is a cross-community bridge._
+- **Why does `Orchestrator` connect `Community 0` to `Community 8`, `Community 3`, `Community 6`, `Community 7`?**
+  _High betweenness centrality (0.158) - this node is a cross-community bridge._
+- **Why does `SimulationState` connect `Community 0` to `Community 3`, `Community 6`, `Community 7`, `Community 8`, `Community 9`?**
+  _High betweenness centrality (0.089) - this node is a cross-community bridge._
+- **Are the 398 inferred relationships involving `AgentReport` (e.g. with `DeliberationOrchestrator` and `Deliberation orchestration — multi-round board meeting workflow.`) actually correct?**
+  _`AgentReport` has 398 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 298 inferred relationships involving `Orchestrator` (e.g. with `Data module for OpenExec - Real-time data fetching and integration.` and `Print a plain-text section: a title framed by separator lines.`) actually correct?**
+  _`Orchestrator` has 298 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 257 inferred relationships involving `AIClient` (e.g. with `DeliberationOrchestrator` and `Deliberation orchestration — multi-round board meeting workflow.`) actually correct?**
+  _`AIClient` has 257 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 201 inferred relationships involving `SimulationState` (e.g. with `DeliberationOrchestrator` and `Deliberation orchestration — multi-round board meeting workflow.`) actually correct?**
+  _`SimulationState` has 201 INFERRED edges - model-reasoned connections that need verification._
