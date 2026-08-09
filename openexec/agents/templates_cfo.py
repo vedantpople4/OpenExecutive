@@ -1,3 +1,5 @@
+from typing import Dict
+
 from .interface import AgentReport
 
 
