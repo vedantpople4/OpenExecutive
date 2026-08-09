@@ -61,6 +61,34 @@ class TestSubRolePrompts:
         assert prompt and len(prompt) > 50
 
 
+class TestTeamMemberFallback:
+    """Team sub-agents must fail soft: retry the LLM, then a stub — never abort the run."""
+
+    def test_failed_analysis_returns_fallback_stub(self):
+        """A specialist whose LLM call throws returns is_fallback instead of raising."""
+        from openexec.agents.templates_teams import TeamMemberTemplate
+
+        member = TeamMemberTemplate("financial_analyst")
+        state = SimulationState(core_prompt="test", assumptions={})
+        state.data_corpus = {}
+        with patch.object(member._ai_client, "complete_json_with_retry",
+                          side_effect=RuntimeError("LLM down")):
+            report = member.analyze(state)
+        assert report.is_fallback is True
+        assert report.alignment_score == 0.5
+
+    def test_successful_analysis_not_fallback(self):
+        from openexec.agents.templates_teams import TeamMemberTemplate
+
+        member = TeamMemberTemplate("financial_analyst")
+        state = SimulationState(core_prompt="test", assumptions={})
+        state.data_corpus = {}
+        with patch.object(member._ai_client, "complete_json_with_retry",
+                          return_value={"title": "T", "summary": "S"}):
+            report = member.analyze(state)
+        assert report.is_fallback is False
+
+
 class TestOrchestratorTeamDeliberation:
     """Orchestrator.run() dispatches team deliberation when enabled."""
 

@@ -27,16 +27,24 @@ class TeamMemberTemplate:
 
         system_prompt = get_agent_system_prompt(self.agent_name)
 
-        # Call LLM
-        raw_response = self._ai_client.complete_json(
-            prompt=prompt,
-            system_prompt=system_prompt,
-            temperature=0.7
-        )
-
-        # Use standard report factory
-        from .interface import AgentReport
-        return AgentReport.from_llm_response(self.agent_name, raw_response)
+        # Call LLM with retry; fall back to a stub on total failure so one
+        # specialist error can't abort the whole --teams run.
+        try:
+            raw_response = self._ai_client.complete_json_with_retry(
+                prompt=prompt,
+                system_prompt=system_prompt,
+                temperature=0.7
+            )
+            return AgentReport.from_llm_response(self.agent_name, raw_response)
+        except Exception as e:
+            print(f"  [WARN] {self.agent_name} analysis failed: {e}. Using fallback stub.")
+            return AgentReport(
+                title=f"{self.agent_name.upper()} Analysis (Fallback)",
+                summary=f"Specialist analysis could not be generated for {self.agent_name}.",
+                round_number=0,
+                alignment_score=0.5,
+                is_fallback=True,
+            )
 
 # Specific Sub-Roles
 class CFOAnalystTemplate(TeamMemberTemplate):
