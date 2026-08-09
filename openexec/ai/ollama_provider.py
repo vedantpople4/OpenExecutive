@@ -60,17 +60,26 @@ class OllamaProvider:
                 response.raise_for_status()
                 result = response.json()
                 message = result["choices"][0]["message"]
-                content = message.get("content") or message.get("reasoning_content", "")
+                content = message.get("content")
+                if not content:
+                    # reasoning_content (extended thinking) is not an answer.
+                    # Surfacing it as content would feed raw reasoning text into
+                    # the JSON pipeline as if it were the model's response.
+                    raise RuntimeError(
+                        "LLM response had no 'content' field (only reasoning/thinking). "
+                        f"Model: {self.ai_config.get('model')!r}."
+                    )
                 return content
-            except requests.exceptions.Timeout:
+            except requests.exceptions.RequestException as e:
+                last_error = e
                 if attempt < max_retries:
                     wait = 2 ** attempt
                     import time
                     time.sleep(wait)
                     continue
-                raise RuntimeError(f"LLM API timed out after {max_retries + 1} attempts (timeout={timeout}s each). Consider using a faster model or increasing timeout.")
-            except requests.exceptions.RequestException as e:
-                raise RuntimeError(f"LLM API call failed: {e}")
+                raise RuntimeError(
+                    f"LLM API call failed after {max_retries + 1} attempts: {last_error}"
+                )
 
     def complete_json(self, prompt: str, system_prompt: Optional[str] = None, max_tokens: Optional[int] = None, temperature: Optional[float] = None) -> Dict[str, Any]:
         """Complete a prompt and parse the response as JSON."""

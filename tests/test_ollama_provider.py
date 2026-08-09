@@ -142,4 +142,62 @@ def test_complete_fails_after_all_retries():
             provider = OllamaProvider(ai_config)
             with pytest.raises(RuntimeError) as exc_info:
                 provider.complete("Hello!")
-            assert "timed out" in str(exc_info.value).lower()
+            assert "failed" in str(exc_info.value).lower()
+            assert mock_post.call_count == 3
+
+
+def test_complete_retries_on_request_exception():
+    """Retries should cover connection/HTTP errors, not just timeouts."""
+    from unittest.mock import Mock, patch
+    import requests
+
+    mock_response = Mock()
+    mock_response.json.return_value = {
+        "choices": [{"message": {"content": "recovered"}}]
+    }
+    mock_response.status_code = 200
+    mock_response.raise_for_status = Mock()
+
+    side_effects = [
+        requests.exceptions.ConnectionError("refused"),
+        requests.exceptions.HTTPError("500"),
+        mock_response,
+    ]
+
+    with patch('openexec.ai.ollama_provider.requests.post') as mock_post:
+        mock_post.side_effect = side_effects
+        with patch('time.sleep', return_value=None):
+            provider = OllamaProvider({
+                "base_url": "http://localhost:11434",
+                "model": "llama3",
+                "max_retries": 2,
+            })
+            result = provider.complete("Hello!")
+
+    assert result == "recovered"
+    assert mock_post.call_count == 3
+
+
+def test_complete_raises_on_reasoning_only_response():
+    """A response with no content (only reasoning/thinking) is an error, not a fallback."""
+    from unittest.mock import Mock, patch
+
+    mock_response = Mock()
+    mock_response.json.return_value = {
+        "choices": [
+            {"message": {"content": "", "reasoning_content": "let me think step by step..."}}
+        ]
+    }
+    mock_response.status_code = 200
+    mock_response.raise_for_status = Mock()
+
+    with patch('openexec.ai.ollama_provider.requests.post') as mock_post:
+        mock_post.return_value = mock_response
+        provider = OllamaProvider({
+            "base_url": "http://localhost:11434",
+            "model": "llama3",
+            "max_retries": 0,
+        })
+        with pytest.raises(RuntimeError) as exc_info:
+            provider.complete("Hello!")
+        assert "no 'content'" in str(exc_info.value)
