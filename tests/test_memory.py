@@ -51,7 +51,7 @@ class TestMemorySystemInitialization:
         memory_dir = tmp_path / "memory"
         assert not memory_dir.exists()
 
-        system = MemorySystem(memory_dir=str(memory_dir))
+        MemorySystem(memory_dir=str(memory_dir))
         assert memory_dir.exists()
         assert memory_dir.is_dir()
 

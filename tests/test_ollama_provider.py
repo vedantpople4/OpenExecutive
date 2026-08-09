@@ -66,8 +66,6 @@ def test_ollama_provider_complete_json():
 
 def test_preprocess_bracket_strings_not_matched():
     """Braces inside strings should not affect bracket matching."""
-    provider = OllamaProvider({"base_url": "http://localhost:11434", "model": "test"})
-
     from openexec.ai.json_utils import JSONPipeline
     pipeline = JSONPipeline()
 

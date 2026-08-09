@@ -131,7 +131,7 @@ class TestGenerateExecutiveSummary:
         summary = generate_executive_summary(sample_results)
         # Should have 3 numbered risks
         lines = summary.split("\n")
-        risk_lines = [l for l in lines if l.strip().startswith(("1.", "2.", "3.")) and "Risk" in l]
+        risk_lines = [line for line in lines if line.strip().startswith(("1.", "2.", "3.")) and "Risk" in line]
         assert len(risk_lines) == 3
 
     def test_includes_agent_confidence(self, sample_results):
@@ -206,7 +206,7 @@ class TestGenerateExecutiveSummary:
         assert "## Critical Risks" in summary
         # Should not have numbered risks
         lines = summary.split("\n")
-        risk_lines = [l for l in lines if l.strip().startswith(("1.", "2.", "3.")) and "Risk" in l]
+        risk_lines = [line for line in lines if line.strip().startswith(("1.", "2.", "3.")) and "Risk" in line]
         assert len(risk_lines) == 0
 
     def test_handles_missing_agent_reports(self):

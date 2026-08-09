@@ -72,7 +72,7 @@ class TestDecisionTrackerInitialization:
         log_dir = tmp_path / "decisions"
         assert not log_dir.exists()
 
-        tracker = DecisionTracker(log_dir=str(log_dir))
+        DecisionTracker(log_dir=str(log_dir))
         assert log_dir.exists()
         assert log_dir.is_dir()
 

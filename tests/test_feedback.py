@@ -45,7 +45,7 @@ class TestFeedbackSystemInitialization:
         feedback_dir = tmp_path / "feedback"
         assert not feedback_dir.exists()
 
-        system = FeedbackSystem(feedback_dir=str(feedback_dir))
+        FeedbackSystem(feedback_dir=str(feedback_dir))
         assert feedback_dir.exists()
         assert feedback_dir.is_dir()
 
