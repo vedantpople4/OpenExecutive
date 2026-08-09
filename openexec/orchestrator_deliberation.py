@@ -41,8 +41,6 @@ class DeliberationOrchestrator:
 
     def run_deliberation(self) -> None:
         """Run dynamic deliberation rounds and store results in state."""
-        from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
-        from openexec.ai.prompts import SCRIBE_SYSTEM_PROMPT
 
         self._init_ai_clients()
 
@@ -96,7 +94,6 @@ class DeliberationOrchestrator:
     # ------------------------------------------------------------------
 
     def _dump_agent_report(self, agent_name: str, round_num: int, report) -> None:
-        from openexec.ai.prompts import get_agent_system_prompt
 
         header_color = "green" if agent_name == "ceo" else "cyan"
         print(f"     [bold {header_color}]── {agent_name.upper()} Round {round_num} ──[/bold {header_color}]")
@@ -139,7 +136,6 @@ class DeliberationOrchestrator:
         Returns True if at least one agent participated, False if the round was skipped entirely
         (e.g. when filtering reduces the participant list to zero for targeted simulations).
         """
-        from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
 
         # 1. Base agents for the round from fixed layout
         all_agents_this_round = PHASE_ROUNDS.get(round_num, ())
@@ -204,8 +200,6 @@ class DeliberationOrchestrator:
 
     def _run_ceo_synthesis(self) -> None:
         """Run CEO's round-5 synthesis to produce board_decision."""
-        from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
-        from openexec.ai.prompts import get_agent_system_prompt
 
         print("  -> CEO synthesising board decision...")
         try:
@@ -229,8 +223,7 @@ class DeliberationOrchestrator:
         Tries a lean context first, falls back to a simplified prompt if it fails,
         and only then uses the hardcoded stub.
         """
-        from openexec.ai import build_deliberation_prompt, DELIBERATION_MODIFIERS
-        from openexec.ai.client import AIClient
+        from openexec.ai import build_deliberation_prompt
 
         client = self._get_ai_client(agent_name)
 

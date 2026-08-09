@@ -2,7 +2,6 @@
 """Memory system for OpenExec - stores conversation embeddings and enables multi-session learning."""
 
 import json
-import os
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from datetime import datetime

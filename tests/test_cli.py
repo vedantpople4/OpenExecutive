@@ -1,7 +1,6 @@
 """Tests for the openexec CLI."""
 
 import json
-import os
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
@@ -140,7 +139,6 @@ class TestCLIExportFormats:
         valid_formats = ['json', 'csv', 'checklist']
 
         # Verify these formats are in the code
-        from openexec.export import ExportFormat
 
         for fmt in valid_formats:
             assert fmt.lower() in ['json', 'csv', 'checklist'], f"{fmt} should be valid"
@@ -252,7 +250,6 @@ class TestCLIWeightValidation:
     def test_invalid_agent_name_exits(self):
         """Invalid agent name should exit with error."""
         with patch('sys.argv', ['openexec', 'run', 'Test?', '--weight', 'badagent=0.5']):
-            from typer import Exit
             with pytest.raises(SystemExit) as exc_info:
                 from openexec.cli import main
                 main()
@@ -261,7 +258,6 @@ class TestCLIWeightValidation:
     def test_non_numeric_weight_exits(self):
         """Non-numeric weight should exit with error."""
         with patch('sys.argv', ['openexec', 'run', 'Test?', '--weight', 'cfo=abc']):
-            from typer import Exit
             with pytest.raises(SystemExit) as exc_info:
                 from openexec.cli import main
                 main()
@@ -270,7 +266,6 @@ class TestCLIWeightValidation:
     def test_out_of_range_weight_exits(self):
         """Weight > 1.0 should exit with error."""
         with patch('sys.argv', ['openexec', 'run', 'Test?', '--weight', 'cfo=2.0']):
-            from typer import Exit
             with pytest.raises(SystemExit) as exc_info:
                 from openexec.cli import main
                 main()
@@ -279,7 +274,6 @@ class TestCLIWeightValidation:
     def test_negative_weight_exits(self):
         """Negative weight should exit with error."""
         with patch('sys.argv', ['openexec', 'run', 'Test?', '--weight', 'cfo=-0.5']):
-            from typer import Exit
             with pytest.raises(SystemExit) as exc_info:
                 from openexec.cli import main
                 main()
@@ -292,7 +286,6 @@ class TestCLIOutputValidation:
     def test_nonexistent_output_dir_exits(self):
         """Non-existent output directory should exit before simulation."""
         with patch('sys.argv', ['openexec', 'run', 'Test?', '-o', '/nonexistent/dir/output.md']):
-            from typer import Exit
             with pytest.raises(SystemExit) as exc_info:
                 from openexec.cli import main
                 main()

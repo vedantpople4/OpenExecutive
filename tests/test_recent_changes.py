@@ -12,8 +12,7 @@ Covers:
 """
 
 import pytest
-from unittest.mock import Mock, MagicMock, patch
-from io import StringIO
+from unittest.mock import Mock, patch
 
 from openexec.orchestrator_deliberation import DeliberationOrchestrator, PHASE_ROUNDS
 from openexec.orchestrator import Orchestrator, SimulationState
@@ -58,6 +57,7 @@ def _make_state(**overrides):
         errors=[],
         phase="",
         simulation_id="test-id",
+        active_agents=[],
     )
     defaults.update(overrides)
     state = Mock(**defaults)
@@ -269,7 +269,7 @@ class TestReportToDict:
 
     def test_includes_role_specific(self):
         report = AgentReport(
-            title="T", summary="S", capex_vs_opex="CapEx",
+            title="T", summary="S", extra_fields={"capex_vs_opex": "CapEx"},
             key_findings=[], recommendations=[], risks=[],
         )
         orch = DeliberationOrchestrator(_make_state(), Mock())
@@ -433,7 +433,8 @@ class TestVerboseRunDeliberation:
         orch = DeliberationOrchestrator(state, Mock(), verbose=True)
         orch.run_deliberation()
         out = capsys.readouterr().out
-        assert "agents this round" in out
+        assert "CEO Round 1" in out
+        assert "verbose test" in out
 
     @patch.object(DeliberationOrchestrator, "_init_ai_clients")
     @patch.object(DeliberationOrchestrator, "_call_agent")
@@ -447,4 +448,4 @@ class TestVerboseRunDeliberation:
         orch = DeliberationOrchestrator(state, Mock(), verbose=False)
         orch.run_deliberation()
         out = capsys.readouterr().out
-        assert "agents this round" not in out
+        assert "CEO Round 1" not in out

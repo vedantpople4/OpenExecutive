@@ -1,7 +1,5 @@
-import json
-from typing import Dict, Any
 from openexec.orchestrator import Orchestrator, SimulationState
-from openexec.agents import AgentRegistry, register_default_agents
+from openexec.agents import AgentRegistry
 
 from openexec.event_store import EventStore
 

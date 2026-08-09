@@ -1,5 +1,4 @@
 from .interface import AgentReport
-from typing import Any
 
 
 class CMOTemplate:
@@ -12,7 +11,7 @@ class CMOTemplate:
     def __init__(self):
         """Initialize CMO agent with AI client."""
         try:
-            from openexec.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
+            from openexec.ai import AIClient, get_agent_system_prompt
             self.ai_client = AIClient()
             self.system_prompt = get_agent_system_prompt("cmo")
             self.use_ai = True
@@ -112,7 +111,7 @@ class CMOTemplate:
 
 
     def review_others(self, reports: dict[str, AgentReport]) -> None:
-        """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_review()."""
+        """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_deliberation()."""
         pass
 
         # Check CTO's feasibility and CFO's budget against the marketing strategy.

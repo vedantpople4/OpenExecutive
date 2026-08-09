@@ -1,6 +1,5 @@
 """Tests for openexec/utils.py — utility functions."""
 
-import pytest
 from openexec.utils import extract_action_items, sanitize_prompt
 
 

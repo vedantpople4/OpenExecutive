@@ -3,6 +3,7 @@
 
 import sys
 import json
+import copy
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 import typer
@@ -635,7 +636,7 @@ def setup(
     }
 
     if default:
-        settings = json.loads(json.dumps(defaults))  # Deep copy
+        settings = copy.deepcopy(defaults)  # Deep copy
         console.print("Using default settings.")
     else:
         settings = {}

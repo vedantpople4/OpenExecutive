@@ -3,7 +3,6 @@
 import pytest
 import json
 from pathlib import Path
-from datetime import datetime
 from openexec.decision_tracker import DecisionTracker
 
 

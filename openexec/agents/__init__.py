@@ -1,7 +1,7 @@
 # Executive Board Agents Package
 """Agent registry and base classes."""
 
-from typing import Protocol, Type, TYPE_CHECKING
+from typing import Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .interface import AgentProtocol

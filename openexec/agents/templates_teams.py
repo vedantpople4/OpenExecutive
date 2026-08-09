@@ -1,6 +1,4 @@
-from typing import Any, Dict, Optional
 from .interface import AgentReport
-from .templates_ceo import CEOTemplate # for base class if needed, but better to use a base template
 from openexec.ai.client import AIClient
 from openexec.ai.prompts import get_agent_system_prompt
 

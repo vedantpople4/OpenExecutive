@@ -1,8 +1,5 @@
 """Tests for package structure and pip installability."""
 
-import json
-import os
-import subprocess
 import sys
 from pathlib import Path
 

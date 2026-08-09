@@ -73,7 +73,7 @@ class TestOrchestratorTeamDeliberation:
         with patch.object(o, "run_inception") as m1, \
              patch.object(o, "run_analysis") as m2, \
              patch.object(o, "run_team_deliberation") as m3, \
-             patch.object(o, "run_review") as m4, \
+             patch.object(o, "run_deliberation") as m4, \
              patch.object(o, "run_synthesis", return_value={}) as m5:
             o.run()
 
@@ -92,7 +92,7 @@ class TestOrchestratorTeamDeliberation:
         with patch.object(o, "run_inception") as m1, \
              patch.object(o, "run_analysis") as m2, \
              patch.object(o, "run_team_deliberation") as m3, \
-             patch.object(o, "run_review") as m4, \
+             patch.object(o, "run_deliberation") as m4, \
              patch.object(o, "run_synthesis", return_value={}) as m5:
             o.run()
 

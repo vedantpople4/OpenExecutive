@@ -77,7 +77,7 @@ class TestOrchestrator:
         """All required methods are present."""
         assert hasattr(orchestrator, 'run_inception')
         assert hasattr(orchestrator, 'run_analysis')
-        assert hasattr(orchestrator, 'run_review')
+        assert hasattr(orchestrator, 'run_deliberation')
         assert hasattr(orchestrator, 'run_synthesis')
 
     def test_run_inception_calls_ceo(self, orchestrator, simulation_state):
@@ -89,13 +89,6 @@ class TestOrchestrator:
             orchestrator.run_inception()
             mock_get.assert_called_with("ceo")
             mock_agent.analyze.assert_called()  # assuming analyze is called on the agent
-
-    def test_run_review_calls_deliberation(self, orchestrator, simulation_state):
-        """run_review() should delegate to run_deliberation()."""
-        orchestrator.state = simulation_state
-        with patch.object(orchestrator, 'run_deliberation') as mock_deliberation:
-            orchestrator.run_review()
-            mock_deliberation.assert_called_once()
 
     def test_run_analysis_filters_agents(self, orchestrator, mock_registry):
         """run_analysis() only calls agents in active_agents list."""
@@ -123,11 +116,14 @@ class TestOrchestrator:
         agents["cfo"].analyze.assert_not_called()
         agents["cto"].analyze.assert_not_called()
 
-    def test_run_review_calls_deliberation(self, orchestrator, simulation_state):
-        """run_review() should delegate to run_deliberation()."""
+    def test_run_call_deliberation(self, orchestrator, simulation_state):
+        """run() invokes run_deliberation()."""
         orchestrator.state = simulation_state
-        with patch.object(orchestrator, 'run_deliberation') as mock_deliberation:
-            orchestrator.run_review()
+        with patch.object(orchestrator, 'run_inception'), \
+             patch.object(orchestrator, 'run_analysis'), \
+             patch.object(orchestrator, 'run_deliberation') as mock_deliberation, \
+             patch.object(orchestrator, 'run_synthesis', return_value={}):
+            orchestrator.run()
             mock_deliberation.assert_called_once()
 
     def test_run_deliberation_exists(self, orchestrator):

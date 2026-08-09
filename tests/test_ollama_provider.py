@@ -129,7 +129,7 @@ def test_complete_retries_on_timeout():
 
 def test_complete_fails_after_all_retries():
     """complete() should raise RuntimeError after exhausting retries."""
-    from unittest.mock import Mock, patch
+    from unittest.mock import patch
     import requests
 
     with patch('openexec.ai.ollama_provider.requests.post') as mock_post:

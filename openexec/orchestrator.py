@@ -2,7 +2,7 @@ from openexec.agents.interface import AgentReport
 from openexec.event_store import EventStore
 from openexec.grounding import check_report_grounding
 from openexec.events import (
-    Event, EventType, SimulationInitialized, InceptionStarted,
+    Event, SimulationInitialized, InceptionStarted,
     InceptionCompleted, AnalysisStarted, AgentReportGenerated,
     AnalysisCompleted, DeliberationStarted, DeliberationRoundStarted,
     DeliberationRoundCompleted, DeliberationCompleted, SynthesisStarted,
@@ -172,10 +172,6 @@ class Orchestrator:
         ))
 
         print("\n--- Analysis Complete. Reports Collected ---")
-
-    def run_review(self) -> None:
-        """Deprecated: deliberation now runs via run_deliberation(). Forwarding for compatibility."""
-        self.run_deliberation()
 
     def run_deliberation(self) -> None:
         """Phase 3: Multi-round deliberation — board meeting workflow."""
@@ -492,7 +488,7 @@ class Orchestrator:
             self.run_analysis()
             if getattr(self, 'teams_enabled', False):
                 self.run_team_deliberation()
-            self.run_review()
+            self.run_deliberation()
             final_results = self.run_synthesis()
 
             print("\n===========================================")

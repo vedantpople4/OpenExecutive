@@ -24,7 +24,7 @@ class AgentReport:
 - `initialize()` - Accept briefing data
 - `run_inception()` - Delegate to agents
 - `run_analysis()` - Collect reports
-- `run_review()` - Manage feedback loops
+- `run_deliberation()` - Manage board debate rounds
 - `run_synthesis()` - Generate final document
 
 ### 4. CLI Entry Point (`src/main.py`)

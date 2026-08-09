@@ -1,6 +1,5 @@
 """Tests for openexec/agents/interface.py — AgentReport."""
 
-import pytest
 from openexec.agents.interface import AgentReport
 
 
@@ -16,7 +15,7 @@ class TestAgentReportFromLLMResponse:
         assert report.recommendations == sample_agent_response["recommendations"]
         assert report.alignment_score == 0.78
         assert report.verdict == "Buy core infrastructure to build a durable moat."
-        assert "buying" in report.what_i_need_from_cto.lower()
+        assert "buying" in report.extra_fields["what_i_need_from_cto"].lower()
 
     def test_response_type_routing_for_ceo(self, sample_agent_response):
         """CEO verdict maps from 'strategic_verdict'."""
@@ -27,30 +26,30 @@ class TestAgentReportFromLLMResponse:
         assert report.summary == sample_agent_response["summary"]
 
     def test_response_type_routing_for_cfo(self, sample_cfo_response):
-        """CFO verdict maps from 'financial_verdict', CFO fields populated."""
+        """CFO verdict maps from 'financial_verdict', CFO fields land in extra_fields."""
         report = AgentReport.from_llm_response("cfo", sample_cfo_response)
         assert report.verdict == sample_cfo_response["financial_verdict"]
-        assert report.capex_vs_opex == "Lease = OpEx, fully expensed. Buy = CapEx, depreciated over 5 years."
-        assert report.runway_impact_6mo == "Buying: -$500k immediate. Leasing: -$60k/month ongoing."
-        assert report.series_a_signal == sample_cfo_response["series_a_signal"]
+        assert report.extra_fields["capex_vs_opex"] == "Lease = OpEx, fully expensed. Buy = CapEx, depreciated over 5 years."
+        assert report.extra_fields["runway_impact_6mo"] == "Buying: -$500k immediate. Leasing: -$60k/month ongoing."
+        assert report.extra_fields["series_a_signal"] == sample_cfo_response["series_a_signal"]
 
     def test_response_type_routing_for_cto(self, sample_cto_response):
-        """CTO verdict maps from 'technical_verdict'; CTO-specific fields populated."""
+        """CTO verdict maps from 'technical_verdict'; CTO-specific fields land in extra_fields."""
         report = AgentReport.from_llm_response("cto", sample_cto_response)
-        assert report.technical_verdict == sample_cto_response["technical_verdict"]
-        assert report.build_cost_order_of_magnitude == "Roughly 8 eng-weeks + $500k hardware."
-        assert report.moat_impact == "Creates (+) — full control over the infrastructure stack."
-        assert report.vendor_lockin_risk == "High (leasing) vs Low (buying). Exit trigger: 6-month notice + $150k egress."
-        assert report.team_capacity_check == "Yes, with 2 senior engineers allocated full-time."
+        assert report.verdict == sample_cto_response["technical_verdict"]
+        assert report.extra_fields["build_cost_order_of_magnitude"] == "Roughly 8 eng-weeks + $500k hardware."
+        assert report.extra_fields["moat_impact"] == "Creates (+) — full control over the infrastructure stack."
+        assert report.extra_fields["vendor_lockin_risk"] == "High (leasing) vs Low (buying). Exit trigger: 6-month notice + $150k egress."
+        assert report.extra_fields["team_capacity_check"] == "Yes, with 2 senior engineers allocated full-time."
 
     def test_response_type_routing_for_cmo(self, sample_cmo_response):
-        """CMO verdict maps from 'market_verdict'; CMO-specific fields populated."""
+        """CMO verdict maps from 'market_verdict'; CMO-specific fields land in extra_fields."""
         report = AgentReport.from_llm_response("cmo", sample_cmo_response)
-        assert report.market_verdict == sample_cmo_response["market_verdict"]
-        assert report.pricing_impact == sample_cmo_response["pricing_impact"]
-        assert report.competitive_signal == sample_cmo_response["competitive_signal"]
-        assert "Banks: Helps" in report.customer_segment_view
-        assert report.go_to_market_implication and len(report.go_to_market_implication) > 10
+        assert report.verdict == sample_cmo_response["market_verdict"]
+        assert report.extra_fields["pricing_impact"] == sample_cmo_response["pricing_impact"]
+        assert report.extra_fields["competitive_signal"] == sample_cmo_response["competitive_signal"]
+        assert "Banks: Helps" in report.extra_fields["customer_segment_view"]
+        assert report.extra_fields["go_to_market_implication"] and len(report.extra_fields["go_to_market_implication"]) > 10
 
     def test_reasoning_as_list_is_normalized_to_dict(self):
         """reasoning: [a, b] arrays are normalised to {chains: [a, b]}."""
@@ -150,12 +149,11 @@ class TestAgentReportGetRoleSpecificFields:
         report = AgentReport(
             title="T", summary="S",
             alignment_score=0.7,
-            technical_verdict="Green",
-            market_verdict=None,  # should be excluded
+            extra_fields={"technical_verdict": "Green", "market_verdict": None},
             risks=[],  # empty list should be excluded
         )
         fields = report.get_role_specific_fields()
-        assert "technical_verdict" in fields
+        assert fields["technical_verdict"] == "Green"
         assert "market_verdict" not in fields  # None → excluded
         assert "risks" not in fields  # [] → excluded
 
@@ -163,12 +161,11 @@ class TestAgentReportGetRoleSpecificFields:
         report = AgentReport.from_llm_response("cto", sample_cto_response)
         fields = report.get_role_specific_fields()
 
-        assert "technical_verdict" in fields
-        assert fields["technical_verdict"] == "Green — buying in-house is feasible with a 12-week implementation."
-        assert "build_cost_order_of_magnitude" in fields
-        assert "moat_impact" in fields
-        assert "team_capacity_check" in fields
-        assert "vendor_lockin_risk" in fields
+        assert fields["verdict"] == "Green — buying in-house is feasible with a 12-week implementation."
+        assert fields["build_cost_order_of_magnitude"] == "Roughly 8 eng-weeks + $500k hardware."
+        assert fields["moat_impact"] == "Creates (+) — full control over the infrastructure stack."
+        assert fields["team_capacity_check"] == "Yes, with 2 senior engineers allocated full-time."
+        assert fields["vendor_lockin_risk"] == "High (leasing) vs Low (buying). Exit trigger: 6-month notice + $150k egress."
 
     def test_includes_deliberation_fields_when_populated(self):
         report = AgentReport(
@@ -232,11 +229,13 @@ class TestAgentReportDataclassIntegrity:
         """Role-specific fields should be Optional or list, never wrong type."""
         report = AgentReport(
             title="T", summary="S",
-            capex_vs_opex="OpEx",
-            runway_impact_6mo="-6 months",
-            technical_verdict="Yellow",
-            market_verdict="Wins",
+            extra_fields={
+                "capex_vs_opex": "OpEx",
+                "runway_impact_6mo": "-6 months",
+                "technical_verdict": "Yellow",
+                "market_verdict": "Wins",
+            },
             alignment_score=0.91,
         )
-        assert isinstance(report.capex_vs_opex, str)
-        assert isinstance(report.technical_verdict, str)
+        assert isinstance(report.extra_fields["capex_vs_opex"], str)
+        assert isinstance(report.extra_fields["technical_verdict"], str)

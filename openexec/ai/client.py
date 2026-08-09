@@ -3,7 +3,7 @@ from openexec.ai.prompts_constants import _CORRECTION_SYSTEM, _CORRECTION_USER
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 
 class AIClient:

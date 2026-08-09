@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Entry point for Executive Board Simulation CLI."""
 
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -425,15 +424,9 @@ def main() -> int:
 
     # Check for command
     if args[0] == "discuss":
-        # Start interactive discussion mode
-        try:
-            from openexec.interactive import InteractiveDiscussion
-            print("Loading interactive discussion mode...")
-            print("Note: This would load the last simulation results in a full implementation.")
-            return 0
-        except ImportError as e:
-            print(f"Error: Could not load interactive mode - {e}")
-            return 1
+        # Interactive discussion mode removed with interactive.py
+        print("Interactive discussion mode is not available.")
+        return 1
 
     # Priority 3: Memory commands
     if args[0] == "history":

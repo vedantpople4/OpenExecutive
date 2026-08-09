@@ -1,5 +1,4 @@
 from .interface import AgentReport
-from typing import Any
 
 
 class CFOTemplate:
@@ -12,7 +11,7 @@ class CFOTemplate:
     def __init__(self):
         """Initialize CFO agent with AI client."""
         try:
-            from openexec.ai import AIClient, get_agent_system_prompt, build_analysis_prompt
+            from openexec.ai import AIClient, get_agent_system_prompt
             self.ai_client = AIClient()
             self.system_prompt = get_agent_system_prompt("cfo")
             self.use_ai = True
@@ -109,7 +108,7 @@ class CFOTemplate:
 
 
     def review_others(self, reports: dict[str, AgentReport]) -> None:
-        """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_review()."""
+        """Delegation handled by DeliberationOrchestrator. See Orchestrator.run_deliberation()."""
         pass
         print("CFO Reviewing: Checking technical and market risks against budget.")
 

@@ -1,7 +1,7 @@
 """Tests for openexec/orchestrator_deliberation.py — DeliberationOrchestrator."""
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from openexec.orchestrator_deliberation import DeliberationOrchestrator
 
 
