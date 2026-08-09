@@ -36,6 +36,7 @@ class CTOTemplate:
                     agent_name="cto",
                     assumptions=state.assumptions if hasattr(state, 'assumptions') else None,
                     research_cfg=getattr(state, 'research_cfg', None),
+                    past_decisions_context=getattr(state, 'past_decisions_context', '') or None,
                 )
 
                 response_data = self.ai_client.complete_json_with_retry(

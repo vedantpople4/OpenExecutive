@@ -22,6 +22,7 @@ class TeamMemberTemplate:
             data_corpus=state.data_corpus,
             assumptions=state.assumptions,
             research_cfg=getattr(state, 'research_cfg', None),
+            past_decisions_context=getattr(state, 'past_decisions_context', '') or None,
         )
 
         system_prompt = get_agent_system_prompt(self.agent_name)

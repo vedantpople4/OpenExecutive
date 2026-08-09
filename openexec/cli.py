@@ -564,7 +564,7 @@ def _run_simulation(
         memory_context = memory_system.get_memory_context(prompt)
         if memory_context:
             console.print("=> Loaded context from past decisions")
-            state.data_corpus["memory_context.md"] = memory_context
+            state.past_decisions_context = memory_context
 
     # Run simulation
     from openexec.event_store import EventStore

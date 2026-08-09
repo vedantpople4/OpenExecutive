@@ -110,11 +110,17 @@ class TestBuildAnalysisPrompt:
         assert len(prompt) < len(long_content) + 500
         assert "..." in prompt  # truncation marker
 
-    def test_memory_context_not_repeated(self):
-        """memory_context.md should be skipped from data_corpus injection."""
-        corpus = {"memory_context.md": "Should not appear.", "other.md": "Should appear."}
-        prompt = build_analysis_prompt("Test decision", agent_name="cmo", data_corpus=corpus)
-        assert "memory_context.md" not in prompt
+    def test_past_decisions_context_injected(self):
+        """Memory context is a first-class prompt section, not a data file."""
+        corpus = {"other.md": "Should appear."}
+        prompt = build_analysis_prompt(
+            "Analyze this.",
+            agent_name="ceo",
+            data_corpus=corpus,
+            past_decisions_context="Past decision: we deferred the GPU spend.",
+        )
+        assert "Past Decisions Context" in prompt
+        assert "Past decision: we deferred the GPU spend." in prompt
         assert "other.md" in prompt
 
     def test_returns_string(self):

@@ -32,6 +32,7 @@ class SimulationState:
     assumptions: Dict[str, str] = field(default_factory=dict)
     agent_weights: Dict[str, float] = field(default_factory=dict)  # agent_name -> weight (0.0-1.0)
     active_agents: list[str] = field(default_factory=list)  # Subset of agents to include in simulation
+    past_decisions_context: str = ""  # Memory context from prior simulations (injected into prompts, never grounded)
     research_cfg: Dict[str, Any] = field(default_factory=lambda: {
         "enabled": False,
         "web_search_weight": 0.5,

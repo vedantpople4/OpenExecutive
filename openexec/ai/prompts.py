@@ -540,11 +540,13 @@ def build_analysis_prompt(
     agent_name: str = "agent",
     assumptions: Dict[str, str] | None = None,
     research_cfg: Dict[str, Any] | None = None,
+    past_decisions_context: str | None = None,
 ) -> str:
     """Build the user-side prompt injected into each agent's LLM call.
 
     Includes decision-type routing, supporting data, counterfactual assumptions,
-    and — when enabled — a blended web search + knowledge base research context.
+    past-decision memory context, and — when enabled — a blended web search +
+    knowledge base research context.
 
     Args:
         core_prompt: The core business problem or question.
@@ -553,6 +555,10 @@ def build_analysis_prompt(
         assumptions: Optional dictionary of counterfactual assumptions.
         research_cfg: Optional research mix config (enabled, web_search_weight,
                       knowledge_base_weight, max_context_chars). See openexec.research.
+        past_decisions_context: Optional markdown from prior simulations. Injected
+                      into the prompt so the agent can reason about it, but kept
+                      OUT of grounding checks (it is not part of the current run's
+                      data corpus).
 
     Returns:
         Formatted prompt string.
@@ -574,12 +580,18 @@ def build_analysis_prompt(
         for key, value in assumptions.items():
             parts.append(f"- **{key}**: {value}")
 
+    if past_decisions_context:
+        parts.append("\n## Past Decisions Context")
+        parts.append(
+            "The company has previously deliberated on related decisions. Use this "
+            "for continuity and lessons learned, but do not treat it as ground truth "
+            "for the current decision."
+        )
+        parts.append(past_decisions_context)
+
     if data_corpus:
         parts.append("\n## Supporting Data")
         for filename, content in data_corpus.items():
-            if filename == "memory_context.md":
-                continue  # Already in system context — don't repeat
-
             # IMPORTANT: Instruct agent to synthesize, NOT repeat raw data
             parts.append(f"\n### {filename}")
             parts.append("Use this data for reasoning. DO NOT quote large blocks of this text in your output reports.")
