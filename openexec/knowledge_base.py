@@ -90,6 +90,44 @@ class KnowledgeBase:
 
         return chunks
 
+    def _upsert_doc(self, doc_metadata: Dict[str, Any], chunk_data: Dict[str, Any]) -> None:
+        """Write a document's chunks and register it in the index idempotently.
+
+        Re-ingesting the same doc_id (same filename) replaces the prior entry
+        instead of appending a duplicate to documents/categories.
+        """
+        doc_id = doc_metadata["id"]
+
+        # Drop any prior registration for this doc id.
+        for i, doc in enumerate(self.index["documents"]):
+            if doc["id"] == doc_id:
+                self.index["documents"].pop(i)
+                break
+        for cat, ids in self.index["categories"].items():
+            if doc_id in ids:
+                ids.remove(doc_id)
+                break
+        old_chunk = self.kb_dir / "chunks" / f"{doc_id}.json"
+        if old_chunk.exists():
+            old_chunk.unlink()
+        if doc_id in self._chunk_cache:
+            del self._chunk_cache[doc_id]
+
+        # Write new content and register it.
+        chunk_path = self.kb_dir / "chunks" / f"{doc_id}.json"
+        with open(chunk_path, 'w') as f:
+            json.dump(chunk_data, f, indent=2)
+        self._chunk_cache[doc_id] = chunk_data
+
+        self.index["documents"].append(doc_metadata)
+
+        category = doc_metadata["category"]
+        if category not in self.index["categories"]:
+            self.index["categories"][category] = []
+        self.index["categories"][category].append(doc_id)
+
+        self._save_index()
+
     def ingest_document(self, file_path: str, category: str = "general",
                        metadata: Optional[Dict[str, Any]] = None) -> str:
         """
@@ -133,19 +171,7 @@ class KnowledgeBase:
             "chunks": chunks
         }
 
-        chunk_path = self.kb_dir / "chunks" / f"{doc_id}.json"
-        with open(chunk_path, 'w') as f:
-            json.dump(chunk_data, f, indent=2)
-
-        # Update index
-        self.index["documents"].append(doc_metadata)
-
-        # Update category index
-        if category not in self.index["categories"]:
-            self.index["categories"][category] = []
-        self.index["categories"][category].append(doc_id)
-
-        self._save_index()
+        self._upsert_doc(doc_metadata, chunk_data)
 
         return doc_id
 
@@ -186,19 +212,7 @@ class KnowledgeBase:
             "chunks": chunks
         }
 
-        chunk_path = self.kb_dir / "chunks" / f"{doc_id}.json"
-        with open(chunk_path, 'w') as f:
-            json.dump(chunk_data, f, indent=2)
-
-        # Update index
-        self.index["documents"].append(doc_metadata)
-
-        # Update category index
-        if category not in self.index["categories"]:
-            self.index["categories"][category] = []
-        self.index["categories"][category].append(doc_id)
-
-        self._save_index()
+        self._upsert_doc(doc_metadata, chunk_data)
 
         return doc_id
 
