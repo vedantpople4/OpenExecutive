@@ -39,9 +39,8 @@ def sanitize_prompt(prompt: str, max_length: int = 10000) -> str:
     )
     prompt = injection_pattern.sub('[FILTERED]', prompt)
 
-    # Escape potential markdown/image links that could be used for context injection
+    # Escape image markdown links that could be used for context injection
     prompt = re.sub(r'!\[.*?\]\(.*?\)', '[Image removed]', prompt)
-    prompt = re.sub(r'\[.*?\]\(.*?\)', lambda m: m.group(0) if not m.group(0).startswith('[') else m.group(0), prompt)
 
     # Normalize whitespace
     prompt = re.sub(r'\s+', ' ', prompt).strip()
