@@ -82,10 +82,6 @@ def get_default_config() -> Dict[str, Any]:
         "auto_summary": False,
         "export_format": None,
         "data_dir": "data",
-        "ai": {
-            "temperature": 0.7,
-            "max_tokens": 4096
-        },
         "memory": {
             "enabled": True,
             "context_injection": True
