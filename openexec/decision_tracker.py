@@ -116,57 +116,5 @@ class DecisionTracker:
         with open(self.decision_log_file, 'w') as f:
             json.dump(log_data, f, indent=2)
 
-    def get_decision_history(self) -> List[Dict[str, Any]]:
-        """Get decision history.
-
-        Returns:
-            List of decision records
-        """
-        if not self.decision_log_file.exists():
-            return []
-
-        try:
-            with open(self.decision_log_file, 'r') as f:
-                return json.load(f)
-        except (json.JSONDecodeError, FileNotFoundError):
-            return []
-
-    def get_recent_decisions(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get recent decisions.
-
-        Args:
-            limit: Number of recent decisions to return
-
-        Returns:
-            List of recent decision records, sorted by timestamp (most recent first)
-        """
-        history = self.get_decision_history()
-        if not history:
-            return []
-        # Get last N items and reverse to get most recent first
-        recent = history[-limit:]
-        return list(reversed(recent))
-
-    def find_related_decisions(self, query: str) -> List[Dict[str, Any]]:
-        """Find decisions related to a query.
-
-        Args:
-            query: Search query
-
-        Returns:
-            List of related decisions
-        """
-        history = self.get_decision_history()
-        related = []
-
-        query_lower = query.lower()
-        for decision in history:
-            if (query_lower in decision.get("prompt", "").lower() or
-                any(query_lower in item.get("task", "").lower() for item in decision.get("action_items", []))):
-                related.append(decision)
-
-        return related
-
-
-# Global decision tracker instance
+    # Global decision tracker instance
 decision_tracker = DecisionTracker()
