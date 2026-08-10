@@ -8,7 +8,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from datetime import datetime
-import hashlib
+
+from openexec.utils import _id_from_name
 
 _TOKEN_RE = re.compile(r"[a-z0-9]+")
 
@@ -68,8 +69,8 @@ class KnowledgeBase:
             json.dump(self.index, f, indent=2)
 
     def _generate_doc_id(self, filename: str) -> str:
-        """Generate a unique ID for a document."""
-        return hashlib.md5(filename.encode()).hexdigest()[:12]
+        """Generate a stable unique ID for a document from its filename."""
+        return _id_from_name(filename)
 
     def _chunk_text(self, text: str, chunk_size: int = 500) -> List[str]:
         """Split text into chunks for better retrieval."""

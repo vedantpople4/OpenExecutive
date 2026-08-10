@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from datetime import datetime
-import hashlib
+
+from openexec.utils import _id_from_name
 
 
 class MemorySystem:
@@ -43,7 +44,7 @@ class MemorySystem:
 
     def _generate_id(self, prompt: str) -> str:
         """Generate a unique ID for a conversation based on prompt hash."""
-        return hashlib.md5(prompt.encode()).hexdigest()[:12]
+        return _id_from_name(prompt)
 
     def store_conversation(self, prompt: str, results: Dict[str, Any]) -> str:
         """Store a conversation and its results in memory.

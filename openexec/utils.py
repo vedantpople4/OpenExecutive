@@ -1,6 +1,16 @@
+import hashlib
 import re
 from datetime import datetime, timedelta
 from typing import Any
+
+
+def _id_from_name(name: str) -> str:
+    """Return a stable 12-char id (md5[:12]) for a name.
+
+    Used by knowledge_base and memory to derive document/conversation ids from
+    filenames or prompts so re-adding the same input maps to the same id.
+    """
+    return hashlib.md5(name.encode()).hexdigest()[:12]
 
 
 def sanitize_prompt(prompt: str, max_length: int = 10000) -> str:
