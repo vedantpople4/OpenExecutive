@@ -3,7 +3,7 @@
 
 import json
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from datetime import datetime
 
 
@@ -122,101 +122,9 @@ class FeedbackSystem:
 
         self._save_agent_scores()
 
-    def get_agent_performance(self, agent: str) -> Optional[Dict[str, Any]]:
-        """Get performance metrics for a specific agent."""
-        return self.agent_scores.get(agent)
-
     def get_all_agent_performance(self) -> Dict[str, Dict[str, Any]]:
         """Get performance metrics for all agents."""
         return self.agent_scores
-
-    def get_feedback_for_decision(self, decision_id: str) -> List[Dict[str, Any]]:
-        """Get all feedback for a specific decision."""
-        return [
-            feedback for feedback in self.feedback_log
-            if feedback["decision_id"] == decision_id
-        ]
-
-    def get_top_recommendations(self, agent: str, limit: int = 5) -> List[Dict[str, Any]]:
-        """Get top-rated recommendations for an agent."""
-        agent_feedback = [
-            feedback for feedback in self.feedback_log
-            if feedback["agent"] == agent
-        ]
-
-        # Sort by rating
-        sorted_feedback = sorted(
-            agent_feedback,
-            key=lambda x: x["rating"],
-            reverse=True
-        )
-
-        return sorted_feedback[:limit]
-
-    def get_learning_insights(self, agent: str) -> str:
-        """Generate learning insights for an agent based on feedback."""
-        if agent not in self.agent_scores:
-            return f"No feedback data available for {agent}."
-
-        scores = self.agent_scores[agent]
-
-        insights = [f"## {agent.upper()} Performance Insights\n\n"]
-
-        # Overall performance
-        insights.append(f"**Average Rating:** {scores['average_rating']:.1f}/5.0")
-        insights.append(f"**Total Ratings:** {scores['total_ratings']}")
-        insights.append(f"**Success Rate:** {scores['successful_outcomes']}/{scores['total_feedback']}")
-        insights.append("")
-
-        # Top recommendations
-        top_recs = self.get_top_recommendations(agent, limit=3)
-        if top_recs:
-            insights.append("**Top Performing Recommendations:**\n")
-            for i, rec in enumerate(top_recs, 1):
-                insights.append(f"{i}. Rating: {rec['rating']}/5")
-                insights.append(f"   {rec['recommendation'][:100]}...")
-                insights.append(f"   Outcome: {rec['outcome'][:80]}...")
-                insights.append("")
-
-        # Recent trends
-        if scores["recent_performance"]:
-            recent_avg = sum(r["rating"] for r in scores["recent_performance"]) / len(scores["recent_performance"])
-            insights.append(f"**Recent Trend:** {recent_avg:.1f}/5.0 (last {len(scores['recent_performance'])} ratings)")
-            insights.append("")
-
-        return "\n".join(insights)
-
-    def generate_feedback_prompt(self, decision_id: str, results: Dict[str, Any]) -> str:
-        """Generate a prompt for collecting feedback on a decision."""
-        prompt_lines = [
-            "# Feedback Collection",
-            "",
-            f"Decision ID: {decision_id}",
-            f"Decision: {results.get('executive_summary', 'N/A')}",
-            "",
-            "Please rate the following recommendations:",
-            ""
-        ]
-
-        for agent_name, report in results.get('agent_reports', {}).items():
-            prompt_lines.append(f"## {agent_name.upper()}")
-            prompt_lines.append(f"Alignment Score: {report.get('alignment_score', 0):.0%}")
-            prompt_lines.append("")
-
-            if report.get('recommendations'):
-                for i, rec in enumerate(report['recommendations'][:3], 1):
-                    prompt_lines.append(f"{i}. {rec[:150]}...")
-                prompt_lines.append("")
-
-        prompt_lines.extend([
-            "",
-            "For each recommendation, please provide:",
-            "- Rating (1-5)",
-            "- What happened when implemented?",
-            "- Any additional notes"
-        ])
-
-        return "\n".join(prompt_lines)
 
 
 # Global feedback system instance
