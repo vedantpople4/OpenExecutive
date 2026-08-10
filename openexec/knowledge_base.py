@@ -175,47 +175,6 @@ class KnowledgeBase:
 
         return doc_id
 
-    def ingest_text(self, text: str, category: str = "general",
-                   title: str = "Untitled", metadata: Optional[Dict[str, Any]] = None) -> str:
-        """
-        Ingest text directly into the knowledge base.
-
-        Args:
-            text: Text content to ingest
-            category: Category for the content
-            title: Title for the content
-            metadata: Additional metadata
-
-        Returns:
-            doc_id: Unique ID for the ingested content
-        """
-        # Generate document ID
-        doc_id = self._generate_doc_id(title)
-
-        # Create document metadata
-        doc_metadata = {
-            "id": doc_id,
-            "title": title,
-            "category": category,
-            "ingested_at": datetime.now().isoformat(),
-            "size": len(text),
-            "metadata": metadata or {}
-        }
-
-        # Chunk the text
-        chunks = self._chunk_text(text)
-
-        # Save chunks
-        chunk_data = {
-            "doc_id": doc_id,
-            "metadata": doc_metadata,
-            "chunks": chunks
-        }
-
-        self._upsert_doc(doc_metadata, chunk_data)
-
-        return doc_id
-
     def retrieve_relevant(self, query: str, category: Optional[str] = None,
                          limit: int = 5) -> List[Dict[str, Any]]:
         """
@@ -294,24 +253,6 @@ class KnowledgeBase:
         results.sort(key=lambda x: x["score"], reverse=True)
         return results[:limit]
 
-    def get_context_for_query(self, query: str, category: Optional[str] = None) -> str:
-        """Generate context string for a query from the knowledge base."""
-        relevant = self.retrieve_relevant(query, category, limit=3)
-
-        if not relevant:
-            return ""
-
-        context_lines = ["## Relevant Company Information\n\n"]
-
-        for i, result in enumerate(relevant, 1):
-            context_lines.append(f"### Source {i}: {result['doc_title']}")
-            context_lines.append(f"Category: {result['category']}")
-            context_lines.append("")
-            context_lines.append(result['chunk'])
-            context_lines.append("")
-
-        return "\n".join(context_lines)
-
     def list_documents(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
         """List all documents in the knowledge base."""
         if category:
@@ -325,43 +266,13 @@ class KnowledgeBase:
         """List all categories in the knowledge base."""
         return list(self.index["categories"].keys())
 
-    def delete_document(self, doc_id: str) -> bool:
-        """Delete a document from the knowledge base."""
-        # Find and remove from index
-        doc_to_remove = None
-        for doc in self.index["documents"]:
-            if doc["id"] == doc_id:
-                doc_to_remove = doc
-                break
-
-        if not doc_to_remove:
-            return False
-
-        # Remove from documents list
-        self.index["documents"].remove(doc_to_remove)
-
-        # Remove from category
-        category = doc_to_remove["category"]
-        if category in self.index["categories"]:
-            self.index["categories"][category].remove(doc_id)
-
-        # Delete chunk file
-        chunk_path = self.kb_dir / "chunks" / f"{doc_id}.json"
-        if chunk_path.exists():
-            chunk_path.unlink()
-
-        self._save_index()
-        return True
-
     def get_kb_stats(self) -> Dict[str, Any]:
         """Get statistics about the knowledge base."""
         total_chunks = 0
         for doc in self.index["documents"]:
-            chunk_path = self.kb_dir / "chunks" / f"{doc['id']}.json"
-            if chunk_path.exists():
-                with open(chunk_path, 'r') as f:
-                    chunk_data = json.load(f)
-                    total_chunks += len(chunk_data["chunks"])
+            chunk_data = self._get_chunk_data(doc["id"])
+            if chunk_data:
+                total_chunks += len(chunk_data["chunks"])
 
         return {
             "total_documents": len(self.index["documents"]),

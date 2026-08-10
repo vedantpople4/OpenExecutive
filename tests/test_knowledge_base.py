@@ -35,12 +35,6 @@ class TestIdempotentIngest:
         results = kb.retrieve_relevant("arr", limit=5)
         assert any("arr" in r["chunk"].lower() for r in results)
 
-    def test_ingest_text_idempotent(self, kb):
-        kb.ingest_text("Financial report: revenue $2M.", "financials", "report")
-        kb.ingest_text("Financial report: revenue $2M.", "financials", "report")
-
-        assert len(kb.list_documents()) == 1
-
     def test_get_kb_stats_counts_once(self, kb, tmp_path):
         doc = _write_sample(tmp_path / "a.md")
         kb.ingest_document(doc, "general")
