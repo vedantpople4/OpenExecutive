@@ -4,7 +4,7 @@ orchestrator's actual round/team layout (the "can't silently drift" claim)."""
 import pytest
 
 from openexec.agents import TEAM_STRUCTURE
-from openexec.estimate import estimate_llm_calls
+from openexec.estimate import estimate_cost, estimate_eta, estimate_llm_calls
 from openexec.orchestrator_deliberation import PHASE_ROUNDS
 
 
@@ -56,3 +56,38 @@ def test_estimate_uses_all_phase_rounds():
     # Every round's participant layout must factor into the estimate.
     lo, hi = estimate_llm_calls(["ceo", "cfo", "cto", "cmo"], False)
     assert hi >= sum(len(p) for p in PHASE_ROUNDS.values())
+
+
+class TestEstimateCost:
+    def test_priced_cost(self):
+        assert estimate_cost(10, 0.01) == 0.1
+
+    def test_none_when_unpriced(self):
+        assert estimate_cost(10, None) is None
+        assert estimate_cost(10, 0) is None
+        assert estimate_cost(10, -1) is None
+
+    def test_rounding(self):
+        assert estimate_cost(3, 0.001) == 0.003
+
+
+class TestEstimateEta:
+    def test_seconds_only_below_minute(self):
+        assert estimate_eta(3, 10) == "30s"
+
+    def test_minutes(self):
+        assert estimate_eta(6, 20) == "2m"
+
+    def test_minutes_with_remainder(self):
+        assert estimate_eta(5, 20) == "1m 40s"
+
+    def test_hours_format(self):
+        eta = estimate_eta(200, 20)  # 4000s = 66m
+        assert eta == "1h 6m"
+
+    def test_hours_exact(self):
+        assert estimate_eta(180, 20) == "1h"
+
+    def test_none_when_no_latency(self):
+        assert estimate_eta(10, None) is None
+        assert estimate_eta(10, 0) is None

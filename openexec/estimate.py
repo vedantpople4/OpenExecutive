@@ -5,7 +5,7 @@ runs on) instead of re-hardcoding round layout or team sizes, so this estimate
 can't silently drift out of sync with real behavior.
 """
 
-from typing import Iterable, Tuple
+from typing import Iterable, Optional, Tuple
 
 from openexec.agents import TEAM_STRUCTURE
 from openexec.orchestrator_deliberation import PHASE_ROUNDS
@@ -64,3 +64,33 @@ def estimate_llm_calls(active_agents: Iterable[str], teams: bool) -> Tuple[int, 
 
     base = phase1 + phase2 + phase2_5
     return base + min_deliberation, base + max_deliberation
+
+
+def estimate_cost(calls: int, price_per_call: Optional[float]) -> Optional[float]:
+    """Estimate dollar cost for ``calls`` LLM calls.
+
+    Returns None when no per-call price is configured (local inference, or the
+    user hasn't set ``estimate.price_per_call``).
+    """
+    if price_per_call is None or price_per_call <= 0:
+        return None
+    return round(calls * price_per_call, 4)
+
+
+def estimate_eta(calls: int, seconds_per_call: Optional[float]) -> Optional[str]:
+    """Estimate wall-clock time for ``calls`` LLM calls.
+
+    Returns None when no per-call latency is configured.
+    """
+    if seconds_per_call is None or seconds_per_call <= 0:
+        return None
+    seconds = round(calls * seconds_per_call)
+    if seconds < 60:
+        return f"{seconds}s"
+    minutes = seconds // 60
+    remainder = seconds % 60
+    if minutes < 60:
+        return f"{minutes}m {remainder}s" if remainder else f"{minutes}m"
+    hours = minutes // 60
+    mins = minutes % 60
+    return f"{hours}h {mins}m" if mins else f"{hours}h"

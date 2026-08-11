@@ -96,6 +96,10 @@ def get_default_config() -> Dict[str, Any]:
             "web_search_weight": 0.5,
             "knowledge_base_weight": 0.5,
             "max_context_chars": 3000
+        },
+        "estimate": {
+            "price_per_call": None,
+            "seconds_per_call": 20
         }
     }
 
@@ -367,7 +371,7 @@ def _run_simulation(
         # No settings.json, output dir, or state/orchestrator setup needed --
         # this is pure arithmetic over which agents/modes were requested.
         resolved_agents = parse_active_agents(agents)
-        from openexec.estimate import estimate_llm_calls
+        from openexec.estimate import estimate_llm_calls, estimate_cost, estimate_eta
 
         min_calls, max_calls = estimate_llm_calls(resolved_agents, teams)
         print_section("Dry Run -- No Simulation Executed", f"Decision: {prompt}")
@@ -380,6 +384,27 @@ def _run_simulation(
             "normal early convergence; per-round content-based pruning can "
             "occasionally push the real count even lower, never higher.)"
         )
+
+        # Cost + ETA come from config (estimate block), not hardcoded
+        cfg = get_default_config()
+        if config_override and config_override.exists():
+            with open(config_override) as f:
+                cfg.update(json.load(f))
+        est = cfg.get("estimate", {})
+        price = est.get("price_per_call")
+        secs = est.get("seconds_per_call")
+        if price is not None:
+            lo, hi = estimate_cost(min_calls, price), estimate_cost(max_calls, price)
+            console.print(f"Estimated cost: ${lo:.4f}-${hi:.4f} "
+                          f"(price_per_call=${price})")
+        if secs is not None:
+            lo, hi = estimate_eta(min_calls, secs), estimate_eta(max_calls, secs)
+            console.print(f"Estimated time: {lo}-{hi}")
+        if price is None:
+            console.print(
+                "Note: set 'estimate.price_per_call' in config to see cost. "
+                "seconds_per_call defaults to 20s."
+            )
         if research:
             console.print(
                 "Note: --research adds no extra LLM calls (fetched once per "
