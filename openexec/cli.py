@@ -29,6 +29,7 @@ from openexec.memory import memory_system
 from openexec.feedback import feedback_system
 from openexec.knowledge_base import knowledge_base
 from openexec.compare import load_decision, diff_decisions, list_decisions, describe_decision
+from openexec.report_html import write_html_report
 
 app = typer.Typer(
     name="openexec",
@@ -198,6 +199,11 @@ def run(
         "-e", "--export",
         help="Export action items: json, csv, checklist"
     ),
+    html: bool = typer.Option(
+        False,
+        "--html",
+        help="Also write a standalone board-ready HTML report"
+    ),
     data_dir: str = typer.Option(
         "data",
         "-d", "--data-dir",
@@ -287,6 +293,7 @@ def run(
         output=output,
         summary=summary,
         export=export,
+        html=html,
         data_dir=data_dir,
         assume=assume,
         weight=weight,
@@ -309,6 +316,7 @@ def _run_simulation(
     output: Optional[str] = None,
     summary: Optional[str] = None,
     export: Optional[str] = None,
+    html: bool = False,
     data_dir: str = "data",
     assume: Optional[List[str]] = None,
     weight: Optional[List[str]] = None,
@@ -585,6 +593,12 @@ def _run_simulation(
         # Write report
         write_report(final_results, output)
         console.print(f"-> Report: {output}")
+
+        # Write standalone HTML report
+        if html:
+            html_output = output.replace('.md', '.html')
+            write_html_report(final_results, html_output)
+            console.print(f"-> HTML: {html_output}")
 
         # Extract action items
         action_items = extract_action_items(final_results)
@@ -1296,6 +1310,23 @@ def compare(
         delta = f"{s['delta']:+.2f}" if s["delta"] is not None else "n/a"
         console.print(f"  {s['agent'].upper()}: {old_v} -> {new_v} ({delta})")
     console.print(SEPARATOR)
+
+
+@app.command()
+def render(
+    decision_ref: str = typer.Argument("1", help="Decision reference (path, timestamp, or 1-based index)"),
+    output: Optional[str] = typer.Option(None, "-o", "--output", help="Output HTML file (default: decision_<ref>.html)")
+):
+    """Render a stored decision as a standalone, board-ready HTML page."""
+    try:
+        rec = load_decision(decision_ref)
+    except FileNotFoundError as e:
+        console.print(f"ERROR: {e}")
+        raise typer.Exit(1)
+
+    out_path = output or f"decision_{rec.get('timestamp', decision_ref)}.html"
+    write_html_report(rec.get("results", {}), out_path)
+    console.print(f"-> HTML report: {out_path}")
 
 
 @app.command()
