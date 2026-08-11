@@ -143,3 +143,73 @@ def _agent_score_deltas(old_results: Dict[str, Any], new_results: Dict[str, Any]
             "delta": delta,
         })
     return deltas
+
+
+def list_decisions(limit: int = 10, log_dir: str = "decisions") -> List[Dict[str, Any]]:
+    """Return the ``limit`` most recent decision records (most recent first)."""
+    log = _load_log(Path(log_dir) / "decision_log.json")
+    recent = log[-limit:] if limit else log
+    records = []
+    for entry in reversed(recent):
+        path = Path(log_dir) / Path(entry["file_path"]).name
+        if not path.exists():
+            continue
+        records.append({
+            "timestamp": entry.get("timestamp", ""),
+            "prompt": entry.get("prompt", ""),
+            "file_path": str(path),
+            "record": _load_record(path),
+        })
+    return records
+
+
+def describe_decision(rec: Dict[str, Any], index: int = 1, total: int = 1) -> str:
+    """Render a stored decision record as a human-readable block.
+
+    Shows the verdict, decision point, action items, top risks, and per-agent
+    alignment scores -- the parts a CEO actually re-reads -- not just the prompt.
+    """
+    results: Dict[str, Any] = rec.get("results", {})
+    timestamp = rec.get("timestamp", "")
+    date = f"{timestamp[:4]}-{timestamp[4:6]}-{timestamp[6:8]}" if len(timestamp) >= 8 else timestamp
+
+    lines = []
+    header = f"[{index}/{total}] {date}"
+    if total > 1:
+        lines.append(header)
+    lines.append(f"Prompt: {rec.get('prompt', '')}")
+
+    summary = results.get("executive_summary", "").strip()
+    if summary:
+        lines.append(f"Verdict: {summary}")
+
+    decision_point = results.get("decision_point", "").strip()
+    if decision_point:
+        lines.append(f"Decision point: {decision_point}")
+
+    action_items = rec.get("action_items", [])
+    if action_items:
+        lines.append("Action items:")
+        for item in action_items[:5]:
+            task = item.get("task", "")
+            priority = item.get("priority", "")
+            owner = item.get("owner", "")
+            lines.append(f"  - [{priority}] {task} (Owner: {owner})")
+        if len(action_items) > 5:
+            lines.append(f"  ... and {len(action_items) - 5} more")
+
+    risks = results.get("overall_risk_assessment", [])
+    if risks:
+        lines.append("Top risks:")
+        for risk in risks[:3]:
+            lines.append(f"  - {risk}")
+
+    reports = results.get("agent_reports", {})
+    if reports:
+        parts = []
+        for agent in sorted(reports):
+            score = reports[agent].get("alignment_score")
+            parts.append(f"{agent.upper()}:{score:.2f}" if score is not None else f"{agent.upper()}:n/a")
+        lines.append("Alignment: " + " | ".join(parts))
+
+    return "\n".join(lines)

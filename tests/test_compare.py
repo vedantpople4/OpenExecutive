@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from openexec.compare import diff_decisions, load_decision
+from openexec.compare import describe_decision, diff_decisions, list_decisions, load_decision
 
 
 @pytest.fixture
@@ -151,3 +151,35 @@ class TestDiffDecisions:
         new = load_decision(1, log_dir=str(decision_dir))
         new["prompt"] = "Should we buy or lease?"
         assert diff_decisions(old, new)["same_prompt"] is False
+
+
+class TestListDecisions:
+    def test_most_recent_first(self, decision_dir):
+        decisions = list_decisions(limit=10, log_dir=str(decision_dir))
+        assert len(decisions) == 2
+        assert decisions[0]["timestamp"] == "20260731_100000"
+        assert decisions[1]["timestamp"] == "20260701_100000"
+
+    def test_respects_limit(self, decision_dir):
+        decisions = list_decisions(limit=1, log_dir=str(decision_dir))
+        assert len(decisions) == 1
+        assert decisions[0]["timestamp"] == "20260731_100000"
+
+    def test_empty_log(self, tmp_path):
+        assert list_decisions(log_dir=str(tmp_path)) == []
+
+
+class TestDescribeDecision:
+    def test_renders_verdict_actions_risks(self, decision_dir):
+        rec = load_decision(1, log_dir=str(decision_dir))
+        text = describe_decision(rec)
+        assert "Should we hire more engineers?" in text
+        assert "Hire a lean team now, but cap at three." in text
+        assert "Post three job reqs" in text
+        assert "[CTO] Scaling risk late" in text
+        assert "CEO:0.90" in text and "CFO:0.50" in text
+
+    def test_index_header(self, decision_dir):
+        rec = load_decision(1, log_dir=str(decision_dir))
+        text = describe_decision(rec, index=1, total=2)
+        assert "[1/2] 2026-07-31" in text
