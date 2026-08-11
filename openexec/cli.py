@@ -28,7 +28,7 @@ from openexec.export import (
 from openexec.memory import memory_system
 from openexec.feedback import feedback_system
 from openexec.knowledge_base import knowledge_base
-from openexec.compare import load_decision, diff_decisions
+from openexec.compare import load_decision, diff_decisions, list_decisions, describe_decision
 
 app = typer.Typer(
     name="openexec",
@@ -791,21 +791,21 @@ def history(
         help="Number of entries to show"
     )
 ):
-    """View recent decision history."""
-    conversations = memory_system.get_conversation_history(limit=limit)
+    """View recent decision history with verdicts, actions, and risks."""
+    decisions = list_decisions(limit=limit)
 
-    console.print(f"\nRecent Decisions ({len(conversations)})\n")
+    console.print(f"\nRecent Decisions ({len(decisions)})\n")
 
-    if not conversations:
-        console.print("No decisions in memory yet.")
+    if not decisions:
+        console.print("No decisions stored yet. Run a simulation first.")
         return
 
-    for i, conv in enumerate(conversations, 1):
+    for i, decision in enumerate(decisions, 1):
         console.print(SEPARATOR)
-        console.print(f"[{i}] {conv['timestamp'][:10]}")
-        console.print(conv["prompt"])
+        console.print(describe_decision(decision["record"], index=i, total=len(decisions)))
     console.print(SEPARATOR)
-    console.print(f"\nTotal stored: {len(memory_system.index['conversations'])} decisions")
+    console.print("\nUse 'openexec compare 1 2' to diff two runs, "
+                  "or 'openexec review <ref>' to open one decision.")
 
 
 @app.command()
@@ -818,7 +818,8 @@ def search(
     """
     Search past decisions or knowledge base.
 
-    By default searches memory. Use --kb to search knowledge base instead.
+    By default searches stored decisions (prompt + verdict). Use --kb to search
+    the knowledge base instead.
     """
     if kb:
         # Search knowledge base
@@ -835,18 +836,22 @@ def search(
             console.print(result['chunk'])
         console.print(SEPARATOR)
     else:
-        # Search memory
-        results = memory_system.search_memory(query)
-        console.print(f"\nMemory: {query} ({len(results)} results)\n")
+        # Search stored decisions: match prompt and verdict text.
+        query_lower = query.lower()
+        matches = [
+            d for d in list_decisions(limit=None)
+            if query_lower in d["prompt"].lower()
+            or query_lower in (d["record"].get("results", {}).get("executive_summary", "") or "").lower()
+        ][:limit]
+        console.print(f"\nDecisions: {query} ({len(matches)} results)\n")
 
-        if not results:
+        if not matches:
             console.print("No results found.")
             return
 
-        for conv in results:
+        for i, match in enumerate(matches, 1):
             console.print(SEPARATOR)
-            console.print(conv["timestamp"][:10])
-            console.print(conv["prompt"])
+            console.print(describe_decision(match["record"], index=i, total=len(matches)))
         console.print(SEPARATOR)
 
 
@@ -1297,24 +1302,23 @@ def compare(
 def review(
     decision_id: Optional[str] = typer.Argument(None, help="Decision ID to review")
 ):
-    """Review a previous decision (open in default viewer)."""
-    if decision_id:
-        conv = memory_system.get_conversation(decision_id)
-        if conv:
-            console.print(f"Decision: {conv['timestamp'][:10]}")
-            console.print(f"Prompt: {conv['prompt']}")
+    """Review a previous decision, showing its verdict, actions, and risks."""
+    try:
+        if decision_id:
+            rec = load_decision(decision_id)
         else:
-            console.print(f"Decision not found: {decision_id}")
-    else:
-        # Show most recent
-        history = memory_system.get_conversation_history(limit=1)
-        if history:
-            conv = history[0]
-            console.print(f"Most recent: {conv['timestamp'][:10]}")
-            console.print(f"ID: {conv['id']}")
-            console.print(f"Prompt: {conv['prompt']}")
-        else:
-            console.print("No decisions in memory.")
+            decisions = list_decisions(limit=1)
+            if not decisions:
+                console.print("No decisions stored yet.")
+                return
+            rec = decisions[0]["record"]
+    except FileNotFoundError as e:
+        console.print(f"ERROR: {e}")
+        raise typer.Exit(1)
+
+    console.print(SEPARATOR)
+    console.print(describe_decision(rec))
+    console.print(SEPARATOR)
 
 
 # ==============================
