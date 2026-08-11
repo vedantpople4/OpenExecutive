@@ -52,7 +52,7 @@ This will produce a `board_report.md` with the full board report.
 - **Deliberate Conflict, Not Consensus:** The system is designed to surface disagreements. The final report highlights not just what to do, but what open questions remain.
 - **Context Preservation:** A Scribe agent maintains a running summary of the board's state, feeding it back into the LLM prompt so agents keep track of the argument across all five rounds.
 - **Actionable Output:** Every recommendation leads to a trackable task with a clear owner and deadline.
-- **Repeatable & Reproducible:** Run the same prompt twice and compare how the board's position changes based on new data or assumptions.
+- **Repeatable & Reproducible:** Run the same prompt twice and compare how the board's position changes based on new data or assumptions. `openexec compare` diffs two runs directly — showing what consensus shifted, which action items were added or dropped, and how each executive's data alignment moved.
 
 ## Under the Hood (For Developers)
 
@@ -106,11 +106,16 @@ openexec run "Should we expand to Europe?" --assume market_growth=2%
 # Run with weighted priorities
 openexec run "Build vs buy?" --weight cfo=0.5 --weight cto=0.3
 
+# Compare how the board's position changed between two runs
+openexec compare 1 2              # the two most recent runs
+openexec run "..." --assume growth=5%   # re-run with new assumptions...
+openexec compare 2 1              # ...then diff against the previous result
+
 # Show help
 openexec --help
 ```
 
-See `openexec --help` for the full command reference, including counterfactual analysis, seeding, and batch runs.
+See `openexec --help` for the full command reference, including counterfactual analysis, seeding, and batch runs. `openexec compare` accepts decision file paths, timestamps, or 1-based indices (1 = most recent) and reports consensus/dissent shifts, action-item and risk deltas, and per-agent alignment changes.
 
 ## The Report
 
