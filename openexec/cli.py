@@ -30,6 +30,7 @@ from openexec.feedback import feedback_system
 from openexec.knowledge_base import knowledge_base
 from openexec.compare import load_decision, diff_decisions, list_decisions, describe_decision
 from openexec.report_html import write_html_report
+from openexec.register import build_register
 
 app = typer.Typer(
     name="openexec",
@@ -892,6 +893,48 @@ def search(
             console.print(SEPARATOR)
             console.print(describe_decision(match["record"], index=i, total=len(matches)))
         console.print(SEPARATOR)
+
+
+@app.command()
+def register():
+    """Show a dashboard of all stored decisions: counts, risks, alignment trends."""
+    reg = build_register()
+
+    console.print(SEPARATOR)
+    console.print("DECISION REGISTER")
+    console.print(SEPARATOR)
+
+    if reg["total_decisions"] == 0:
+        console.print("No decisions stored yet. Run a simulation first.")
+        return
+
+    console.print(f"Total decisions: {reg['total_decisions']}")
+    console.print(f"Distinct prompts: {reg['distinct_prompts']}")
+    console.print(f"Total action items: {reg['total_action_items']} "
+                  f"({reg['high_priority_actions']} HIGH priority)")
+    console.print("")
+
+    if reg["top_risks"]:
+        console.print("Top recurring risks:")
+        for risk in reg["top_risks"]:
+            console.print(f"  x{risk['count']}  {risk['text'][:90]}")
+        console.print("")
+
+    if reg["agent_alignment"]:
+        console.print("Agent alignment (mean):")
+        for agent, stats in reg["agent_alignment"].items():
+            console.print(f"  {agent.upper()}: {stats['mean']:.2f} "
+                          f"(n={stats['samples']})")
+        console.print("")
+
+    if reg["per_month"]:
+        console.print("Activity by month:")
+        for month in reg["per_month"]:
+            console.print(f"  {month['month']}: {month['count']} decision(s)")
+        console.print("")
+
+    console.print(f"Most recent: {reg['most_recent']}")
+    console.print(SEPARATOR)
 
 
 # ==============================
