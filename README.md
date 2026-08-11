@@ -53,6 +53,8 @@ This will produce a `board_report.md` with the full board report.
 - **Context Preservation:** A Scribe agent maintains a running summary of the board's state, feeding it back into the LLM prompt so agents keep track of the argument across all five rounds.
 - **Actionable Output:** Every recommendation leads to a trackable task with a clear owner and deadline.
 - **Repeatable & Reproducible:** Run the same prompt twice and compare how the board's position changes based on new data or assumptions. `openexec compare` diffs two runs directly — showing what consensus shifted, which action items were added or dropped, and how each executive's data alignment moved.
+- **Decision Memory, Readable:** `history`, `review`, and `search` surface past decisions with their actual verdicts, action items, and risks — not just the original prompt. `register` gives you a one-screen dashboard of every decision, recurring risks, and executive alignment trends.
+- **Board-Ready Output:** `--html` on `run` (or `openexec render`) produces a self-contained, shareable HTML report — the document you actually take to the board.
 
 ## Under the Hood (For Developers)
 
@@ -111,11 +113,26 @@ openexec compare 1 2              # the two most recent runs
 openexec run "..." --assume growth=5%   # re-run with new assumptions...
 openexec compare 2 1              # ...then diff against the previous result
 
+# Review past decisions with real verdicts, not just prompts
+openexec history                   # recent decisions with verdicts + actions
+openexec review 1                  # open one decision in full
+openexec search "hiring"           # find decisions whose verdict answers a question
+
+# Dashboard across every stored decision
+openexec register
+
+# Board-ready HTML report (self-contained, shareable)
+openexec run "Build vs buy?" --html
+openexec render 1 -o board_report.html
+
+# Estimate calls, cost, and time before you run
+openexec run "..." --dry-run
+
 # Show help
 openexec --help
 ```
 
-See `openexec --help` for the full command reference, including counterfactual analysis, seeding, and batch runs. `openexec compare` accepts decision file paths, timestamps, or 1-based indices (1 = most recent) and reports consensus/dissent shifts, action-item and risk deltas, and per-agent alignment changes.
+See `openexec --help` for the full command reference, including counterfactual analysis, seeding, and batch runs. `openexec compare` accepts decision file paths, timestamps, or 1-based indices (1 = most recent) and reports consensus/dissent shifts, action-item and risk deltas, and per-agent alignment changes. Set `estimate.price_per_call` and `estimate.seconds_per_call` in `~/.openexec/config.json` to see dollar cost and wall-clock estimates in `--dry-run`.
 
 ## The Report
 
