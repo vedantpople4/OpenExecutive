@@ -28,6 +28,7 @@ from openexec.export import (
 from openexec.memory import memory_system
 from openexec.feedback import feedback_system
 from openexec.knowledge_base import knowledge_base
+from openexec.compare import load_decision, diff_decisions
 
 app = typer.Typer(
     name="openexec",
@@ -1209,6 +1210,87 @@ def quick(
         output=f"quick_{Path(prompt).stem[:20] if len(prompt) > 20 else 'decision'}.md",
         **QUICK_PRESETS[preset]
     )
+
+
+@app.command()
+def compare(
+    first: str = typer.Argument(..., help="Decision reference (file path, timestamp, or 1-based index)"),
+    second: str = typer.Argument(..., help="Decision reference (file path, timestamp, or 1-based index)")
+):
+    """
+    Compare two stored decision runs: verdict, consensus/dissent, action items,
+    risks, and per-agent alignment deltas.
+
+    References accept a decision file path, a timestamp like 20260731_175932,
+    or a 1-based index into the decision log (1 = most recent).
+
+    Examples:
+
+        openexec compare 1 2          # two most recent runs
+
+        openexec compare 2 20260701_100000
+    """
+    try:
+        old = load_decision(first)
+        new = load_decision(second)
+    except FileNotFoundError as e:
+        console.print(f"ERROR: {e}")
+        raise typer.Exit(1)
+
+    diff = diff_decisions(old, new)
+
+    console.print(SEPARATOR)
+    console.print("COMPARISON")
+    console.print(SEPARATOR)
+    console.print(f"Prompt: {new.get('prompt', '')}")
+    if diff["same_prompt"]:
+        console.print("NOTE: same prompt re-run (position change vs new data/assumptions)\n")
+    else:
+        console.print("NOTE: different prompts compared\n")
+
+    console.print(f"Old summary: {diff['old_summary'][:200]}")
+    console.print(f"New summary: {diff['new_summary'][:200]}")
+    console.print("")
+
+    if diff["consensus_added"] or diff["consensus_removed"]:
+        console.print("Consensus changes:")
+        for c in diff["consensus_added"]:
+            console.print(f"  + {c}")
+        for c in diff["consensus_removed"]:
+            console.print(f"  - {c}")
+        console.print("")
+
+    if diff["dissent_added"] or diff["dissent_removed"]:
+        console.print("Dissent changes:")
+        for c in diff["dissent_added"]:
+            console.print(f"  + {c}")
+        for c in diff["dissent_removed"]:
+            console.print(f"  - {c}")
+        console.print("")
+
+    if diff["actions_added"] or diff["actions_removed"]:
+        console.print("Action item changes:")
+        for a in diff["actions_added"]:
+            console.print(f"  + {a[:120]}")
+        for a in diff["actions_removed"]:
+            console.print(f"  - {a[:120]}")
+        console.print("")
+
+    if diff["risks_added"] or diff["risks_removed"]:
+        console.print("Risk changes:")
+        for r in diff["risks_added"]:
+            console.print(f"  + {r[:120]}")
+        for r in diff["risks_removed"]:
+            console.print(f"  - {r[:120]}")
+        console.print("")
+
+    console.print("Agent alignment deltas (new - old):")
+    for s in diff["agent_scores"]:
+        old_v = f"{s['old']:.2f}" if s["old"] is not None else "n/a"
+        new_v = f"{s['new']:.2f}" if s["new"] is not None else "n/a"
+        delta = f"{s['delta']:+.2f}" if s["delta"] is not None else "n/a"
+        console.print(f"  {s['agent'].upper()}: {old_v} -> {new_v} ({delta})")
+    console.print(SEPARATOR)
 
 
 @app.command()
