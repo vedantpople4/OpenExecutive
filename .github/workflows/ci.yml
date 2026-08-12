@@ -26,6 +26,23 @@ jobs:
       - name: Lint
         run: ruff check openexec/ src/ tests/
 
+      - name: Secrets scan
+        run: |
+          # Fail if any tracked text file contains a long API key or token.
+          if grep -rInE --binary-files=without-match --exclude-dir=.git \
+              --exclude-dir=node_modules --exclude-dir=__pycache__ \
+              '(api[_-]?key|secret|token)[^=]{0,20}[=:][[:space:]]*["'"'"'][A-Za-z0-9_\-]{20,}' \
+              . ; then
+            echo "Potential secret found (above). Remove it from tracked files."
+            exit 1
+          fi
+          if grep -rInE --binary-files=without-match --exclude-dir=.git \
+              'sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}' . ; then
+            echo "Known secret format found (above). Remove it from tracked files."
+            exit 1
+          fi
+          echo "No secrets detected."
+
       - name: Test
         # test_cli.py exercises the live LLM path; excluded from CI.
         run: pytest tests/ --ignore=tests/test_cli.py -q

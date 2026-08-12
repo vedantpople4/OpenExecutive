@@ -458,8 +458,8 @@ def _run_simulation(
     if not settings_path.exists():
         console.print("ERROR: settings.json not found")
         console.print("\nNext step: Run 'openexec setup' to create configuration.")
-        console.print("Or manually create settings.json with your AI provider settings.")
-        console.print("\nExample settings:")
+        console.print("Or copy the template and edit it:")
+        console.print("  cp settings.example.json settings.json")
         console.print(SEPARATOR)
         console.print('''{
   "ai": {
@@ -767,7 +767,8 @@ def discuss(
         conv = memory_system.get_conversation(history[0]["id"])
 
     if not Path("settings.json").exists():
-        console.print("ERROR: settings.json not found -- run 'openexec setup' first.")
+        console.print("ERROR: settings.json not found")
+        console.print("Run 'openexec setup' or 'cp settings.example.json settings.json' first.")
         raise typer.Exit(1)
 
     print_section(

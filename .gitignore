@@ -58,6 +58,7 @@ videos/*/.hyperframes/
 videos/*/.thumbnails/
 videos/*/snapshots/
 videos/*/node_modules/
+videos/openexec-promo/
 
 
 .gstack/

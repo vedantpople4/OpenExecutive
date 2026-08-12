@@ -201,30 +201,28 @@ class TestCLIConfiguration:
     """Test CLI configuration management."""
 
     def test_settings_json_structure(self, project_root):
-        """Test that settings.json has expected structure."""
-        settings_path = project_root / 'settings.json'
+        """Test that the settings template has expected structure."""
+        example_path = project_root / 'settings.example.json'
+        assert example_path.exists(), "settings.example.json should be committed"
+        with open(example_path) as f:
+            settings = json.load(f)
 
-        if settings_path.exists():
-            with open(settings_path) as f:
-                settings = json.load(f)
+        # Check for expected top-level keys
+        expected_keys = ['ai', 'agents']
 
-            # Check for expected top-level keys
-            expected_keys = ['ai', 'agents', 'output', 'simulation']
-
-            for key in expected_keys:
-                assert key in settings, f"settings.json should have '{key}' key"
+        for key in expected_keys:
+            assert key in settings, f"settings should have '{key}' key"
 
     def test_ai_provider_config_exists(self, project_root):
         """Test that AI provider configuration exists."""
-        settings_path = project_root / 'settings.json'
+        example_path = project_root / 'settings.example.json'
+        assert example_path.exists(), "settings.example.json should be committed"
+        with open(example_path) as f:
+            settings = json.load(f)
 
-        if settings_path.exists():
-            with open(settings_path) as f:
-                settings = json.load(f)
-
-            assert 'ai' in settings
-            assert 'base_url' in settings['ai']
-            assert 'model' in settings['ai']
+        assert 'ai' in settings
+        assert 'base_url' in settings['ai']
+        assert 'model' in settings['ai']
 
 
 class TestDataCorpusLoading:
