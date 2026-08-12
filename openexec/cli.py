@@ -31,6 +31,7 @@ from openexec.knowledge_base import knowledge_base
 from openexec.compare import load_decision, diff_decisions, list_decisions, describe_decision
 from openexec.report_html import write_html_report
 from openexec.register import build_register
+from openexec.demo_fixture import demo_results
 
 app = typer.Typer(
     name="openexec",
@@ -1379,6 +1380,38 @@ def compare(
         delta = f"{s['delta']:+.2f}" if s["delta"] is not None else "n/a"
         console.print(f"  {s['agent'].upper()}: {old_v} -> {new_v} ({delta})")
     console.print(SEPARATOR)
+
+
+@app.command()
+def demo(
+    output: Optional[str] = typer.Option(None, "-o", "--output", help="Output report file"),
+    html_out: bool = typer.Option(True, "--html/--no-html", help="Also write an HTML report")
+):
+    """
+    Run a canned demo simulation with no LLM required.
+
+    Renders a realistic pre-recorded board decision through the exact same
+    report + HTML pipeline as a real run, so investors and new users see the
+    full artifact in seconds without installing or configuring a model.
+    """
+    from openexec.risk_analyzer import quantify_risks
+
+    print_section("Demo Simulation (canned data, no LLM)",
+                  "Decision: Should we build an internal platform or integrate with a partner?")
+
+    results = quantify_risks(demo_results())
+
+    md_path = output or "demo_board_report.md"
+    write_report(results, md_path)
+    console.print(f"-> Report: {md_path}")
+
+    if html_out:
+        html_path = md_path.replace(".md", ".html")
+        write_html_report(results, html_path)
+        console.print(f"-> HTML: {html_path}")
+
+    console.print("\nDemo complete. Try 'openexec run \"Your question\" --html' "
+                  "with your own model to get a real board decision.")
 
 
 @app.command()
