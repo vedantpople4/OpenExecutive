@@ -38,13 +38,17 @@ Thumbs.db
 
 # Local config
 .settings.local.json
+settings.json
+settings.local.json
 
 decisions/
 
 graphify-out/*
 htmlcov/*
 .claude/*
+!.claude/settings.json
 memory/*
+knowledge_base/
 
 # Installed skill packages (npx skills add)
 .agents/
