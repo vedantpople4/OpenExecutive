@@ -3,6 +3,8 @@
 Goal: turn OpenExec into a prototype an investor can *see work in 5 minutes*
 and a real user can adopt in one session — not just a repo with passing tests.
 
+Status: Phases 0-5 shipped (2026-08-10). Open items marked "remaining".
+
 ## Hard evidence (from /health + repo audit)
 
 - Coverage 54% overall. `main.py` (the report renderer, *the deliverable*) 1%,
@@ -100,3 +102,25 @@ and a real user can adopt in one session — not just a repo with passing tests.
 - `--help` narrates every command; README has a 60-second demo path.
 - CSO pass complete, findings fixed or explicitly deferred.
 - Full suite green (incl. mock-provider integration test), ruff clean.
+
+## Status (2026-08-10)
+
+- **Phase 0 shipped** — runtime data, local settings, and promo video untracked;
+  `settings.example.json` added; `.gitignore` covers `settings.json` +
+  `.claude/*`; secrets scan step added to CI; `settings.json not found` UX
+  references the example.
+- **Phase 1 shipped** — 76 new tests across `test_main`, `test_risk_analyzer`,
+  `test_grounding`, `test_export`, `test_event_store`. Coverage: `main.py` 1→77%,
+  `risk_analyzer` 13→97%, `grounding` 23→100%, `export` 29→100%, `event_store`
+  33→97%. CI coverage gate at 70% on the value surface.
+- **Phase 2 shipped** — `openexec demo` renders a canned board decision to
+  markdown + HTML with no LLM; `tests/test_demo.py` guards the fixture against
+  renderer drift.
+- **Phase 3 shipped** — `demo` surfaced first in `--help`; README has a
+  "see it work in 5 seconds" Quick Start block.
+- **Phase 5 shipped** — data-corpus prompt injection guarded (untrusted-data
+  framing + `<document>` wrappers); git-history secrets scan clean; HTML
+  escaping + `render`/`compare` write paths verified.
+- **Remaining** — full mock-provider `run` integration test (CI still excludes
+  `test_cli.py`); `render`/`compare` path resolution stays permissive by design
+  (read-only, user-owned files).
