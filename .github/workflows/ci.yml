@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e . ruff pytest
+          pip install -e . ruff pytest pytest-cov
 
       - name: Lint
         run: ruff check openexec/ src/ tests/
@@ -46,3 +46,11 @@ jobs:
       - name: Test
         # test_cli.py exercises the live LLM path; excluded from CI.
         run: pytest tests/ --ignore=tests/test_cli.py -q
+
+      - name: Coverage gate
+        run: |
+          pytest tests/ --ignore=tests/test_cli.py -q \
+            --cov=openexec.main --cov=openexec.risk_analyzer \
+            --cov=openexec.grounding --cov=openexec.export \
+            --cov=openexec.event_store --cov-report=term-missing \
+            --cov-fail-under=70

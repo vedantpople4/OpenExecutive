@@ -16,7 +16,9 @@ def write_report(results: dict[str, Any], output_path: str) -> None:
     """Write the final report to a markdown file."""
     with open(output_path, 'w') as f:
         f.write("# Executive Board Simulation Report\n\n")
-        f.write(f"## Executive Summary\n\n{results['executive_summary']}\n\n")
+        summary = results.get('executive_summary', '')
+        if summary:
+            f.write(f"## Executive Summary\n\n{summary}\n\n")
 
         if results.get('fallback_warnings'):
             f.write("## ⚠️ Data Integrity Warning\n\n")
