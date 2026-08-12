@@ -121,6 +121,9 @@ Status: Phases 0-5 shipped (2026-08-10). Open items marked "remaining".
 - **Phase 5 shipped** — data-corpus prompt injection guarded (untrusted-data
   framing + `<document>` wrappers); git-history secrets scan clean; HTML
   escaping + `render`/`compare` write paths verified.
-- **Remaining** — full mock-provider `run` integration test (CI still excludes
-  `test_cli.py`); `render`/`compare` path resolution stays permissive by design
-  (read-only, user-owned files).
+- **Remaining** — none. The mock-provider `run` integration suite
+  (`tests/test_run_integration.py`, 9 tests) exercises inception → analysis →
+  deliberation → synthesis → report → events → decision-log headlessly in CI.
+  It also caught and fixed a real bug: `--no-memory` was gating context
+  injection but storage was keyed to `--no-feedback`, so an explicit memory
+  opt-out still wrote conversations.
