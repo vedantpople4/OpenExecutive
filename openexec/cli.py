@@ -1414,7 +1414,9 @@ def demo(
                   "with your own model to get a real board decision.")
 
 
-@app.command()
+# ==============================
+# Setup Command
+# ==============================@app.command()
 def render(
     decision_ref: str = typer.Argument("1", help="Decision reference (path, timestamp, or 1-based index)"),
     output: Optional[str] = typer.Option(None, "-o", "--output", help="Output HTML file (default: decision_<ref>.html)")

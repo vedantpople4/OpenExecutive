@@ -33,6 +33,9 @@ git clone https://github.com/vedantpople4/OpenExecutive.git
 cd OpenExec
 pip install -e .
 
+# See it work in 5 seconds — no model required
+openexec demo                              # writes demo_board_report.md + .html
+
 # Set up your AI provider (Ollama, LM Studio, etc.)
 openexec setup
 
@@ -40,6 +43,8 @@ openexec setup
 openexec run "Should we hire more Software Engineers or build AI agents to work?"
 ```
 
+`openexec demo` runs a canned board decision through the real report + HTML
+pipeline so you (or an investor) see the full artifact before configuring anything.
 This will produce a `board_report.md` with the full board report.
 
 ## Core Features
