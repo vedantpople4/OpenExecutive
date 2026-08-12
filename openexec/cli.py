@@ -609,8 +609,9 @@ def _run_simulation(
         final_results = orchestrator.run()
 
         # Priority 3: Store conversation
+        memory_storage = cfg.get("memory", {}).get("enabled", True) and not no_memory
         feedback_enabled = cfg.get("feedback", {}).get("store_automatically", True) and not no_feedback
-        if feedback_enabled:
+        if memory_storage and feedback_enabled:
             memory_system.store_conversation(prompt, final_results)
             console.print("-> Stored in memory")
 
