@@ -346,8 +346,6 @@ def _run_simulation(
     Calling `run()` itself directly would bind every unspecified parameter to
     its raw typer.Option/ArgumentInfo object instead of a real default.
     """
-    console.print("Starting Simulation...")
-
     # Handle stdin
     if prompt == "-":
         console.print("Reading prompt from stdin...")
@@ -413,6 +411,8 @@ def _run_simulation(
                 "simulation, cached), but does add one-time web-fetch latency."
             )
         raise typer.Exit(0)
+
+    console.print("Starting Simulation...")
 
     # Load configuration
     if config_override:
@@ -1416,8 +1416,9 @@ def demo(
 
 
 # ==============================
-# Setup Command
-# ==============================@app.command()
+# Render Command
+# ==============================
+@app.command()
 def render(
     decision_ref: str = typer.Argument("1", help="Decision reference (path, timestamp, or 1-based index)"),
     output: Optional[str] = typer.Option(None, "-o", "--output", help="Output HTML file (default: decision_<ref>.html)")
