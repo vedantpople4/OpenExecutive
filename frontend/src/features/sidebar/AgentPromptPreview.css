@@ -1,0 +1,25 @@
+.agent-prompt-preview__text {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  color: var(--dim-color, #8a9690);
+  margin: 0.3rem 0;
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.agent-prompt-preview__loading {
+  margin: 0.3rem 0;
+  font-size: 0.75rem;
+  color: var(--dim-color, #8a9690);
+}
+
+.agent-prompt-preview__toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent-color, #34c77b);
+  font-size: 0.7rem;
+  cursor: pointer;
+}

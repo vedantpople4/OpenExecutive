@@ -1,0 +1,44 @@
+.team-roster-item {
+  border: 1px solid var(--border-color, #20302a);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.team-roster-item__header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.team-roster-item__chevron {
+  color: var(--dim-color, #8a9690);
+  transition: transform 0.15s ease;
+  font-size: 0.75rem;
+}
+
+.team-roster-item__chevron--open {
+  transform: rotate(90deg);
+}
+
+.team-roster-item__role {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.team-roster-item__focus {
+  font-size: 0.7rem;
+  color: var(--dim-color, #8a9690);
+  margin-left: auto;
+}
+
+.team-roster-item__body {
+  padding: 0 0.6rem 0.6rem;
+}

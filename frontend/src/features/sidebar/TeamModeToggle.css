@@ -1,0 +1,12 @@
+.team-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.team-mode-toggle--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

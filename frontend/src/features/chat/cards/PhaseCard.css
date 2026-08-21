@@ -1,0 +1,54 @@
+.phase-card {
+  border: 1px solid var(--border-color, #20302a);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.phase-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.phase-card__chevron {
+  transition: transform 0.15s ease;
+  color: var(--dim-color, #8a9690);
+}
+
+.phase-card__chevron--open {
+  transform: rotate(90deg);
+}
+
+.phase-card__title {
+  flex: 1;
+  font-weight: 700;
+}
+
+.phase-card__status {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #20302a);
+  color: var(--dim-color, #8a9690);
+}
+
+.phase-card__status--running {
+  color: var(--accent-color, #34c77b);
+  border-color: var(--accent-color, #34c77b);
+}
+
+.phase-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0 0.9rem 0.9rem;
+}

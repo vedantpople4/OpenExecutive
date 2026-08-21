@@ -1,0 +1,54 @@
+.round-card {
+  border: 1px solid var(--border-color, #20302a);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.round-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.round-card__chevron {
+  transition: transform 0.15s ease;
+  color: var(--dim-color, #8a9690);
+}
+
+.round-card__chevron--open {
+  transform: rotate(90deg);
+}
+
+.round-card__title {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.round-card__status {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #20302a);
+  color: var(--dim-color, #8a9690);
+}
+
+.round-card__status--running {
+  color: var(--accent-color, #34c77b);
+  border-color: var(--accent-color, #34c77b);
+}
+
+.round-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 0.75rem 0.75rem;
+}

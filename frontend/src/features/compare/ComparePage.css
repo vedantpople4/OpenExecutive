@@ -1,0 +1,29 @@
+.compare-page {
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 960px;
+}
+
+.compare-page h1 {
+  margin: 0;
+}
+
+.compare-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.compare-panel {
+  border: 1px solid var(--border-color, #20302a);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--panel-color, #0f1b15);
+}
+
+.compare-panel h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}

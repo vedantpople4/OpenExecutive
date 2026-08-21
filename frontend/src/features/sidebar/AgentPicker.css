@@ -1,0 +1,19 @@
+.agent-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.agent-picker__option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.agent-picker__warning {
+  margin: 0.25rem 0 0;
+  font-size: 0.7rem;
+  color: #ffb454;
+}

@@ -1,0 +1,24 @@
+.summary-diff__note {
+  font-size: 0.8rem;
+  color: #ffb454;
+  margin: 0 0 0.75rem;
+}
+
+.summary-diff__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.summary-diff__columns h4 {
+  margin: 0 0 0.3rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--dim-color, #8a9690);
+}
+
+.summary-diff__prompt {
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}

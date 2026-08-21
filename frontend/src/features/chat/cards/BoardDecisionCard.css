@@ -1,0 +1,91 @@
+.board-decision-card {
+  border: 1px solid var(--accent-color, #34c77b);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--panel-color, #0f1b15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.board-decision-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.board-decision-card__badge {
+  font-weight: 700;
+  color: var(--accent-color, #34c77b);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.board-decision-card__status {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #20302a);
+  color: var(--dim-color, #8a9690);
+}
+
+.board-decision-card__summary {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.board-decision-card__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.board-decision-card h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--dim-color, #8a9690);
+}
+
+.board-decision-card ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+}
+
+.board-decision-card__empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--dim-color, #8a9690);
+}
+
+.board-decision-card__actions {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.board-decision-card__actions li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-color, #0a130f);
+  border-radius: 0.4rem;
+  border: 1px solid var(--border-color, #20302a);
+}
+
+.board-decision-card__action-text {
+  flex: 1;
+}
+
+.board-decision-card__action-owner,
+.board-decision-card__action-timeframe {
+  font-size: 0.75rem;
+  color: var(--dim-color, #8a9690);
+}

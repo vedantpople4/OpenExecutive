@@ -1,0 +1,13 @@
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+
+.message-list__loading {
+  padding: 2rem;
+  color: var(--dim-color, #8a9690);
+}

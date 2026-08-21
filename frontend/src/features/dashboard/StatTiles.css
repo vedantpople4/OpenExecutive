@@ -1,0 +1,26 @@
+.stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.stat-tiles__tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border-color, #20302a);
+  border-radius: 0.75rem;
+  background: var(--panel-color, #0f1b15);
+}
+
+.stat-tiles__value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent-color, #34c77b);
+}
+
+.stat-tiles__label {
+  font-size: 0.75rem;
+  color: var(--dim-color, #8a9690);
+}
