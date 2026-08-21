@@ -1,0 +1,12 @@
+.markdown {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.markdown p:first-child {
+  margin-top: 0;
+}
+
+.markdown p:last-child {
+  margin-bottom: 0;
+}

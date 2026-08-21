@@ -1,0 +1,4 @@
+.branch-indicator {
+  color: var(--accent-color, #34c77b);
+  font-size: 0.75rem;
+}

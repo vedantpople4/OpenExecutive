@@ -1,0 +1,31 @@
+.diff-list h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--dim-color, #8a9690);
+}
+
+.diff-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.diff-list__added {
+  color: var(--accent-color, #34c77b);
+}
+
+.diff-list__removed {
+  color: #ff8c8c;
+}
+
+.diff-list__empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--dim-color, #8a9690);
+}

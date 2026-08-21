@@ -1,0 +1,55 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 1rem;
+  border-right: 1px solid var(--border-color, #2a2a2a);
+  overflow-y: auto;
+  gap: 1rem;
+}
+
+.sidebar__brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.sidebar__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar__section--history {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.sidebar__heading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+  margin: 0;
+}
+
+.sidebar__placeholder {
+  font-size: 0.85rem;
+  opacity: 0.5;
+  margin: 0;
+}
+
+.sidebar__new-chat {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color, #2a2a2a);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sidebar__footer-nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+}

@@ -1,0 +1,40 @@
+.history-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.4rem;
+  text-decoration: none;
+  color: var(--fg-color, #ecefea);
+}
+
+.history-item:hover {
+  background: var(--panel-color, #0f1b15);
+}
+
+.history-item--active {
+  background: var(--panel-color, #0f1b15);
+  border: 1px solid var(--accent-color, #34c77b);
+}
+
+.history-item__prompt {
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--dim-color, #8a9690);
+}
+
+.history-item__risk-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: #ffb454;
+}

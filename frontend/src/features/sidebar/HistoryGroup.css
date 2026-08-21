@@ -1,0 +1,16 @@
+.history-group__label {
+  margin: 0.6rem 0 0.2rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--dim-color, #8a9690);
+}
+
+.history-group__label:first-child {
+  margin-top: 0;
+}
+
+.history-group__items {
+  display: flex;
+  flex-direction: column;
+}

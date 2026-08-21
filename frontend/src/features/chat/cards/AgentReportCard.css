@@ -1,0 +1,63 @@
+.agent-report-card {
+  border: 1px solid var(--border-color, #20302a);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--panel-color, #0f1b15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.agent-report-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.agent-report-card__title {
+  font-weight: 600;
+  flex: 1;
+}
+
+.agent-report-card__parent {
+  font-size: 0.7rem;
+  color: var(--dim-color, #8a9690);
+}
+
+.agent-report-card__fallback-badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: #4a1f1f;
+  color: #ff8c8c;
+  border: 1px solid #6b2b2b;
+}
+
+.agent-report-card__summary {
+  margin: 0;
+  color: var(--fg-color, #ecefea);
+}
+
+.agent-report-card__list-section {
+  margin-bottom: 0.5rem;
+}
+
+.agent-report-card__list-section h4 {
+  margin: 0 0 0.15rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--dim-color, #8a9690);
+}
+
+.agent-report-card__list-section ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+}
+
+.agent-report-card__delta {
+  border-top: 1px dashed var(--border-color, #20302a);
+  padding-top: 0.5rem;
+  margin-top: 0.25rem;
+}

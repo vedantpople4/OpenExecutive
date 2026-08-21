@@ -1,0 +1,48 @@
+.top-risks-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.top-risks-list li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+}
+
+.top-risks-list__bar-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.top-risks-list__bar-fill {
+  height: 100%;
+  background: rgba(255, 180, 84, 0.12);
+}
+
+.top-risks-list__text {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+}
+
+.top-risks-list__count {
+  position: relative;
+  z-index: 1;
+  color: var(--dim-color, #8a9690);
+  padding-right: 0.5rem;
+}
+
+.top-risks-list__empty {
+  color: var(--dim-color, #8a9690);
+  font-size: 0.85rem;
+}

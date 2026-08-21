@@ -1,0 +1,29 @@
+.continuation-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 1.5rem;
+  font-size: 0.75rem;
+  color: var(--dim-color, #8a9690);
+  border-top: 1px solid var(--border-color, #20302a);
+}
+
+.continuation-banner em {
+  color: var(--fg-color, #ecefea);
+  font-style: normal;
+}
+
+.continuation-banner button {
+  background: none;
+  border: none;
+  color: var(--dim-color, #8a9690);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 0.25rem;
+}
+
+.continuation-banner button:hover {
+  color: var(--fg-color, #ecefea);
+}

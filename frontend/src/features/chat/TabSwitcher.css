@@ -1,0 +1,21 @@
+.tab-switcher {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem 1.5rem 0;
+}
+
+.tab-switcher__tab {
+  padding: 0.4rem 0.9rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--dim-color, #8a9690);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.tab-switcher__tab--active {
+  color: var(--fg-color, #ecefea);
+  border-bottom-color: var(--accent-color, #34c77b);
+}

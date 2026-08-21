@@ -1,0 +1,33 @@
+.error-card {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #6b2b2b;
+  background: #2a1414;
+  border-radius: 0.5rem;
+}
+
+.error-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  background: #6b2b2b;
+  color: #ff8c8c;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.error-card__message {
+  margin: 0;
+  color: #ff8c8c;
+}
+
+.error-card__meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  color: var(--dim-color, #8a9690);
+}
