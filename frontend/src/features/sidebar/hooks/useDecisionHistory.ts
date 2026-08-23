@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, keepPreviousData } from '@tanstack/react-query'
 import { getDecisionHistory } from '../../../api/endpoints'
 
 /** q is part of the query key, so a new search term starts a fresh single-page result instead
@@ -11,6 +11,10 @@ export function useDecisionHistory(q: string) {
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     staleTime: 10_000,
+    // Keeps the previous search term's results (and the search box) on screen while a new
+    // debounced term fetches, instead of every keystroke settling into a fresh "pending" query
+    // key and flashing the whole section to the top-level loading placeholder.
+    placeholderData: keepPreviousData,
   })
 
   return {

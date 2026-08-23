@@ -23,6 +23,7 @@ export function HistorySection() {
 
   const { decisions, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useDecisionHistory(debouncedSearch)
+  const isSearching = debouncedSearch.trim() !== ''
 
   const groups = useMemo(() => {
     if (!decisions) return []
@@ -43,12 +44,14 @@ export function HistorySection() {
         </p>
       )}
 
-      {!isLoading && !isError && (!decisions || decisions.length === 0) && <HistoryEmptyState />}
+      {!isLoading && !isError && !isSearching && (!decisions || decisions.length === 0) && (
+        <HistoryEmptyState />
+      )}
 
-      {!isLoading && !isError && decisions && decisions.length > 0 && (
+      {!isLoading && !isError && (isSearching || (decisions && decisions.length > 0)) && (
         <>
           <HistorySearchBox value={search} onChange={setSearch} />
-          {decisions.length === 0 ? (
+          {!decisions || decisions.length === 0 ? (
             <p className="sidebar__placeholder">No matches.</p>
           ) : (
             <div className="history-section__groups">
