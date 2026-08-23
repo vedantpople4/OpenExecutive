@@ -1,5 +1,10 @@
 """boto3 DynamoDB resource factory. Same code targets dynamodb-local (tests,
-local dev) or real AWS (EC2) purely via DYNAMODB_ENDPOINT_URL — see config.py."""
+local dev) or real AWS (EC2) purely via DYNAMODB_ENDPOINT_URL — see config.py.
+
+Note for any future writer of numeric attributes (e.g. alignment_score from
+the deferred LLM-orchestration phase): boto3's DynamoDB resource rejects
+Python floats outright ("Float types are not supported. Use Decimal types
+instead.") — use decimal.Decimal for anything written to an N attribute."""
 
 import boto3
 
