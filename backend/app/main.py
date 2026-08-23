@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import agents, compare, dashboard, decisions, health
+from app.routers import agents, compare, dashboard, decisions, events, health
 
 app = FastAPI(title="OpenExec API")
 
@@ -19,3 +19,4 @@ app.include_router(agents.router)
 app.include_router(decisions.router)
 app.include_router(compare.router)
 app.include_router(dashboard.router)
+app.include_router(events.router)
