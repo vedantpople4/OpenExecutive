@@ -45,3 +45,11 @@ def get_decision(run_id: str) -> DecisionDetail:
     if item is None:
         raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")
     return DecisionDetail(**repo.to_detail(item))
+
+
+@router.post("/decisions/{run_id}/stop")
+def stop_decision(run_id: str) -> dict[str, str]:
+    status = repo.stop_decision(run_id)
+    if status is None:
+        raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")
+    return {"status": status}

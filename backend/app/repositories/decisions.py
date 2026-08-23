@@ -61,6 +61,28 @@ def get_decision(run_id: str) -> dict[str, Any] | None:
     return response.get("Item")
 
 
+_TERMINAL_STATUSES = {"completed", "stopped", "error"}
+
+
+def stop_decision(run_id: str) -> str | None:
+    """Returns the resulting status, or None if the decision doesn't exist.
+    No-op if already terminal — a finished run is never overwritten back to
+    'stopped'."""
+    item = get_decision(run_id)
+    if item is None:
+        return None
+    if item.get("status") in _TERMINAL_STATUSES:
+        return item["status"]
+
+    _table().update_item(
+        Key={"id": run_id},
+        UpdateExpression="SET #status = :stopped, updated_at = :now",
+        ExpressionAttributeNames={"#status": "status"},
+        ExpressionAttributeValues={":stopped": "stopped", ":now": _now_iso()},
+    )
+    return "stopped"
+
+
 def has_children(run_id: str) -> bool:
     response = _table().query(
         IndexName="gsi_parent",
