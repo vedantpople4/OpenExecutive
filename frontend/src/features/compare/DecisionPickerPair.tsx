@@ -10,7 +10,7 @@ interface DecisionPickerPairProps {
 
 export function DecisionPickerPair({ initialOldId, initialNewId }: DecisionPickerPairProps) {
   const navigate = useNavigate()
-  const { data: decisions, isLoading } = useDecisionHistory()
+  const { decisions, isLoading } = useDecisionHistory('')
   const [oldId, setOldId] = useState(initialOldId ?? '')
   const [newId, setNewId] = useState(initialNewId ?? '')
 

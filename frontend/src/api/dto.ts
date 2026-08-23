@@ -2,7 +2,7 @@
  * Request/response DTOs and client-side transport contracts shared between the mock and real
  * implementations of endpoints.ts, so both stay structurally forced to agree on the same shape.
  */
-import type { CXOName } from './types'
+import type { CXOName, DecisionSummary } from './types'
 
 export interface SubmitPromptRequest {
   prompt: string
@@ -17,6 +17,17 @@ export interface SubmitPromptResponse {
 
 export interface StopDecisionResponse {
   status: string
+}
+
+export interface GetDecisionHistoryParams {
+  q?: string
+  cursor?: string
+  limit?: number
+}
+
+export interface DecisionHistoryPage {
+  items: DecisionSummary[]
+  nextCursor: string | null
 }
 
 type MessageListener = (event: { data: string }) => void

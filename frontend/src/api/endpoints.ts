@@ -20,4 +20,9 @@ export const submitPrompt = impl.submitPrompt
 export const stopDecision = impl.stopDecision
 export const openDeliberationStream = impl.openDeliberationStream
 
-export type { SubmitPromptRequest, SubmitPromptResponse } from './dto'
+export type {
+  SubmitPromptRequest,
+  SubmitPromptResponse,
+  GetDecisionHistoryParams,
+  DecisionHistoryPage,
+} from './dto'

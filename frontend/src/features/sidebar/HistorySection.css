@@ -1,0 +1,21 @@
+.history-section__groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.history-section__load-more {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color, #2a2a2a);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.8rem;
+  align-self: flex-start;
+}
+
+.history-section__load-more:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

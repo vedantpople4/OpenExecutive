@@ -1,12 +1,14 @@
-import type { Agent, DecisionDetail, DecisionSummary, TeamStructure } from './types'
-import type { SubmitPromptRequest, SubmitPromptResponse, StopDecisionResponse, DeliberationStreamHandle } from './dto'
+import type { Agent, DecisionDetail, TeamStructure } from './types'
+import type {
+  SubmitPromptRequest,
+  SubmitPromptResponse,
+  StopDecisionResponse,
+  GetDecisionHistoryParams,
+  DecisionHistoryPage,
+  DeliberationStreamHandle,
+} from './dto'
 import { API_BASE_URL } from './client'
 import type { CompareResult, RegisterSummary } from './types'
-
-interface DecisionListResponse {
-  items: DecisionSummary[]
-  nextCursor: string | null
-}
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -32,14 +34,13 @@ export async function getAgentSystemPrompt(agentName: string): Promise<string> {
   return prompt
 }
 
-/**
- * Only returns the first page — the real backend is cursor-paginated (Section 3.2 of the plan;
- * no cheap COUNT on DynamoDB), unlike the mock's flat list. Wiring up "load more" in the sidebar
- * is separate follow-up work, not part of this swap.
- */
-export async function getDecisionHistory(): Promise<DecisionSummary[]> {
-  const { items } = await apiFetch<DecisionListResponse>('/decisions')
-  return items
+export function getDecisionHistory(params: GetDecisionHistoryParams = {}): Promise<DecisionHistoryPage> {
+  const search = new URLSearchParams()
+  if (params.q) search.set('q', params.q)
+  if (params.cursor) search.set('cursor', params.cursor)
+  if (params.limit !== undefined) search.set('limit', String(params.limit))
+  const qs = search.toString()
+  return apiFetch<DecisionHistoryPage>(`/decisions${qs ? `?${qs}` : ''}`)
 }
 
 export function getDecisionDetail(runId: string): Promise<DecisionDetail> {

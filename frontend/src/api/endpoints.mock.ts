@@ -1,5 +1,12 @@
-import type { Agent, DecisionDetail, DecisionSummary, TeamStructure } from './types'
-import type { SubmitPromptRequest, SubmitPromptResponse, StopDecisionResponse, DeliberationStreamHandle } from './dto'
+import type { Agent, DecisionDetail, TeamStructure } from './types'
+import type {
+  SubmitPromptRequest,
+  SubmitPromptResponse,
+  StopDecisionResponse,
+  GetDecisionHistoryParams,
+  DecisionHistoryPage,
+  DeliberationStreamHandle,
+} from './dto'
 import { mockDelay } from './client'
 import { mockAgents, mockTeamStructure, getAgentSystemPrompt as mockGetAgentSystemPrompt } from './mock/agents'
 import { mockDecisionDetails, mockDecisionHistory } from './mock/decisions'
@@ -21,8 +28,20 @@ export function getAgentSystemPrompt(agentName: string): Promise<string> {
   return mockDelay(mockGetAgentSystemPrompt(agentName))
 }
 
-export function getDecisionHistory(): Promise<DecisionSummary[]> {
-  return mockDelay(mockDecisionHistory)
+/** Simulates real cursor pagination over the fixture list, so "load more" is exercisable
+ * against mocks — filters by q, then slices by a plain numeric-offset cursor (only round-tripped
+ * by the frontend, unlike the backend's opaque base64 DynamoDB key, so no need to mimic that). */
+export function getDecisionHistory(params: GetDecisionHistoryParams = {}): Promise<DecisionHistoryPage> {
+  const { q, cursor, limit = 20 } = params
+  let items = mockDecisionHistory
+  if (q) {
+    const needle = q.toLowerCase()
+    items = items.filter((d) => d.prompt.toLowerCase().includes(needle))
+  }
+  const start = cursor ? Number(cursor) : 0
+  const page = items.slice(start, start + limit)
+  const nextCursor = start + limit < items.length ? String(start + limit) : null
+  return mockDelay({ items: page, nextCursor })
 }
 
 export function getDecisionDetail(runId: string): Promise<DecisionDetail> {
