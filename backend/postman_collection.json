@@ -1,0 +1,79 @@
+{
+  "info": {
+    "name": "OpenExec API",
+    "description": "The 10 Phase-1 endpoints from the approved backend plan (.claude/plans/curious-orbiting-shore.md). Import into Postman, Insomnia, or Bruno. Set {{baseUrl}} to a running backend (default http://localhost:8000).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000" },
+    { "key": "runId", "value": "" },
+    { "key": "childRunId", "value": "" }
+  ],
+  "item": [
+    { "name": "Health", "request": { "method": "GET", "url": "{{baseUrl}}/health" } },
+    { "name": "List agents", "request": { "method": "GET", "url": "{{baseUrl}}/agents" } },
+    { "name": "Get team structure", "request": { "method": "GET", "url": "{{baseUrl}}/teams" } },
+    { "name": "Get agent system prompt", "request": { "method": "GET", "url": "{{baseUrl}}/agents/ceo/prompt" } },
+    {
+      "name": "Submit decision",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('runId', body.runId);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/decisions",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"Should we open an office in Berlin?\",\n  \"agents\": [\"ceo\", \"cfo\", \"cto\", \"cmo\"],\n  \"teamModeEnabled\": false\n}"
+        }
+      }
+    },
+    {
+      "name": "Submit follow-up decision (parentRunId)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('childRunId', body.runId);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/decisions",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"Given Berlin, should we also open in Amsterdam?\",\n  \"agents\": [\"ceo\", \"cfo\"],\n  \"teamModeEnabled\": false,\n  \"parentRunId\": \"{{runId}}\"\n}"
+        }
+      }
+    },
+    { "name": "List decisions", "request": { "method": "GET", "url": "{{baseUrl}}/decisions?limit=20" } },
+    { "name": "List decisions (search)", "request": { "method": "GET", "url": "{{baseUrl}}/decisions?q=berlin" } },
+    { "name": "Get decision detail", "request": { "method": "GET", "url": "{{baseUrl}}/decisions/{{runId}}" } },
+    {
+      "name": "Stream decision events (SSE)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/decisions/{{runId}}/events",
+        "header": [{ "key": "Accept", "value": "text/event-stream" }]
+      }
+    },
+    { "name": "Stop decision", "request": { "method": "POST", "url": "{{baseUrl}}/decisions/{{runId}}/stop" } },
+    { "name": "Compare two decisions", "request": { "method": "GET", "url": "{{baseUrl}}/compare?old={{runId}}&new={{childRunId}}" } },
+    { "name": "Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard" } },
+    { "name": "Get decision (404 case)", "request": { "method": "GET", "url": "{{baseUrl}}/decisions/does-not-exist" } }
+  ]
+}
