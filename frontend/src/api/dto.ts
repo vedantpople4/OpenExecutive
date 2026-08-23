@@ -15,6 +15,10 @@ export interface SubmitPromptResponse {
   runId: string
 }
 
+export interface StopDecisionResponse {
+  status: string
+}
+
 type MessageListener = (event: { data: string }) => void
 type ErrorListener = (event: { message: string }) => void
 

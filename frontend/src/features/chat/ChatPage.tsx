@@ -8,7 +8,7 @@ import { useChatTab } from './hooks/useChatTab'
 import { projectEventsToCards } from './projectEventsToCards'
 import { projectDecisionDetailToCards } from './projectDecisionDetailToCards'
 import { useRunStore } from '../../stores/useRunStore'
-import { submitPrompt } from '../../api/endpoints'
+import { submitPrompt, stopDecision } from '../../api/endpoints'
 import type { BoardDecisionCardData } from './chat.types'
 import './ChatPage.css'
 
@@ -109,6 +109,9 @@ export function ChatPage() {
 
   function handleStop() {
     activeRun?.abortController.abort()
+    // Best-effort: tell the server to stop too. Never blocks or reverts the local abort above,
+    // which already gives instant feedback regardless of network latency/failure.
+    if (activeRun) void stopDecision(activeRun.runId).catch(() => {})
   }
 
   function handleContinueDecision(sourceRunId: string, sourcePrompt: string) {

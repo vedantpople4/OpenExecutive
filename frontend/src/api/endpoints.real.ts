@@ -1,5 +1,5 @@
 import type { Agent, DecisionDetail, DecisionSummary, TeamStructure } from './types'
-import type { SubmitPromptRequest, SubmitPromptResponse, DeliberationStreamHandle } from './dto'
+import type { SubmitPromptRequest, SubmitPromptResponse, StopDecisionResponse, DeliberationStreamHandle } from './dto'
 import { API_BASE_URL } from './client'
 import type { CompareResult, RegisterSummary } from './types'
 
@@ -59,6 +59,12 @@ export function submitPrompt(request: SubmitPromptRequest): Promise<SubmitPrompt
   return apiFetch<SubmitPromptResponse>('/decisions', {
     method: 'POST',
     body: JSON.stringify(request),
+  })
+}
+
+export function stopDecision(runId: string): Promise<StopDecisionResponse> {
+  return apiFetch<StopDecisionResponse>(`/decisions/${encodeURIComponent(runId)}/stop`, {
+    method: 'POST',
   })
 }
 

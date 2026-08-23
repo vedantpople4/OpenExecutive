@@ -17,6 +17,7 @@ export const getDecisionDetail = impl.getDecisionDetail
 export const getCompare = impl.getCompare
 export const getRegisterDashboard = impl.getRegisterDashboard
 export const submitPrompt = impl.submitPrompt
+export const stopDecision = impl.stopDecision
 export const openDeliberationStream = impl.openDeliberationStream
 
 export type { SubmitPromptRequest, SubmitPromptResponse } from './dto'

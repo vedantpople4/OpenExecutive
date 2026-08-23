@@ -1,5 +1,5 @@
 import type { Agent, DecisionDetail, DecisionSummary, TeamStructure } from './types'
-import type { SubmitPromptRequest, SubmitPromptResponse, DeliberationStreamHandle } from './dto'
+import type { SubmitPromptRequest, SubmitPromptResponse, StopDecisionResponse, DeliberationStreamHandle } from './dto'
 import { mockDelay } from './client'
 import { mockAgents, mockTeamStructure, getAgentSystemPrompt as mockGetAgentSystemPrompt } from './mock/agents'
 import { mockDecisionDetails, mockDecisionHistory } from './mock/decisions'
@@ -43,6 +43,12 @@ export function submitPrompt(request: SubmitPromptRequest): Promise<SubmitPrompt
   const runId = `run-${Date.now()}`
   registerRun(runId, request)
   return mockDelay({ runId }, 200)
+}
+
+/** No real run-status machine to mutate in the mock — the abort is already fully handled
+ * client-side by the deliberation stream, so this just satisfies the shared contract. */
+export function stopDecision(_runId: string): Promise<StopDecisionResponse> {
+  return mockDelay({ status: 'stopped' })
 }
 
 /**
