@@ -119,6 +119,23 @@ def list_decisions(
     return items, next_cursor
 
 
+def scan_all_decisions() -> list[dict[str, Any]]:
+    """Full table Scan — used only by GET /dashboard (Section 3.7): a rare
+    endpoint, small item count at this app's scale, well within the
+    always-free 25 RCU allowance. Paginates internally since Scan caps each
+    response at ~1MB."""
+    table = _table()
+    items: list[dict[str, Any]] = []
+    kwargs: dict[str, Any] = {}
+    while True:
+        response = table.scan(**kwargs)
+        items.extend(response.get("Items", []))
+        if "LastEvaluatedKey" not in response:
+            break
+        kwargs["ExclusiveStartKey"] = response["LastEvaluatedKey"]
+    return items
+
+
 def to_summary(item: dict[str, Any], has_children_flag: bool) -> dict[str, Any]:
     return {
         "runId": item["id"],
