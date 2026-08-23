@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
 from app.models.decisions import (
     DecisionDetail,
@@ -8,12 +8,15 @@ from app.models.decisions import (
     SubmitDecisionResponse,
 )
 from app.repositories import decisions as repo
+from app.services import orchestration
 
 router = APIRouter()
 
 
 @router.post("/decisions", response_model=SubmitDecisionResponse, status_code=202)
-def submit_decision(request: SubmitDecisionRequest) -> SubmitDecisionResponse:
+def submit_decision(
+    request: SubmitDecisionRequest, background_tasks: BackgroundTasks
+) -> SubmitDecisionResponse:
     if request.parent_run_id is not None and repo.get_decision(request.parent_run_id) is None:
         raise HTTPException(status_code=404, detail=f"parentRunId not found: {request.parent_run_id}")
 
@@ -22,6 +25,13 @@ def submit_decision(request: SubmitDecisionRequest) -> SubmitDecisionResponse:
         agents=request.agents,
         team_mode_enabled=request.team_mode_enabled,
         parent_run_id=request.parent_run_id,
+    )
+    background_tasks.add_task(
+        orchestration.run_deliberation,
+        run_id,
+        request.prompt,
+        request.agents,
+        request.team_mode_enabled,
     )
     return SubmitDecisionResponse(run_id=run_id)
 
