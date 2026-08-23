@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import agents, health
+from app.routers import agents, decisions, health
 
 app = FastAPI(title="OpenExec API")
 
@@ -16,3 +16,4 @@ app.add_middleware(
 
 app.include_router(health.router)
 app.include_router(agents.router)
+app.include_router(decisions.router)
