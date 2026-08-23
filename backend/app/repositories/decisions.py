@@ -8,10 +8,12 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
+from decimal import Decimal
+
 from boto3.dynamodb.conditions import Key
 
 from app.config import get_settings
-from app.db import get_dynamodb_resource
+from app.db import floats_to_decimal, get_dynamodb_resource
 
 
 def _table():
@@ -81,6 +83,72 @@ def stop_decision(run_id: str) -> str | None:
         ExpressionAttributeValues={":stopped": "stopped", ":now": _now_iso()},
     )
     return "stopped"
+
+
+def _update_item(run_id: str, updates: dict[str, Any]) -> None:
+    names = {f"#{k}": k for k in updates}
+    values = {f":{k}": v for k, v in updates.items()}
+    expr = "SET " + ", ".join(f"#{k} = :{k}" for k in updates)
+    _table().update_item(
+        Key={"id": run_id},
+        UpdateExpression=expr,
+        ExpressionAttributeNames=names,
+        ExpressionAttributeValues=values,
+    )
+
+
+def complete_decision(
+    run_id: str,
+    final_results: dict[str, Any],
+    action_items: list[dict[str, Any]],
+) -> None:
+    """Populate the result fields from a finished orchestration run and mark
+    the decision completed. No-op if the decision is already terminal (e.g.
+    a stop request beat the background run to it) — a finished/stopped run
+    is never overwritten back to 'completed'."""
+    item = get_decision(run_id)
+    if item is None or item.get("status") in _TERMINAL_STATUSES:
+        return
+
+    agent_reports = final_results.get("agent_reports", {})
+    overall_risk_assessment = final_results.get("overall_risk_assessment", [])
+    agent_alignment = {
+        name: Decimal(str(report.get("alignment_score", 0.5)))
+        for name, report in agent_reports.items()
+    }
+
+    _update_item(
+        run_id,
+        {
+            "status": "completed",
+            "updated_at": _now_iso(),
+            "agent_reports": floats_to_decimal(agent_reports),
+            "deliberation_rounds": floats_to_decimal(final_results.get("deliberation_rounds", {})),
+            "board_decision": floats_to_decimal(final_results.get("board_decision") or {}),
+            "action_items": floats_to_decimal(action_items),
+            "overall_risk_assessment": overall_risk_assessment,
+            "synthesized_recommendations": final_results.get("synthesized_recommendations", []),
+            "fallback_warnings": final_results.get("fallback_warnings", []),
+            "executive_summary": final_results.get("executive_summary", ""),
+            "decision_point": final_results.get("decision_point"),
+            "top_risks": overall_risk_assessment[:3],
+            "agent_alignment": agent_alignment,
+            "action_item_count": len(action_items),
+        },
+    )
+
+
+def fail_decision(run_id: str, error_message: str) -> None:
+    """No-op if the decision is already terminal — same reasoning as
+    complete_decision above."""
+    item = get_decision(run_id)
+    if item is None or item.get("status") in _TERMINAL_STATUSES:
+        return
+
+    _update_item(
+        run_id,
+        {"status": "error", "error_message": error_message, "updated_at": _now_iso()},
+    )
 
 
 def has_children(run_id: str) -> bool:
