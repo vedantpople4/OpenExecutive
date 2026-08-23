@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from app.repositories import events as events_repo
 from app.routers.events import event_stream
-from app.services import event_bus
+from app.services import event_bus, orchestration
 from tests.test_decisions import _submit
 
 
@@ -21,7 +21,11 @@ def test_events_stream_404_for_unknown_decision(client):
     assert response.status_code == 404
 
 
-def test_events_stream_replays_stored_events_for_finished_decision(client):
+def test_events_stream_replays_stored_events_for_finished_decision(client, monkeypatch):
+    # Without this, the real orchestrator would run to completion during
+    # _submit() (TestClient runs BackgroundTasks synchronously) and its own
+    # emitted events would pollute this test's hand-appended fixture events.
+    monkeypatch.setattr(orchestration, "run_deliberation", lambda *args, **kwargs: None)
     run_id = _submit(client, "Should we launch in APAC?").json()["runId"]
     client.post(f"/decisions/{run_id}/stop")  # -> terminal status, no live tail
 

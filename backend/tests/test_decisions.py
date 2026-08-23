@@ -1,3 +1,6 @@
+from app.services import orchestration
+
+
 def _submit(client, prompt, agents=None, team_mode_enabled=False, parent_run_id=None):
     body = {"prompt": prompt, "agents": agents or ["ceo"], "teamModeEnabled": team_mode_enabled}
     if parent_run_id is not None:
@@ -5,7 +8,14 @@ def _submit(client, prompt, agents=None, team_mode_enabled=False, parent_run_id=
     return client.post("/decisions", json=body)
 
 
-def test_submit_and_get_decision_roundtrip(client):
+def test_submit_and_get_decision_roundtrip(client, monkeypatch):
+    # TestClient runs BackgroundTasks synchronously to completion before
+    # client.post() returns, so without this the real orchestrator would run
+    # (and finish, since these tests have no settings.json) before the
+    # assertions below even execute. This test's job is create+read wiring,
+    # not orchestration -- see test_orchestration.py for that.
+    monkeypatch.setattr(orchestration, "run_deliberation", lambda *args, **kwargs: None)
+
     response = _submit(client, "Should we launch in APAC?", agents=["ceo", "cfo"])
     assert response.status_code == 202
     run_id = response.json()["runId"]

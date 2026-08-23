@@ -1,7 +1,12 @@
+from app.services import orchestration
 from tests.test_decisions import _submit
 
 
-def test_stop_running_decision(client):
+def test_stop_running_decision(client, monkeypatch):
+    # See test_decisions.py's roundtrip test for why: TestClient runs the
+    # background task to completion before .post() returns, so without this
+    # the decision would already be terminal by the time /stop is called.
+    monkeypatch.setattr(orchestration, "run_deliberation", lambda *args, **kwargs: None)
     run_id = _submit(client, "Should we launch in APAC?").json()["runId"]
 
     response = client.post(f"/decisions/{run_id}/stop")
@@ -9,7 +14,8 @@ def test_stop_running_decision(client):
     assert response.json() == {"status": "stopped"}
 
 
-def test_stop_is_idempotent_once_stopped(client):
+def test_stop_is_idempotent_once_stopped(client, monkeypatch):
+    monkeypatch.setattr(orchestration, "run_deliberation", lambda *args, **kwargs: None)
     run_id = _submit(client, "Should we launch in APAC?").json()["runId"]
 
     client.post(f"/decisions/{run_id}/stop")
