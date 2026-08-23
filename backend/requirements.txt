@@ -1,0 +1,11 @@
+# OpenExec backend API (FastAPI on EC2, per plan at
+# .claude/plans/curious-orbiting-shore.md)
+
+fastapi>=0.115
+uvicorn[standard]>=0.32
+boto3>=1.35
+
+# Test-only (also used by the frontend's request in this session for
+# incremental verification)
+pytest>=7.4.0
+httpx>=0.27.0
