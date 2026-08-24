@@ -13,7 +13,7 @@ import threading
 import time
 from decimal import Decimal
 
-from openexec.events import InceptionCompleted
+from openexec.events import InceptionCompleted, SynthesisCompleted
 
 from app.repositories import decisions as repo
 from app.repositories import events as events_repo
@@ -27,7 +27,10 @@ def _fake_final_results(**overrides):
         "executive_summary": "Yes, proceed.",
         "decision_point": "Should we proceed?",
         "agent_reports": {"ceo": {"title": "CEO view", "alignment_score": 0.7}},
-        "deliberation_rounds": {},
+        # Integer round-number keys, exactly as openexec produces them
+        # (SimulationState.deliberation_outputs is Dict[int, ...]) -- DynamoDB
+        # map keys must be strings, so this shape is load-bearing here.
+        "deliberation_rounds": {1: {"ceo": {"title": "R1", "alignment_score": 0.6}}},
         "board_decision": {"summary": "Go for it"},
         "overall_risk_assessment": ["Risk A", "Risk B", "Risk C", "Risk D"],
         "synthesized_recommendations": ["Do X"],
@@ -53,6 +56,10 @@ def test_complete_decision_populates_result_fields(client):
     assert item["top_risks"] == ["Risk A", "Risk B", "Risk C"]
     assert item["agent_alignment"] == {"ceo": Decimal("0.7")}
     assert item["agent_reports"]["ceo"]["alignment_score"] == Decimal("0.7")
+    # Round keys stringified for DynamoDB (see app/db.py) -- a live run
+    # failed on exactly this before to_dynamodb_safe handled map keys.
+    assert list(item["deliberation_rounds"].keys()) == ["1"]
+    assert item["deliberation_rounds"]["1"]["ceo"]["alignment_score"] == Decimal("0.6")
 
 
 def test_complete_decision_is_noop_once_terminal(client):
@@ -99,6 +106,24 @@ def test_backend_event_sink_persists_nested_payload_shape(client):
     assert stored[0]["type"] == "inception_completed"
     assert stored[0]["payload"] == {"ceo_report": {"title": "t"}}
     assert stored[0]["aggregate_id"] == "run-sink-test"
+
+
+def test_backend_event_sink_stringifies_int_map_keys_in_payload(client):
+    """SynthesisCompleted carries the whole final_report, whose
+    deliberation_rounds is keyed by int -- boto3 rejects non-string map keys,
+    which killed a real run at the synthesis step before this was handled."""
+    event = SynthesisCompleted(
+        event_id="e3",
+        aggregate_id="run-intkey-test",
+        final_report={"deliberation_rounds": {1: {"ceo": {"alignment_score": 0.6}}}},
+    )
+
+    BackendEventSink("run-intkey-test", loop=None).append(event)
+
+    stored = events_repo.list_events("run-intkey-test")
+    rounds = stored[0]["payload"]["final_report"]["deliberation_rounds"]
+    assert list(rounds.keys()) == ["1"]
+    assert rounds["1"]["ceo"]["alignment_score"] == Decimal("0.6")
 
 
 def test_backend_event_sink_publishes_flattened_live_event(client):

@@ -13,7 +13,7 @@ from decimal import Decimal
 from boto3.dynamodb.conditions import Key
 
 from app.config import get_settings
-from app.db import floats_to_decimal, get_dynamodb_resource
+from app.db import to_dynamodb_safe, get_dynamodb_resource
 
 
 def _table():
@@ -122,10 +122,10 @@ def complete_decision(
         {
             "status": "completed",
             "updated_at": _now_iso(),
-            "agent_reports": floats_to_decimal(agent_reports),
-            "deliberation_rounds": floats_to_decimal(final_results.get("deliberation_rounds", {})),
-            "board_decision": floats_to_decimal(final_results.get("board_decision") or {}),
-            "action_items": floats_to_decimal(action_items),
+            "agent_reports": to_dynamodb_safe(agent_reports),
+            "deliberation_rounds": to_dynamodb_safe(final_results.get("deliberation_rounds", {})),
+            "board_decision": to_dynamodb_safe(final_results.get("board_decision") or {}),
+            "action_items": to_dynamodb_safe(action_items),
             "overall_risk_assessment": overall_risk_assessment,
             "synthesized_recommendations": final_results.get("synthesized_recommendations", []),
             "fallback_warnings": final_results.get("fallback_warnings", []),
