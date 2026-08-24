@@ -21,7 +21,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e . ruff pytest pytest-cov
+          # ruff is pinned deliberately: an unpinned linter means a release on
+          # PyPI can break CI with no code change behind it (ruff 0.16 widening
+          # its default rules did exactly that). Bump this on purpose, not by
+          # surprise.
+          pip install -e . 'ruff==0.15.11' pytest pytest-cov
 
       - name: Lint
         run: ruff check openexec/ src/ tests/
