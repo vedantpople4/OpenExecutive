@@ -1,0 +1,17 @@
+# Explicit lint rule set.
+#
+# This repo previously had no ruff config, so CI inherited ruff's built-in
+# defaults. Ruff 0.16 widened those defaults (adding isort, flake8-simplify,
+# flake8-datetimez, and ruff-specific rules), and CI installs ruff unpinned --
+# so an unrelated dependency release turned a green pipeline into 454 errors
+# with no code change behind it.
+#
+# Selecting the rules explicitly makes the lint contract version-independent:
+# upgrading ruff can no longer silently change what CI enforces. These are the
+# pre-0.16 defaults, i.e. exactly what this codebase was already passing.
+#
+# Adopting the wider rule set is a reasonable future call, but it's a ~454-error
+# cleanup and belongs in its own dedicated change, not smuggled in via a
+# toolchain upgrade.
+[lint]
+select = ["E4", "E7", "E9", "F"]

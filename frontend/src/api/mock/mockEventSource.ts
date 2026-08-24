@@ -1,8 +1,10 @@
 import type { CXOName } from '../types'
+import type { DeliberationStreamHandle } from '../dto'
 import { buildMockTimeline } from './timeline'
 
+export type { DeliberationStreamHandle } from '../dto'
+
 type MessageListener = (event: { data: string }) => void
-type ErrorListener = (event: { message: string }) => void
 
 /**
  * Mimics the subset of the browser EventSource interface that useDeliberationStream needs
@@ -10,15 +12,9 @@ type ErrorListener = (event: { message: string }) => void
  * a timer instead of opening a real connection. Paced like the CLI's own `demo` narration
  * (~0.15-0.25s between lines) so the mocked stream feels like watching a real run.
  *
- * Swapping to a real backend later means replacing this module's construction site in
- * api/endpoints.ts with `new EventSource(url)` — the hook and every component above it are
- * unaffected because they only depend on this same addEventListener/close shape.
+ * The real implementation (api/endpoints.real.ts) wraps an actual `EventSource`, which already
+ * satisfies this same shape structurally — see dto.ts.
  */
-export interface DeliberationStreamHandle {
-  addEventListener(type: 'message', listener: MessageListener): void
-  addEventListener(type: 'error', listener: ErrorListener): void
-  close(): void
-}
 
 const MIN_DELAY_MS = 150
 const MAX_DELAY_MS = 250

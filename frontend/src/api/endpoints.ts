@@ -1,67 +1,28 @@
-import type { Agent, CXOName, DecisionDetail, DecisionSummary, TeamStructure } from './types'
-import { mockDelay } from './client'
-import { mockAgents, mockTeamStructure, getAgentSystemPrompt as mockGetAgentSystemPrompt } from './mock/agents'
-import { mockDecisionDetails, mockDecisionHistory } from './mock/decisions'
-import { mockCompareResult } from './mock/compare'
-import { mockRegisterSummary } from './mock/dashboard'
-import { createMockDeliberationStream, type DeliberationStreamHandle } from './mock/mockEventSource'
-import { getRunConfig, registerRun } from './mock/runsRegistry'
-import type { CompareResult, RegisterSummary } from './types'
-
-export function getAgents(): Promise<Agent[]> {
-  return mockDelay(mockAgents)
-}
-
-export function getTeamStructure(): Promise<TeamStructure> {
-  return mockDelay(mockTeamStructure)
-}
-
-export function getAgentSystemPrompt(agentName: string): Promise<string> {
-  return mockDelay(mockGetAgentSystemPrompt(agentName))
-}
-
-export function getDecisionHistory(): Promise<DecisionSummary[]> {
-  return mockDelay(mockDecisionHistory)
-}
-
-export function getDecisionDetail(runId: string): Promise<DecisionDetail> {
-  const detail = mockDecisionDetails[runId]
-  if (!detail) return Promise.reject(new Error(`No decision found for runId "${runId}"`))
-  return mockDelay(detail)
-}
-
-export function getCompare(_oldId: string, _newId: string): Promise<CompareResult> {
-  return mockDelay(mockCompareResult)
-}
-
-export function getRegisterDashboard(): Promise<RegisterSummary> {
-  return mockDelay(mockRegisterSummary, 400)
-}
-
-export interface SubmitPromptRequest {
-  prompt: string
-  agents: CXOName[]
-  teamModeEnabled: boolean
-  parentRunId?: string
-}
-
-export interface SubmitPromptResponse {
-  runId: string
-}
-
-export function submitPrompt(request: SubmitPromptRequest): Promise<SubmitPromptResponse> {
-  const runId = `run-${Date.now()}`
-  registerRun(runId, request)
-  return mockDelay({ runId }, 200)
-}
-
 /**
- * Opens the (mocked) streaming connection for a run started via submitPrompt. Only takes a
- * runId — mirrors a real backend, which already knows the run's prompt/agents from when it was
- * created and wouldn't need them passed again to open its stream.
+ * Single entry point every feature hook imports from. Dispatches to endpoints.mock.ts or
+ * endpoints.real.ts based on USE_MOCK_API (client.ts) — both implementations export the exact
+ * same function signatures, so nothing above this file needs to know or care which one is live.
  */
-export function openDeliberationStream(runId: string): DeliberationStreamHandle {
-  const config = getRunConfig(runId)
-  if (!config) throw new Error(`No run config found for runId "${runId}"`)
-  return createMockDeliberationStream(runId, config.prompt, config.agents, config.parentRunId)
-}
+import { USE_MOCK_API } from './client'
+import * as mockImpl from './endpoints.mock'
+import * as realImpl from './endpoints.real'
+
+const impl = USE_MOCK_API ? mockImpl : realImpl
+
+export const getAgents = impl.getAgents
+export const getTeamStructure = impl.getTeamStructure
+export const getAgentSystemPrompt = impl.getAgentSystemPrompt
+export const getDecisionHistory = impl.getDecisionHistory
+export const getDecisionDetail = impl.getDecisionDetail
+export const getCompare = impl.getCompare
+export const getRegisterDashboard = impl.getRegisterDashboard
+export const submitPrompt = impl.submitPrompt
+export const stopDecision = impl.stopDecision
+export const openDeliberationStream = impl.openDeliberationStream
+
+export type {
+  SubmitPromptRequest,
+  SubmitPromptResponse,
+  GetDecisionHistoryParams,
+  DecisionHistoryPage,
+} from './dto'
