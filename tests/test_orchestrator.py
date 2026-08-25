@@ -1,8 +1,10 @@
 """Tests for openexec/orchestrator.py — SimulationState and Orchestrator."""
 
+import threading
+
 import pytest
 from unittest.mock import Mock, patch
-from openexec.orchestrator import SimulationState
+from openexec.orchestrator import Orchestrator, SimulationState
 
 
 class TestSimulationState:
@@ -132,3 +134,118 @@ class TestOrchestrator:
         assert hasattr(orchestrator, 'run_deliberation')
         # We can't test the actual method without a full setup, but we can check it exists
         assert callable(getattr(orchestrator, 'run_deliberation', None))
+
+class TestCancellation:
+    """Cooperative cancellation (openexec.cancellation). The engine must stop
+    between units of work, keep whatever it already produced, and stay
+    completely inert for callers that never attach an event -- i.e. the CLI."""
+
+    def _state(self, cancel_event=None):
+        state = SimulationState(core_prompt="Should we expand?", decision_point="Expand?")
+        state.active_agents = ["ceo", "cfo", "cto", "cmo"]
+        if cancel_event is not None:
+            state.cancel_event = cancel_event
+        return state
+
+    def _registry(self, calls):
+        def make_agent(name):
+            agent = Mock()
+            agent.analyze.side_effect = lambda state, n=name: calls.append(n) or Mock(
+                title="t", summary="s", key_findings=[], recommendations=[], risks=[],
+                alignment_score=0.8, get_role_specific_fields=lambda: {},
+            )
+            return agent
+
+        registry = Mock()
+        registry.list_names.return_value = ["ceo", "cfo", "cto", "cmo"]
+        registry.get.side_effect = make_agent
+        return registry
+
+    def test_analysis_does_no_work_when_cancelled_upfront(self):
+        calls = []
+        event = threading.Event()
+        event.set()
+        orch = Orchestrator(self._registry(calls))
+        orch.initialize(self._state(event))
+
+        orch.run_analysis()
+
+        assert calls == []
+
+    def test_analysis_stops_after_the_agent_that_triggers_cancellation(self):
+        calls = []
+        event = threading.Event()
+        registry = Mock()
+        registry.list_names.return_value = ["ceo", "cfo", "cto", "cmo"]
+
+        def make_agent(name):
+            agent = Mock()
+
+            def analyze(state, n=name):
+                calls.append(n)
+                event.set()  # user hits stop during the first real agent
+                return Mock(
+                    title="t", summary="s", key_findings=[], recommendations=[], risks=[],
+                    alignment_score=0.8, get_role_specific_fields=lambda: {},
+                )
+
+            agent.analyze.side_effect = analyze
+            return agent
+
+        registry.get.side_effect = make_agent
+        orch = Orchestrator(registry)
+        orch.initialize(self._state(event))
+
+        orch.run_analysis()
+
+        # One agent ran; the rest were skipped rather than the whole phase lost.
+        assert len(calls) == 1
+
+    def test_run_skips_deliberation_but_still_synthesizes(self):
+        event = threading.Event()
+        event.set()
+        orch = Orchestrator(self._registry([]))
+        orch.initialize(self._state(event))
+        orch.state.agent_outputs = {"cfo": Mock()}
+
+        with patch.object(orch, 'run_inception'), \
+             patch.object(orch, 'run_analysis'), \
+             patch.object(orch, 'run_deliberation') as deliberation, \
+             patch.object(orch, 'run_synthesis', return_value={"ok": True}) as synthesis:
+            result = orch.run()
+
+        deliberation.assert_not_called()
+        synthesis.assert_called_once()
+        assert result == {"ok": True}
+
+    def test_run_returns_empty_when_cancelled_before_any_report(self):
+        """run_synthesis raises on empty agent_outputs; that must not surface
+        as a bogus failure for a run the user deliberately stopped."""
+        event = threading.Event()
+        event.set()
+        orch = Orchestrator(self._registry([]))
+        orch.initialize(self._state(event))
+
+        with patch.object(orch, 'run_inception'), \
+             patch.object(orch, 'run_analysis'), \
+             patch.object(orch, 'run_synthesis') as synthesis:
+            result = orch.run()
+
+        assert result == {}
+        synthesis.assert_not_called()
+
+    def test_state_without_cancel_event_runs_every_phase(self):
+        """CLI regression guard: no attached event means no behavior change."""
+        orch = Orchestrator(self._registry([]))
+        orch.initialize(self._state())
+        orch.teams_enabled = True
+
+        with patch.object(orch, 'run_inception') as inception, \
+             patch.object(orch, 'run_analysis') as analysis, \
+             patch.object(orch, 'run_team_deliberation') as teams, \
+             patch.object(orch, 'run_deliberation') as deliberation, \
+             patch.object(orch, 'run_synthesis', return_value={}):
+            orch.run()
+
+        for phase in (inception, analysis, teams, deliberation):
+            phase.assert_called_once()

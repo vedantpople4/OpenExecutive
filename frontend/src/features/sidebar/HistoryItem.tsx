@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { BranchIndicator } from './BranchIndicator'
+import { RunStatusBadge } from './RunStatusBadge'
 import { formatRelativeTime } from '../../lib/formatRelativeTime'
 import type { DecisionSummary } from '../../api/types'
 import './HistoryItem.css'
@@ -30,6 +31,7 @@ export function HistoryItem({ decision, isActive }: HistoryItemProps) {
             title="Has flagged risks"
           />
         )}
+        <RunStatusBadge status={decision.status} />
         {decision.hasChildren && <BranchIndicator />}
       </span>
     </Link>

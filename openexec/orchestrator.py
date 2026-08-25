@@ -1,4 +1,5 @@
 from openexec.agents.interface import AgentReport
+from openexec.cancellation import is_cancelled
 from openexec.event_store import EventStore
 from openexec.grounding import check_report_grounding
 from openexec.events import (
@@ -39,6 +40,9 @@ class SimulationState:
         "knowledge_base_weight": 0.5,
         "max_context_chars": 3000,
     })  # Research mix: live web search vs. knowledge base, see openexec.research
+    # Optional threading.Event attached by a caller that wants to stop the run
+    # (see openexec.cancellation). Never set or read by openexec itself.
+    cancel_event: Any = None
 
 
 class Orchestrator:
@@ -144,6 +148,10 @@ class Orchestrator:
         reports: Dict[str, Any] = {}
 
         for name in agent_names:
+            # break, not return, so the partial reports below still get stored
+            # and AnalysisCompleted still fires.
+            if is_cancelled(self.state):
+                break
             if name == "ceo":
                 continue
             print(f"Delegating analysis to {name}...")
@@ -438,6 +446,8 @@ class Orchestrator:
         print("\n--- Phase 2.5: TEAM DELIBERATION ---")
 
         for cxo_name, team_members in TEAM_STRUCTURE.items():
+            if is_cancelled(self.state):
+                break
             # Skip if CXO is not active
             if self.state.active_agents and cxo_name not in self.state.active_agents:
                 continue
@@ -447,6 +457,8 @@ class Orchestrator:
 
             # 1. Sub-agent Analysis
             for member_name in team_members:
+                if is_cancelled(self.state):
+                    break
                 print(f"  -> {member_name} analyzing...")
                 member = self.registry.get(member_name)
                 if member:
@@ -455,7 +467,10 @@ class Orchestrator:
                     # Store as team_member output for audit/reporting
                     self.state.agent_outputs[f"team_{member_name}"] = report
 
-            # 2. CXO Synthesis
+            # 2. CXO Synthesis -- checked separately so a cancel during the
+            # member loop above doesn't still buy one more synthesis call.
+            if is_cancelled(self.state):
+                break
             cxo_agent = self.registry.get(cxo_name)
             if cxo_agent:
                 print(f"  -> {cxo_name.upper()} synthesizing team position...")
@@ -495,9 +510,14 @@ class Orchestrator:
         try:
             self.run_inception()
             self.run_analysis()
-            if getattr(self, 'teams_enabled', False):
+            if getattr(self, 'teams_enabled', False) and not is_cancelled(self.state):
                 self.run_team_deliberation()
-            self.run_deliberation()
+            if not is_cancelled(self.state):
+                self.run_deliberation()
+            if is_cancelled(self.state) and not self.state.agent_outputs:
+                # Cancelled before any agent reported: run_synthesis would raise
+                # on empty agent_outputs, which would surface as a bogus failure.
+                return {}
             final_results = self.run_synthesis()
 
             print("\n===========================================")

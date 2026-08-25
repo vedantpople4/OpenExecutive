@@ -73,6 +73,41 @@ def test_complete_decision_is_noop_once_terminal(client):
     assert item.get("executive_summary") is None
 
 
+def test_save_partial_decision_keeps_stopped_status(client):
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+    repo.stop_decision(run_id)
+
+    repo.save_partial_decision(run_id, _fake_final_results(), [{"description": "do it"}])
+
+    item = repo.get_decision(run_id)
+    # The label survives, but the work the user paid for is kept.
+    assert item["status"] == "stopped"
+    assert item["executive_summary"] == "Yes, proceed."
+    assert item["agent_reports"]["ceo"]["alignment_score"] == Decimal("0.7")
+
+
+def test_save_partial_decision_on_running_row_leaves_status(client):
+    """Covers the race where the worker finishes before /stop's status write."""
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+
+    repo.save_partial_decision(run_id, _fake_final_results(), [])
+
+    item = repo.get_decision(run_id)
+    assert item["status"] == "running"
+    assert item["executive_summary"] == "Yes, proceed."
+
+
+def test_save_partial_decision_never_clobbers_a_finished_run(client):
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+    repo.complete_decision(run_id, _fake_final_results(executive_summary="Real result"), [])
+
+    repo.save_partial_decision(run_id, _fake_final_results(executive_summary="Stale partial"), [])
+
+    item = repo.get_decision(run_id)
+    assert item["status"] == "completed"
+    assert item["executive_summary"] == "Real result"
+
+
 def test_fail_decision_sets_error_status(client):
     run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
 
@@ -210,6 +245,67 @@ def test_run_deliberation_serializes_concurrent_runs(client, monkeypatch):
 
 
 # -- stop-race safety, end to end via HTTP --------------------------------
+
+
+def test_request_cancel_returns_false_for_unknown_run(client):
+    assert orchestration.request_cancel("run-not-running") is False
+
+
+def test_cancel_registry_is_cleaned_up_after_success_and_failure(client, monkeypatch):
+    monkeypatch.setattr(orchestration, "extract_action_items", lambda results: [])
+
+    run_ok = repo.create_decision("ok", ["ceo"], False, None)
+    monkeypatch.setattr(orchestration.Orchestrator, "run", lambda self: _fake_final_results())
+    orchestration.run_deliberation(run_ok, "ok", ["ceo"], False)
+
+    def boom(self):
+        raise RuntimeError("provider timeout")
+
+    run_bad = repo.create_decision("bad", ["ceo"], False, None)
+    monkeypatch.setattr(orchestration.Orchestrator, "run", boom)
+    orchestration.run_deliberation(run_bad, "bad", ["ceo"], False)
+
+    assert orchestration._cancel_events == {}
+
+
+def test_run_cancelled_while_queued_never_starts(client, monkeypatch):
+    """A run waiting behind the process-wide lock must be cancellable before
+    it burns a single LLM call."""
+    run_id = repo.create_decision("Queued", ["ceo"], False, None)
+    started = []
+    monkeypatch.setattr(
+        orchestration.Orchestrator, "run", lambda self: started.append(1) or _fake_final_results()
+    )
+
+    with orchestration._run_lock:
+        worker = threading.Thread(
+            target=orchestration.run_deliberation, args=(run_id, "Queued", ["ceo"], False)
+        )
+        worker.start()
+        time.sleep(0.1)  # let it register and block on the lock
+        assert orchestration.request_cancel(run_id) is True
+
+    worker.join(timeout=2)
+    assert started == []
+
+
+def test_cancelled_mid_run_saves_partial_results(client, monkeypatch):
+    run_id = repo.create_decision("Mid-run", ["ceo"], False, None)
+
+    def cancel_then_return(self):
+        # Stands in for the user hitting /stop while the engine is working.
+        orchestration.request_cancel(run_id)
+        return _fake_final_results()
+
+    monkeypatch.setattr(orchestration.Orchestrator, "run", cancel_then_return)
+    monkeypatch.setattr(orchestration, "extract_action_items", lambda results: [])
+
+    orchestration.run_deliberation(run_id, "Mid-run", ["ceo"], False)
+
+    item = repo.get_decision(run_id)
+    # Not flipped to 'completed', but the work is preserved.
+    assert item["status"] == "running"
+    assert item["executive_summary"] == "Yes, proceed."
 
 
 def test_stop_then_late_completion_does_not_resurrect_status(client, monkeypatch):

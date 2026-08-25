@@ -1,0 +1,13 @@
+.run-status-badge {
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.run-status-badge--error {
+  color: var(--danger-color, #e5534b);
+  font-weight: 700;
+}
+
+.run-status-badge--stopped {
+  color: var(--muted-color, #8b949e);
+}

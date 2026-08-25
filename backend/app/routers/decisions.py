@@ -59,6 +59,12 @@ def get_decision(run_id: str) -> DecisionDetail:
 
 @router.post("/decisions/{run_id}/stop")
 def stop_decision(run_id: str) -> dict[str, str]:
+    # Ordering is load-bearing: signal the worker BEFORE flipping status. The
+    # worker picks save_partial_decision vs complete_decision by reading this
+    # event, so if the status write landed first and the worker still saw an
+    # unset event, it would call complete_decision -- whose terminal guard
+    # silently drops the partial results this whole path exists to preserve.
+    orchestration.request_cancel(run_id)
     status = repo.stop_decision(run_id)
     if status is None:
         raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")

@@ -154,10 +154,15 @@ export type DeliberationEvent =
   | SynthesisCompletedEvent
   | ErrorOccurredEvent
 
+/** Server-side lifecycle of a run. A 'stopped' run may still carry partial
+ * results, so completeness must never be inferred from field presence. */
+export type RunOutcome = 'running' | 'completed' | 'stopped' | 'error'
+
 export interface DecisionSummary {
   runId: string
   timestamp: string // ISO 8601
   prompt: string
+  status?: RunOutcome
   decisionPoint?: string
   executiveSummary?: string
   actionItemCount: number
@@ -188,6 +193,8 @@ export interface DecisionDetail {
   overall_risk_assessment: string[]
   synthesized_recommendations: string[]
   fallback_warnings: string[]
+  status?: RunOutcome
+  error_message?: string | null
 }
 
 export interface AgentScoreDelta {

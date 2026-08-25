@@ -48,8 +48,11 @@ export interface ErrorCardData {
   kind: 'error'
   id: string
   message: string
-  phase: string
+  /** Absent on replay: a persisted run records no phase, only that it failed or stopped. */
+  phase?: string
   agentName?: string
+  /** 'stopped' reads as informational (the user did this) rather than as a failure. */
+  variant?: 'error' | 'stopped'
 }
 
 export type TranscriptCard = PhaseCardData | BoardDecisionCardData | ErrorCardData

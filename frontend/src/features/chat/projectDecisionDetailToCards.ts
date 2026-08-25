@@ -59,13 +59,38 @@ export function projectDecisionDetailToCards(detail: DecisionDetail): Transcript
     })
   }
 
-  cards.push({
-    kind: 'board_decision',
-    id: `${detail.runId}-board-decision`,
-    boardDecision: detail.board_decision,
-    sourceRunId: detail.runId,
-    sourcePrompt: detail.prompt,
-  })
+  // A failed or stopped run has no board decision to show. Keying the fallback
+  // off the decision's presence (not status alone) means rows persisted before
+  // status was exposed still render correctly.
+  const hasBoardDecision =
+    detail.board_decision != null && Object.keys(detail.board_decision).length > 0
+
+  if (detail.status === 'error') {
+    cards.push({
+      kind: 'error',
+      id: `${detail.runId}-error`,
+      variant: 'error',
+      message: detail.error_message ?? 'This deliberation failed before reaching a decision.',
+    })
+  } else if (!hasBoardDecision) {
+    cards.push({
+      kind: 'error',
+      id: `${detail.runId}-incomplete`,
+      variant: 'stopped',
+      message:
+        detail.status === 'stopped'
+          ? 'This deliberation was stopped before the board reached a decision. The discussion above is what completed.'
+          : 'No board decision was recorded for this run.',
+    })
+  } else {
+    cards.push({
+      kind: 'board_decision',
+      id: `${detail.runId}-board-decision`,
+      boardDecision: detail.board_decision,
+      sourceRunId: detail.runId,
+      sourcePrompt: detail.prompt,
+    })
+  }
 
   return cards
 }

@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING, Any, Dict
 
 from openexec.agents.interface import AgentReport
+from openexec.cancellation import is_cancelled
 
 if TYPE_CHECKING:
     from openexec.ai.client import AIClient
@@ -64,6 +65,10 @@ class DeliberationOrchestrator:
         min_convergence_round = 2 if len([a for a in active if a != "ceo"]) <= 1 else 3
 
         while round_num <= max_rounds and not converged:
+            # Exiting here leaves round_num <= max_rounds, so the forced CEO
+            # synthesis below is skipped -- a cancelled board reached no verdict.
+            if is_cancelled(self.state):
+                break
             print(f"\n[bold]Progress: Round {round_num}/{max_rounds}[/bold]")
 
             if round_num == 1:
@@ -81,7 +86,7 @@ class DeliberationOrchestrator:
                 break
             else:
                 had_participants = self._run_delegation_round(round_num)
-                if had_participants:
+                if had_participants and not is_cancelled(self.state):
                     self._update_board_summary(round_num)
 
             self.state.deliberation_round = round_num
@@ -183,6 +188,8 @@ class DeliberationOrchestrator:
         round_outputs: Dict[str, AgentReport] = {}
 
         for agent_name in agents_to_invite:
+            if is_cancelled(self.state):
+                break
             print(f"  -> {agent_name.upper()} speaking...")
             try:
                 report = self._call_agent(agent_name, round_num)

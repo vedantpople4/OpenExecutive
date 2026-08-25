@@ -26,6 +26,9 @@ export function useDeliberationStream(runId: string | null): void {
       const parsed = JSON.parse(event.data) as DeliberationEvent
       appendEvent(parsed)
       if (parsed.type === 'synthesis_completed') setRunStatus('complete')
+      // Terminal too: without this the run sits at 'streaming' forever, so the
+      // stop button and streaming indicator persist on a run that already died.
+      if (parsed.type === 'error_occurred') setRunStatus('error')
     }
 
     function handleError() {
