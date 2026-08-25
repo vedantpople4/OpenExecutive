@@ -158,6 +158,14 @@ class Orchestrator:
             print(f"Delegating analysis to {name}...")
             agent = self.registry.get(name)
             if agent:
+                # No round_number: this fires during the analysis phase, so the
+                # frontend attaches it to the phase card. The report below then
+                # clears the indicator for this agent.
+                self._emit_event(AgentSpeaking(
+                    event_id=str(uuid.uuid4()),
+                    aggregate_id=self.state.simulation_id,
+                    agent_name=name
+                ))
                 report = agent.analyze(self.state)
                 reports[name] = report
 
