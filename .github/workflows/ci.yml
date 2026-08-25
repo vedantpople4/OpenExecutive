@@ -28,7 +28,7 @@ jobs:
           pip install -e . 'ruff==0.15.11' pytest pytest-cov
 
       - name: Lint
-        run: ruff check openexec/ src/ tests/
+        run: ruff check openexec/ src/ tests/ backend/
 
       - name: Secrets scan
         run: |
