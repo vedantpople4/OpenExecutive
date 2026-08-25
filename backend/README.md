@@ -52,9 +52,13 @@ at Ollama, LM Studio, or any OpenAI-compatible endpoint.
 
 ### 3. Start the server
 
-> **Launch from the repo root, not `backend/`.** `openexec`'s `AIClient`
+> **Launch from the repo root, or set `OPENEXEC_SETTINGS_PATH`.** `AIClient`
 > resolves `settings.json` relative to the process working directory, so
-> starting from `backend/` silently leaves every agent in fallback mode.
+> starting from `backend/` without that variable silently leaves every agent
+> in fallback mode. On a server, set an absolute path plus
+> `OPENEXEC_REQUIRE_SETTINGS=1` so a misconfiguration fails at boot instead of
+> producing a full deliberation of stub reports. `GET /health` reports the
+> resolved path and whether the file was found.
 
 ```bash
 cd /path/to/OpenExec          # repo root
