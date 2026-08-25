@@ -26,6 +26,9 @@ jobs:
           # its default rules did exactly that). Bump this on purpose, not by
           # surprise.
           pip install -e . 'ruff==0.15.11' pytest pytest-cov
+          # Additive: the only overlap with the root requirements is an
+          # identical pytest pin.
+          pip install -r backend/requirements.txt
 
       - name: Lint
         run: ruff check openexec/ src/ tests/ backend/
@@ -46,6 +49,12 @@ jobs:
             exit 1
           fi
           echo "No secrets detected."
+
+      - name: Backend tests
+        # backend/pytest.ini sets `pythonpath = . ..`, which only resolves
+        # `app` and `openexec` when pytest runs from backend/.
+        working-directory: backend
+        run: pytest -q
 
       - name: Test
         # test_cli.py exercises the live LLM path; excluded from CI.
