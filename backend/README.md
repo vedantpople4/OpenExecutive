@@ -105,3 +105,24 @@ marked `status="error"` with an `error_message`.
 - Anything written to DynamoDB must go through `app/db.py`'s
   `to_dynamodb_safe()` — boto3 rejects both Python floats and non-string map
   keys, and orchestration output contains both.
+
+### Stopping a run
+
+`POST /decisions/{id}/stop` is **cooperative, not immediate**. The engine makes
+blocking `requests` calls with no interrupt handle, so a stop is only noticed
+*between* LLM calls:
+
+| Case | Latency |
+|---|---|
+| Typical | 10–60s |
+| One provider timeout | up to ~120s |
+| Endpoint hanging through both retries, two calls in flight | ~12 min |
+
+The UI does not wait for any of this — the stop button aborts the local stream
+immediately, so the run stops looking live right away regardless.
+
+A stopped run keeps `status="stopped"` **and** whatever partial results it had
+produced. So **never infer completeness from field presence**: a decision can
+carry agent reports and deliberation rounds while having no board decision at
+all. The frontend keys off the board decision's presence for exactly this
+reason (`projectDecisionDetailToCards.ts`).
