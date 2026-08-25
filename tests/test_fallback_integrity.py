@@ -29,9 +29,25 @@ def _state():
     return s
 
 
+def _agent_with_stub_client():
+    """A _Dummy that always has an AI client to patch.
+
+    AgentTemplate.__init__ swallows a missing settings.json and leaves
+    `ai_client` unset, so these tests would otherwise only pass on a machine
+    that happens to have a local LLM configured — and never in CI, where
+    settings.json is gitignored. Stubbing the client keeps the test about
+    fallback behavior rather than about config discovery.
+    """
+    agent = _Dummy()
+    agent.ai_client = Mock()
+    agent.system_prompt = "test system prompt"
+    agent.use_ai = True
+    return agent
+
+
 class TestFallbackReporting:
     def test_failed_analysis_produces_fallback(self):
-        agent = _Dummy()
+        agent = _agent_with_stub_client()
         with patch.object(agent.ai_client, "complete_json_with_retry",
                           side_effect=RuntimeError("LLM down")):
             report = agent.analyze(_state())
@@ -39,7 +55,7 @@ class TestFallbackReporting:
         assert report.alignment_score == 0.5
 
     def test_successful_analysis_not_fallback(self):
-        agent = _Dummy()
+        agent = _agent_with_stub_client()
         with patch.object(agent.ai_client, "complete_json_with_retry",
                           return_value={"title": "T", "summary": "S"}):
             report = agent.analyze(_state())
