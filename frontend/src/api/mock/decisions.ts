@@ -233,10 +233,24 @@ export const secondaryDecisionDetail: DecisionDetail = {
   fallback_warnings: [],
 }
 
+/** A run that died mid-deliberation, so mock mode exercises the failure paths
+ * (replay error card, sidebar status badge) without needing a real backend. */
+export const failedDecisionDetail: DecisionDetail = {
+  ...secondaryDecisionDetail,
+  runId: 'run-20260812-141500',
+  timestamp: '2026-08-12T14:15:00.000Z',
+  prompt: 'Should we migrate the billing system to a third-party provider?',
+  status: 'error',
+  error_message: 'LLM provider unreachable after 3 attempts (connection refused).',
+  board_decision: {} as DecisionDetail['board_decision'],
+  action_items: [],
+}
+
 export const mockDecisionDetails: Record<string, DecisionDetail> = {
   [primaryDecisionDetail.runId]: primaryDecisionDetail,
   [followUpDecisionDetail.runId]: followUpDecisionDetail,
   [secondaryDecisionDetail.runId]: secondaryDecisionDetail,
+  [failedDecisionDetail.runId]: failedDecisionDetail,
 }
 
 function toSummary(detail: DecisionDetail): DecisionSummary {
@@ -254,10 +268,12 @@ function toSummary(detail: DecisionDetail): DecisionSummary {
     ),
     parentRunId: detail.parentRunId,
     hasChildren,
+    status: detail.status,
   }
 }
 
 export const mockDecisionHistory: DecisionSummary[] = [
+  failedDecisionDetail,
   followUpDecisionDetail,
   secondaryDecisionDetail,
   primaryDecisionDetail,
