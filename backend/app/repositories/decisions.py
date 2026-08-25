@@ -97,6 +97,34 @@ def _update_item(run_id: str, updates: dict[str, Any]) -> None:
     )
 
 
+def _result_fields(
+    final_results: dict[str, Any],
+    action_items: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """The result payload shared by a completed and a cancelled run. Excludes
+    status deliberately — the caller owns that."""
+    agent_reports = final_results.get("agent_reports", {})
+    overall_risk_assessment = final_results.get("overall_risk_assessment", [])
+    return {
+        "updated_at": _now_iso(),
+        "agent_reports": to_dynamodb_safe(agent_reports),
+        "deliberation_rounds": to_dynamodb_safe(final_results.get("deliberation_rounds", {})),
+        "board_decision": to_dynamodb_safe(final_results.get("board_decision") or {}),
+        "action_items": to_dynamodb_safe(action_items),
+        "overall_risk_assessment": overall_risk_assessment,
+        "synthesized_recommendations": final_results.get("synthesized_recommendations", []),
+        "fallback_warnings": final_results.get("fallback_warnings", []),
+        "executive_summary": final_results.get("executive_summary", ""),
+        "decision_point": final_results.get("decision_point"),
+        "top_risks": overall_risk_assessment[:3],
+        "agent_alignment": {
+            name: Decimal(str(report.get("alignment_score", 0.5)))
+            for name, report in agent_reports.items()
+        },
+        "action_item_count": len(action_items),
+    }
+
+
 def complete_decision(
     run_id: str,
     final_results: dict[str, Any],
@@ -110,32 +138,26 @@ def complete_decision(
     if item is None or item.get("status") in _TERMINAL_STATUSES:
         return
 
-    agent_reports = final_results.get("agent_reports", {})
-    overall_risk_assessment = final_results.get("overall_risk_assessment", [])
-    agent_alignment = {
-        name: Decimal(str(report.get("alignment_score", 0.5)))
-        for name, report in agent_reports.items()
-    }
+    _update_item(run_id, {"status": "completed", **_result_fields(final_results, action_items)})
 
-    _update_item(
-        run_id,
-        {
-            "status": "completed",
-            "updated_at": _now_iso(),
-            "agent_reports": to_dynamodb_safe(agent_reports),
-            "deliberation_rounds": to_dynamodb_safe(final_results.get("deliberation_rounds", {})),
-            "board_decision": to_dynamodb_safe(final_results.get("board_decision") or {}),
-            "action_items": to_dynamodb_safe(action_items),
-            "overall_risk_assessment": overall_risk_assessment,
-            "synthesized_recommendations": final_results.get("synthesized_recommendations", []),
-            "fallback_warnings": final_results.get("fallback_warnings", []),
-            "executive_summary": final_results.get("executive_summary", ""),
-            "decision_point": final_results.get("decision_point"),
-            "top_risks": overall_risk_assessment[:3],
-            "agent_alignment": agent_alignment,
-            "action_item_count": len(action_items),
-        },
-    )
+
+def save_partial_decision(
+    run_id: str,
+    final_results: dict[str, Any],
+    action_items: list[dict[str, Any]],
+) -> None:
+    """Write whatever a cancelled run produced WITHOUT touching status — the run
+    is already 'stopped', or about to be, and that label must survive.
+
+    The guard admits 'stopped' (that is the whole point) and 'running' (the
+    worker can finish before the stop request's status write lands). It rejects
+    only genuinely finished runs, so a late partial write can never clobber a
+    real result."""
+    item = get_decision(run_id)
+    if item is None or item.get("status") in {"completed", "error"}:
+        return
+
+    _update_item(run_id, _result_fields(final_results, action_items))
 
 
 def fail_decision(run_id: str, error_message: str) -> None:

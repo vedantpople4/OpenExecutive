@@ -73,6 +73,41 @@ def test_complete_decision_is_noop_once_terminal(client):
     assert item.get("executive_summary") is None
 
 
+def test_save_partial_decision_keeps_stopped_status(client):
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+    repo.stop_decision(run_id)
+
+    repo.save_partial_decision(run_id, _fake_final_results(), [{"description": "do it"}])
+
+    item = repo.get_decision(run_id)
+    # The label survives, but the work the user paid for is kept.
+    assert item["status"] == "stopped"
+    assert item["executive_summary"] == "Yes, proceed."
+    assert item["agent_reports"]["ceo"]["alignment_score"] == Decimal("0.7")
+
+
+def test_save_partial_decision_on_running_row_leaves_status(client):
+    """Covers the race where the worker finishes before /stop's status write."""
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+
+    repo.save_partial_decision(run_id, _fake_final_results(), [])
+
+    item = repo.get_decision(run_id)
+    assert item["status"] == "running"
+    assert item["executive_summary"] == "Yes, proceed."
+
+
+def test_save_partial_decision_never_clobbers_a_finished_run(client):
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+    repo.complete_decision(run_id, _fake_final_results(executive_summary="Real result"), [])
+
+    repo.save_partial_decision(run_id, _fake_final_results(executive_summary="Stale partial"), [])
+
+    item = repo.get_decision(run_id)
+    assert item["status"] == "completed"
+    assert item["executive_summary"] == "Real result"
+
+
 def test_fail_decision_sets_error_status(client):
     run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
 
