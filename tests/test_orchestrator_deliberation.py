@@ -1,7 +1,11 @@
 """Tests for openexec/orchestrator_deliberation.py — DeliberationOrchestrator."""
 
+import threading
+
 import pytest
 from unittest.mock import Mock, patch
+from openexec.agents.interface import AgentReport
+from openexec.orchestrator import SimulationState
 from openexec.orchestrator_deliberation import DeliberationOrchestrator
 
 
@@ -113,3 +117,50 @@ class TestDeliberationOrchestratorMocked:
         for method in methods_to_check:
             # Just check method exists, don't call it
             assert hasattr(orch, method) or hasattr(orch, method.strip('_')) or True
+
+class TestDeliberationCancellation:
+    """The round loop is where most LLM calls happen, so cancellation has to
+    land here to actually save anything."""
+
+    def _orch(self, event):
+        state = SimulationState(core_prompt="Should we expand?", decision_point="Expand?")
+        state.active_agents = ["ceo", "cfo", "cto", "cmo"]
+        state.cancel_event = event
+        return DeliberationOrchestrator(state, Mock()), state
+
+    def _report(self, round_num):
+        return AgentReport(agent_name="cfo", title="t", summary="s", round_number=round_num)
+
+    def test_stops_calling_agents_once_cancelled_and_keeps_the_partial_round(self):
+        event = threading.Event()
+        orch, state = self._orch(event)
+        calls = []
+
+        def call_agent(agent_name, round_num):
+            calls.append((agent_name, round_num))
+            if len(calls) == 2:
+                event.set()  # user hits stop mid-round
+            return self._report(round_num)
+
+        with patch.object(orch, '_init_ai_clients'), \
+             patch.object(orch, '_update_board_summary'), \
+             patch.object(orch, '_call_agent', side_effect=call_agent):
+            orch.run_deliberation()
+
+        assert len(calls) == 2
+        # Work already done survives...
+        assert state.deliberation_outputs
+        # ...but no board verdict was manufactured from a halted debate.
+        assert 5 not in state.deliberation_outputs
+
+    def test_pre_cancelled_run_calls_no_agents_at_all(self):
+        event = threading.Event()
+        event.set()
+        orch, state = self._orch(event)
+
+        with patch.object(orch, '_init_ai_clients'), \
+             patch.object(orch, '_update_board_summary'), \
+             patch.object(orch, '_call_agent') as call_agent:
+            orch.run_deliberation()
+
+        call_agent.assert_not_called()
