@@ -7,7 +7,8 @@ from openexec.events import (
     InceptionCompleted, AnalysisStarted, AgentReportGenerated,
     AnalysisCompleted, DeliberationStarted, DeliberationRoundStarted,
     DeliberationRoundCompleted, DeliberationCompleted, SynthesisStarted,
-    SynthesisCompleted, ErrorOccurred
+    SynthesisCompleted, ErrorOccurred, TeamAnalysisStarted, TeamAnalysisCompleted,
+    SpecialistReportGenerated, AgentSpeaking
 )
 from dataclasses import dataclass, field
 from typing import Any, Dict
@@ -445,6 +446,13 @@ class Orchestrator:
 
         print("\n--- Phase 2.5: TEAM DELIBERATION ---")
 
+        # One event per run, not per CXO: the frontend dedupes by phase kind,
+        # so per-CXO events would collapse into the same single card anyway.
+        self._emit_event(TeamAnalysisStarted(
+            event_id=str(uuid.uuid4()),
+            aggregate_id=self.state.simulation_id
+        ))
+
         for cxo_name, team_members in TEAM_STRUCTURE.items():
             if is_cancelled(self.state):
                 break
@@ -462,10 +470,34 @@ class Orchestrator:
                 print(f"  -> {member_name} analyzing...")
                 member = self.registry.get(member_name)
                 if member:
+                    self._emit_event(AgentSpeaking(
+                        event_id=str(uuid.uuid4()),
+                        aggregate_id=self.state.simulation_id,
+                        agent_name=member_name
+                    ))
                     report = member.analyze(self.state)
                     team_reports[member_name] = report
                     # Store as team_member output for audit/reporting
                     self.state.agent_outputs[f"team_{member_name}"] = report
+
+                    self._emit_event(SpecialistReportGenerated(
+                        event_id=str(uuid.uuid4()),
+                        aggregate_id=self.state.simulation_id,
+                        agent_name=member_name,
+                        parent_cxo=cxo_name,
+                        # Plain scalars/lists only -- an AgentReport object would
+                        # not survive the backend's DynamoDB coercion. round_number
+                        # 0 files this under the team phase, not a round.
+                        report_data={
+                            "title": report.title,
+                            "summary": report.summary,
+                            "key_findings": report.key_findings,
+                            "recommendations": report.recommendations,
+                            "risks": report.risks,
+                            "alignment_score": report.alignment_score,
+                            "round_number": 0,
+                        }
+                    ))
 
             # 2. CXO Synthesis -- checked separately so a cancel during the
             # member loop above doesn't still buy one more synthesis call.
@@ -480,6 +512,12 @@ class Orchestrator:
                     synthesized_report = cxo_agent.analyze(self.state)
 
                 self.state.agent_outputs[cxo_name] = synthesized_report
+
+        # After the loop, so this still fires when cancellation breaks out early.
+        self._emit_event(TeamAnalysisCompleted(
+            event_id=str(uuid.uuid4()),
+            aggregate_id=self.state.simulation_id
+        ))
 
         print("\n--- Team Deliberation Complete. CXO positions updated. ---")
 
