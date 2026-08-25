@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 import { useDeliberationStream } from './useDeliberationStream'
 import { useRunStore } from '../../../stores/useRunStore'
 import { registerRun } from '../../../api/mock/runsRegistry'
@@ -67,6 +67,44 @@ describe('useDeliberationStream', () => {
       expect(run?.events.length).toBe(countBeforeAbort)
     } finally {
       vi.useRealTimers()
+    }
+  })
+})
+
+describe('useDeliberationStream — server-side failure', () => {
+  it('treats error_occurred as terminal so the run stops looking live', async () => {
+    // The scripted mock timeline has no failure path, so drive a hand-rolled
+    // handle directly rather than trying to make timeline.ts emit an error.
+    let emit: ((event: { data: string }) => void) | undefined
+    const close = vi.fn()
+    const endpoints = await import('../../../api/endpoints')
+    const spy = vi.spyOn(endpoints, 'openDeliberationStream').mockReturnValue({
+      addEventListener: (type: string, listener: unknown) => {
+        if (type === 'message') emit = listener as (event: { data: string }) => void
+      },
+      close,
+    } as unknown as ReturnType<typeof endpoints.openDeliberationStream>)
+
+    try {
+      const runId = 'test-run-server-error'
+      useRunStore.getState().startRun(runId, new AbortController())
+      renderHook(() => useDeliberationStream(runId))
+
+      expect(useRunStore.getState().activeRun?.status).toBe('streaming')
+
+      act(() => {
+        emit!({
+          data: JSON.stringify({
+            type: 'error_occurred',
+            error_message: 'LLM provider unreachable',
+            phase: 'analysis',
+          }),
+        })
+      })
+
+      expect(useRunStore.getState().activeRun?.status).toBe('error')
+    } finally {
+      spy.mockRestore()
     }
   })
 })
