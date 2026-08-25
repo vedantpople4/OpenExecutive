@@ -38,6 +38,7 @@ class DecisionSummary(BaseModel):
     agent_alignment: dict[str, float] = Field(alias="agentAlignment")
     parent_run_id: str | None = Field(default=None, alias="parentRunId")
     has_children: bool | None = Field(default=None, alias="hasChildren")
+    status: str | None = None
 
 
 class DecisionListResponse(BaseModel):
@@ -63,6 +64,8 @@ class DecisionDetail(BaseModel):
     overall_risk_assessment: list[str] = Field(default_factory=list)
     synthesized_recommendations: list[str] = Field(default_factory=list)
     fallback_warnings: list[str] = Field(default_factory=list)
+    status: str | None = None
+    error_message: str | None = None
 
 
 class SubmitDecisionRequest(BaseModel):

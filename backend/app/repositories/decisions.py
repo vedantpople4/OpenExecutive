@@ -216,6 +216,7 @@ def to_summary(item: dict[str, Any], has_children_flag: bool) -> dict[str, Any]:
         "agentAlignment": {k: float(v) for k, v in item.get("agent_alignment", {}).items()},
         "parentRunId": item.get("parent_run_id"),
         "hasChildren": has_children_flag,
+        "status": item.get("status"),
     }
 
 
@@ -234,4 +235,9 @@ def to_detail(item: dict[str, Any]) -> dict[str, Any]:
         "overall_risk_assessment": item.get("overall_risk_assessment", []),
         "synthesized_recommendations": item.get("synthesized_recommendations", []),
         "fallback_warnings": item.get("fallback_warnings", []),
+        # Without these two the API cannot express that a run failed or was
+        # stopped -- the frontend would render a failed run as a normal,
+        # complete-looking transcript.
+        "status": item.get("status"),
+        "error_message": item.get("error_message"),
     }

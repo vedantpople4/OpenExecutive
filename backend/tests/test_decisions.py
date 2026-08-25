@@ -1,3 +1,4 @@
+from app.repositories import decisions as repo
 from app.services import orchestration
 
 
@@ -37,6 +38,25 @@ def test_submit_and_get_decision_roundtrip(client, monkeypatch):
     }
     assert body["agent_reports"] == {}
     assert body["action_items"] == []
+
+
+def test_detail_exposes_error_status_and_message(client, monkeypatch):
+    monkeypatch.setattr(orchestration, "run_deliberation", lambda *args, **kwargs: None)
+    run_id = _submit(client, "Should we launch in APAC?").json()["runId"]
+
+    repo.fail_decision(run_id, "LLM provider unreachable")
+
+    body = client.get(f"/decisions/{run_id}").json()
+    assert body["status"] == "error"
+    assert body["error_message"] == "LLM provider unreachable"
+
+
+def test_list_exposes_status(client, monkeypatch):
+    monkeypatch.setattr(orchestration, "run_deliberation", lambda *args, **kwargs: None)
+    run_id = _submit(client, "Should we launch in APAC?").json()["runId"]
+
+    items = client.get("/decisions").json()["items"]
+    assert next(i for i in items if i["runId"] == run_id)["status"] == "running"
 
 
 def test_get_decision_not_found_returns_404(client):
