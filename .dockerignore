@@ -1,0 +1,57 @@
+# Build context exclusions. Both images build from the repo root (the backend
+# imports `openexec`, so it needs the whole tree), which makes this file the
+# single thing standing between a developer's machine and the image contents.
+
+# SECRETS -- load-bearing. settings.json holds the LLM api_key and is
+# gitignored, so it exists on every developer machine but in no commit. Without
+# this line a `COPY` would bake a live key into a distributable image.
+settings.json
+settings.local.json
+.settings.local.json
+.env
+.env.local
+**/.env.local
+
+# Dependency trees and build output -- reinstalled/rebuilt inside the image.
+venv/
+.venv/
+env/
+node_modules/
+**/node_modules/
+dist/
+build/
+*.egg-info/
+
+# Version control and CI
+.git/
+.github/
+.gitignore
+
+# Local runtime data. These are gitignored working directories from CLI runs;
+# they are not application state the server reads.
+memory/
+decisions/
+knowledge_base/
+feedback/
+htmlcov/
+graphify-out/
+videos/
+board_report.md
+
+# Caches and tooling
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+.mypy_cache/
+.claude/
+.agents/
+.gstack/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
