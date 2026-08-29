@@ -1,9 +1,29 @@
 from openexec.ai.json_utils import JSONPipeline
 from openexec.ai.prompts_constants import _CORRECTION_SYSTEM, _CORRECTION_USER
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any, Dict
+
+DEFAULT_SETTINGS_FILENAME = "settings.json"
+
+
+def resolve_settings_path(settings_path: str | None = None) -> Path:
+    """Locate the settings file. Order: explicit argument, then
+    $OPENEXEC_SETTINGS_PATH, then ./settings.json.
+
+    The env var exists because the default is relative to the process working
+    directory. That is fine for the CLI, which is always run from the repo
+    root, but under systemd the working directory is whatever the unit file
+    says -- and getting it wrong drops every agent into fallback mode with no
+    error reaching the caller.
+    """
+    return Path(
+        settings_path
+        or os.environ.get("OPENEXEC_SETTINGS_PATH")
+        or DEFAULT_SETTINGS_FILENAME
+    )
 
 
 class AIClient:
@@ -29,11 +49,9 @@ class AIClient:
         self._pipeline = JSONPipeline()
 
     def _load_settings(self, settings_path: str | None = None) -> Dict[str, Any]:
-        if settings_path is None:
-            settings_path = "settings.json"
-        path = Path(settings_path)
+        path = resolve_settings_path(settings_path)
         if not path.exists():
-            raise FileNotFoundError(f"Settings file not found: {settings_path}")
+            raise FileNotFoundError(f"Settings file not found: {path}")
         with open(path) as f:
             return json.load(f)
 

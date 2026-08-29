@@ -10,6 +10,7 @@ import json
 
 import pytest
 
+from openexec.agents import templates_teams
 from openexec.cli import app
 from typer.testing import CliRunner
 
@@ -82,6 +83,13 @@ def isolated_run(tmp_path, monkeypatch):
     }))
     monkeypatch.setattr("openexec.ai.client.AIClient", MockAIClient)
     monkeypatch.setattr("openexec.ai.AIClient", MockAIClient)
+    # templates_teams binds AIClient at import time (`from ... import AIClient`)
+    # and constructs one in __init__, so the two patches above never reach it --
+    # every specialist would build a real client. Patching the consumer's own
+    # namespace is what actually isolates the --teams path. Every other import
+    # site in openexec/ is function-local, so it resolves through the patches
+    # above at call time.
+    monkeypatch.setattr("openexec.agents.templates_teams.AIClient", MockAIClient)
 
     # The module globals create their dirs at import time (repo cwd). Root
     # fresh instances in the isolated dir so nothing writes back to the repo.
@@ -145,6 +153,18 @@ class TestFullRunPipeline:
             "run", "Should we build or integrate?", "-o", "report.md", "--research",
         ])
         assert result.exit_code == 0, result.output
+
+    def test_team_specialists_use_the_mocked_client(self, isolated_run):
+        """The fast guard for the isolation bug the --teams test only catches
+        after a 15-minute real deliberation runs first.
+
+        templates_teams does `from openexec.ai.client import AIClient` at import
+        time, so patching openexec.ai.client.AIClient alone leaves specialists
+        building real clients against whatever settings.json the machine has.
+        """
+        assert isinstance(
+            templates_teams.CFOAnalystTemplate()._ai_client, MockAIClient
+        )
 
     def test_run_teams_flag_does_not_crash(self, isolated_run):
         result = runner.invoke(app, [

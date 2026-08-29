@@ -249,3 +249,43 @@ class TestCancellation:
 
         for phase in (inception, analysis, teams, deliberation):
             phase.assert_called_once()
+
+
+class TestAgentSpeakingEmission:
+    """agent_speaking drives the "thinking" indicator, so it must fire before
+    the LLM call, not after it."""
+
+    def test_speaking_precedes_each_analysis_report(self):
+        from openexec.events import EventType
+
+        state = SimulationState(core_prompt="Should we expand?")
+        state.active_agents = ["ceo", "cfo", "cto", "cmo"]
+
+        registry = Mock()
+        registry.list_names.return_value = ["ceo", "cfo", "cto", "cmo"]
+        registry.get.side_effect = lambda name: Mock(
+            analyze=Mock(return_value=Mock(
+                title="t", summary="s", key_findings=[], recommendations=[],
+                risks=[], alignment_score=0.8,
+            ))
+        )
+
+        orch = Orchestrator(registry)
+        orch.initialize(state)
+        emitted = []
+        sink = Mock()
+        sink.append.side_effect = lambda e: emitted.append(e)
+        orch.set_event_store(sink)
+
+        orch.run_analysis()
+
+        pairs = [
+            e for e in emitted
+            if e.event_type in (EventType.AGENT_SPEAKING, EventType.AGENT_REPORT_GENERATED)
+        ]
+        # CEO is skipped in analysis, so three agents report.
+        assert len(pairs) == 6
+        for speaking, report in zip(pairs[::2], pairs[1::2]):
+            assert speaking.event_type == EventType.AGENT_SPEAKING
+            assert report.event_type == EventType.AGENT_REPORT_GENERATED
+            assert speaking.agent_name == report.agent_name

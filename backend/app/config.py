@@ -12,6 +12,10 @@ class Settings:
     decisions_table: str
     events_table: str
     cors_origins: list[str]
+    # Where openexec looks for its LLM config, and whether a missing file is
+    # fatal at boot. See the probe in app/main.py.
+    settings_file: str
+    require_settings: bool
 
 
 def get_settings() -> Settings:
@@ -22,4 +26,6 @@ def get_settings() -> Settings:
         decisions_table=os.environ.get("OPENEXEC_DECISIONS_TABLE", "openexec-decisions"),
         events_table=os.environ.get("OPENEXEC_EVENTS_TABLE", "openexec-events"),
         cors_origins=[origin.strip() for origin in cors_origins_raw.split(",") if origin.strip()],
+        settings_file=os.environ.get("OPENEXEC_SETTINGS_PATH", "settings.json"),
+        require_settings=os.environ.get("OPENEXEC_REQUIRE_SETTINGS", "").lower() in {"1", "true"},
     )

@@ -11,6 +11,10 @@ class EventType(str, Enum):
     ANALYSIS_STARTED = "analysis_started"
     AGENT_REPORT_GENERATED = "agent_report_generated"
     ANALYSIS_COMPLETED = "analysis_completed"
+    TEAM_ANALYSIS_STARTED = "team_analysis_started"
+    SPECIALIST_REPORT_GENERATED = "specialist_report_generated"
+    TEAM_ANALYSIS_COMPLETED = "team_analysis_completed"
+    AGENT_SPEAKING = "agent_speaking"
     DELIBERATION_STARTED = "deliberation_started"
     DELIBERATION_ROUND_STARTED = "deliberation_round_started"
     DELIBERATION_ROUND_COMPLETED = "deliberation_round_completed"
@@ -70,6 +74,52 @@ class AnalysisCompleted(Event):
     """Event emitted when Phase 2 (Analysis) completes."""
     event_type: EventType = EventType.ANALYSIS_COMPLETED
     reports_generated: list[str] = field(default_factory=list)
+
+
+@dataclass
+class TeamAnalysisStarted(Event):
+    """Phase 2.5 (Team Deliberation) started.
+
+    Payload-free by design: the frontend renders this as a phase boundary and
+    dedupes by phase kind, so one event per run is correct -- a per-CXO event
+    would collapse into the same single card.
+    """
+    event_type: EventType = EventType.TEAM_ANALYSIS_STARTED
+
+
+@dataclass
+class AgentSpeaking(Event):
+    """An agent is about to make an LLM call.
+
+    Phase-level only for now (analysis and team phases). Deliberation-round
+    speaking is deferred: DeliberationOrchestrator holds no event store, and
+    round events are reconstructed after the fact, so a round-scoped speaking
+    event would arrive before its round card exists. Deliberately carries no
+    round_number -- the frontend treats a present-but-null value as "in a
+    round", which would misroute it.
+    """
+    event_type: EventType = EventType.AGENT_SPEAKING
+    agent_name: str = ""
+
+
+@dataclass
+class SpecialistReportGenerated(Event):
+    """A team specialist reported to its parent CXO.
+
+    report_data must carry round_number=0 so the frontend files it under the
+    team-analysis phase rather than a deliberation round.
+    """
+    event_type: EventType = EventType.SPECIALIST_REPORT_GENERATED
+    agent_name: str = ""
+    parent_cxo: str = ""
+    report_data: Optional[dict] = None
+
+
+@dataclass
+class TeamAnalysisCompleted(Event):
+    """Phase 2.5 completed. Payload-free; also fires when a run is cancelled
+    part-way through team analysis."""
+    event_type: EventType = EventType.TEAM_ANALYSIS_COMPLETED
 
 
 @dataclass
