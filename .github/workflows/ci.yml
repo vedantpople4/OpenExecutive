@@ -27,8 +27,8 @@ jobs:
           # surprise.
           pip install -e . 'ruff==0.15.11' pytest pytest-cov
           # Additive: the only overlap with the root requirements is an
-          # identical pytest pin.
-          pip install -r backend/requirements.txt
+          # identical pytest pin. -dev pulls in runtime deps via `-r`.
+          pip install -r backend/requirements-dev.txt
 
       - name: Lint
         run: ruff check openexec/ src/ tests/ backend/
