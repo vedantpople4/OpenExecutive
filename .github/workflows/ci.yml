@@ -67,3 +67,86 @@ jobs:
             --cov=openexec.grounding --cov=openexec.export \
             --cov=openexec.event_store --cov-report=term-missing \
             --cov-fail-under=70
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the API image
+        run: docker build -f backend/Dockerfile -t openexec-api .
+
+      - name: Build the web image
+        run: |
+          docker build -f frontend/Dockerfile \
+            --build-arg VITE_API_BASE_URL=/api -t openexec-web .
+
+      - name: Web build must fail without VITE_API_BASE_URL
+        # src/api/client.ts falls back to the in-memory mock layer when the
+        # base URL is empty, so an unguarded build ships a bundle that serves
+        # fabricated decisions. Assert the guard is still wired.
+        run: |
+          if docker build -f frontend/Dockerfile \
+               --build-arg VITE_API_BASE_URL= -t openexec-web-should-fail . ; then
+            echo "Build succeeded with an empty VITE_API_BASE_URL -- the guard"
+            echo "in frontend/Dockerfile is gone. That bundle would silently"
+            echo "serve mock data."
+            exit 1
+          fi
+          echo "Guard held: the build refused."
+
+      - name: No credentials baked into the API image
+        # .dockerignore is the only thing keeping a developer's settings.json
+        # (gitignored, holds api_key) out of the build context.
+        run: |
+          if docker run --rm --entrypoint sh openexec-api \
+               -c 'ls /app/settings.json' 2>/dev/null; then
+            echo "settings.json is present in the image."
+            exit 1
+          fi
+          echo "No settings.json in the image."
+
+      - name: Bring up the stack and check it end to end
+        run: |
+          # A dummy LLM config: enough for the boot probe to pass. No
+          # deliberation runs here, so the dead endpoint is never dialled.
+          mkdir -p /tmp/openexec
+          cat > /tmp/openexec/settings.json <<'JSON'
+          {"ai": {"base_url": "http://127.0.0.1:9/v1", "api_key": "",
+                  "model": "ci", "timeout": 5},
+           "agents": {"enabled": ["ceo", "cfo", "cto", "cmo"]}}
+          JSON
+
+          export OPENEXEC_SETTINGS_FILE=/tmp/openexec/settings.json
+          COMPOSE="docker compose -f docker-compose.yml -f docker-compose.local.yml"
+          $COMPOSE up -d --build
+
+          # `web` depends_on api's healthcheck, so reaching this means the API
+          # booted -- which with OPENEXEC_REQUIRE_SETTINGS=1 means the mount
+          # and OPENEXEC_SETTINGS_PATH both resolved.
+          for i in $(seq 1 30); do
+            if curl -fsS localhost/api/health >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+
+          echo "--- /api/health ---"
+          curl -fsS localhost/api/health | tee /tmp/health.json
+          grep -q '"settings_found":true' /tmp/health.json
+
+          # Proves nginx strips the /api prefix and routes to the API.
+          echo "--- /api/agents ---"
+          curl -fsS localhost/api/agents | head -c 200
+
+          # Proves the SPA is served.
+          curl -fsS localhost/ | grep -qi '<div id="root"'
+
+          # --workers 1 is load-bearing (in-process SSE fan-out, run lock,
+          # cancellation registry). python:slim has no `ps`, so read PID 1's
+          # command line directly -- uvicorn is the entrypoint.
+          cmdline=$($COMPOSE exec -T api python -c \
+            "print(open('/proc/1/cmdline','rb').read().decode().replace(chr(0),' '))")
+          echo "api PID 1: $cmdline"
+          echo "$cmdline" | grep -q -- "--workers 1" || {
+            echo "uvicorn is not pinned to a single worker"; exit 1; }
+
+          $COMPOSE down -v
