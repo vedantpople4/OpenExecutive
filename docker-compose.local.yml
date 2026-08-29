@@ -1,0 +1,28 @@
+# Local development override. Layer it on top of the production file:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+#
+# A separate file rather than a compose profile, because the difference is not
+# only "one extra container": local needs dummy AWS credentials, and EC2 must
+# NOT have them -- any AWS_ACCESS_KEY_ID in the environment, even an empty one,
+# shadows the instance role. Keeping them here makes it impossible for a plain
+# `docker compose up -d` on the server to pick them up by accident.
+
+services:
+  api:
+    environment:
+      # dynamodb-local validates the signature's shape, not the credentials,
+      # so any non-empty pair works.
+      AWS_ACCESS_KEY_ID: devlocal
+      AWS_SECRET_ACCESS_KEY: devlocal
+      DYNAMODB_ENDPOINT_URL: http://dynamodb-local:8000
+    depends_on:
+      - dynamodb-local
+
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    command: ["-jar", "DynamoDBLocal.jar", "-inMemory", "-sharedDb"]
+    ports:
+      # 8001 on the host so `python -m scripts.create_tables` can reach it from
+      # outside the compose network; 8000 inside is the container's own port.
+      - "8001:8000"

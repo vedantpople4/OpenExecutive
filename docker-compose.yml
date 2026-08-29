@@ -1,0 +1,54 @@
+# Production topology: one EC2 box, two containers.
+#
+#   docker compose up -d
+#
+# nginx (web) is the only thing listening publicly; the API is reachable only
+# on the compose network. AWS credentials come from the EC2 instance role, so
+# no AWS_* variables appear here on purpose -- setting them, even to empty
+# strings, would shadow the instance role and break DynamoDB access.
+#
+# For local development against dynamodb-local, layer the override on top:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+#
+# See deploy/README.md for the full EC2 runbook.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      OPENEXEC_DECISIONS_TABLE: ${OPENEXEC_DECISIONS_TABLE:-openexec-decisions}
+      OPENEXEC_EVENTS_TABLE: ${OPENEXEC_EVENTS_TABLE:-openexec-events}
+      # Path *inside* the container; the host side is the volume below.
+      OPENEXEC_SETTINGS_PATH: /etc/openexec/settings.json
+      # Turns a missing or misplaced LLM config into a boot failure instead of
+      # a full deliberation of stub reports. See probe_settings in app/main.py.
+      OPENEXEC_REQUIRE_SETTINGS: "1"
+    volumes:
+      # The LLM credentials. Mounted read-only, never baked into the image
+      # (.dockerignore excludes settings.json from the build context).
+      # If the host path does not exist, Docker creates a *directory* there and
+      # the API will crash-loop on the probe -- which is the intended outcome,
+      # but check for a stray directory when debugging a failed first boot.
+      - ${OPENEXEC_SETTINGS_FILE:-/etc/openexec/settings.json}:/etc/openexec/settings.json:ro
+    # Deliberately no `ports`. nginx proxies to api:8000 over the compose
+    # network; exposing 8000 on the host would bypass it.
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        # Baked into the bundle at build time. Relative, so the browser hits
+        # the same origin nginx already serves the SPA from.
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-80}:80"
+    depends_on:
+      api:
+        condition: service_healthy
