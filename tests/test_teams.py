@@ -71,7 +71,19 @@ class TestSubRolePrompts:
 class TestTeamMemberFallback:
     """Team sub-agents must fail soft: retry the LLM, then a stub — never abort the run."""
 
-    def test_failed_analysis_returns_fallback_stub(self):
+    @pytest.fixture
+    def stub_team_client(self):
+        """TeamMemberTemplate builds a real AIClient in __init__, which reads a
+        settings.json relative to the cwd. Without this the tests below pass only
+        on a machine that happens to have one and fail on CI, which has none.
+
+        templates_teams binds AIClient at import time, so the patch has to target
+        that module's namespace rather than openexec.ai.client.
+        """
+        with patch("openexec.agents.templates_teams.AIClient"):
+            yield
+
+    def test_failed_analysis_returns_fallback_stub(self, stub_team_client):
         """A specialist whose LLM call throws returns is_fallback instead of raising."""
         from openexec.agents.templates_teams import TeamMemberTemplate
 
@@ -84,7 +96,7 @@ class TestTeamMemberFallback:
         assert report.is_fallback is True
         assert report.alignment_score == 0.5
 
-    def test_successful_analysis_not_fallback(self):
+    def test_successful_analysis_not_fallback(self, stub_team_client):
         from openexec.agents.templates_teams import TeamMemberTemplate
 
         member = TeamMemberTemplate("financial_analyst")
