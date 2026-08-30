@@ -10,6 +10,8 @@ interface ChatHeaderProps {
   onTabChange: (tab: ChatTab) => void
 }
 
+/** Run context only. The "OpenExec" title lives in AppShell so it is present
+ * on Compare and Dashboard too, not just here. */
 export function ChatHeader({ parentRunId, hasDecision, tab, onTabChange }: ChatHeaderProps) {
   if (!parentRunId && !hasDecision) return null
 

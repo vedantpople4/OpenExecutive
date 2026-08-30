@@ -32,7 +32,14 @@ export function AppShell() {
     <div className={`app-shell${collapsed ? ' app-shell--collapsed' : ''}`}>
       <Sidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed((c) => !c)} />
       <main className="app-shell__content">
-        <Outlet />
+        {/* Here rather than in ChatHeader so the wordmark is present on Compare
+            and Dashboard too, and survives collapsing the sidebar. */}
+        <div className="app-shell__titlebar">
+          <h1 className="app-shell__title">OpenExec</h1>
+        </div>
+        <div className="app-shell__outlet">
+          <Outlet />
+        </div>
       </main>
     </div>
   )

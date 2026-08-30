@@ -17,17 +17,13 @@
 .sidebar__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* Toggle sits on the edge the panel collapses toward. */
+  justify-content: flex-end;
   gap: 0.5rem;
 }
 
 .sidebar--collapsed .sidebar__top {
   justify-content: center;
-}
-
-.sidebar__brand {
-  font-weight: 700;
-  font-size: 1.1rem;
 }
 
 .sidebar__collapse {

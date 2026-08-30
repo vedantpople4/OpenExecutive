@@ -51,7 +51,6 @@ export function Sidebar({ collapsed = false, onToggleCollapse }: SidebarProps) {
   return (
     <aside className={`sidebar${collapsed ? ' sidebar--collapsed' : ''}`}>
       <div className="sidebar__top">
-        {!collapsed && <div className="sidebar__brand">OpenExec</div>}
         {onToggleCollapse && (
           <button
             type="button"

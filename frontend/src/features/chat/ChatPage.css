@@ -1,6 +1,9 @@
 .chat-page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* 100% of the content column, not 100vh -- the shell's title bar sits
+     above it and 100vh would push the prompt input off-screen by exactly
+     that bar's height. */
+  height: 100%;
   min-width: 0;
 }
