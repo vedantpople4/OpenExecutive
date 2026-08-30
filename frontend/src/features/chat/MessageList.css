@@ -9,5 +9,5 @@
 
 .message-list__loading {
   padding: 2rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }

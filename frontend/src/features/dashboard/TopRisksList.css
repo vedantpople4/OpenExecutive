@@ -38,11 +38,11 @@
 .top-risks-list__count {
   position: relative;
   z-index: 1;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   padding-right: 0.5rem;
 }
 
 .top-risks-list__empty {
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   font-size: 0.85rem;
 }

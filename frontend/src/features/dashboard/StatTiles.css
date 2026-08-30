@@ -9,18 +9,18 @@
   flex-direction: column;
   gap: 0.3rem;
   padding: 1rem 1.25rem;
-  border: 1px solid var(--border-color, #20302a);
+  border: 1px solid var(--border-color);
   border-radius: 0.75rem;
-  background: var(--panel-color, #0f1b15);
+  background: var(--panel-color);
 }
 
 .stat-tiles__value {
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--accent-color, #34c77b);
+  color: var(--accent-color);
 }
 
 .stat-tiles__label {
   font-size: 0.75rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }

@@ -1,5 +1,5 @@
 .team-roster-item {
-  border: 1px solid var(--border-color, #20302a);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -19,7 +19,7 @@
 }
 
 .team-roster-item__chevron {
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   transition: transform 0.15s ease;
   font-size: 0.75rem;
 }
@@ -35,7 +35,7 @@
 
 .team-roster-item__focus {
   font-size: 0.7rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   margin-left: auto;
 }
 

@@ -1,13 +1,49 @@
+/* Self-hosted rather than a CDN link: the app ships in an nginx container with
+   no guarantee of outbound network, and a font that silently fails to load is
+   a visual regression nobody notices until it is in front of someone. */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+
 :root {
-  --bg-color: #0a130f;
-  --panel-color: #0f1b15;
-  --fg-color: #ecefea;
-  --dim-color: #8a9690;
-  --accent-color: #34c77b;
-  --border-color: #20302a;
+  /* Neutrals: Claude's dark surfaces -- warm near-blacks, not pure #000, which
+     is what keeps large dark areas from looking like a void. Each step up is a
+     raised surface: page -> panel -> control. */
+  --bg-color: #1f1e1d;
+  --panel-color: #262624;
+  --panel-raised: #302f2d;
+  --fg-color: #faf9f5;
+  --dim-color: #a8a59e;
+  --border-color: #3a3937;
+
+  /* Accent. Claude's terracotta is hsl(16 61% 59%); this is the same
+     saturation and lightness rotated to blue, so it carries the same visual
+     weight against these neutrals instead of reading as a brighter, louder
+     colour. */
+  --accent-color: #5a93d4;
+  --accent-hover: #77a8de;
+  /* Text on an accent fill. Near-black with a blue cast rather than pure
+     black, so filled buttons do not look like a hole punched in the page. */
+  --accent-contrast: #101a24;
+
+  /* Semantic. Desaturated to sit alongside the accent rather than compete. */
+  --danger-color: #e08585;
+  --danger-bg: #37201f;
+  --danger-border: #5c3231;
+  --warning-color: #d9a05b;
+  --info-color: #7fb0dd;
+  --role-specialist: #c98bb4;
+  --muted-color: var(--dim-color);
 
   color-scheme: dark;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Inter's defaults; without these it reads noticeably wider and softer than
+     the editor UIs it is imitating. */
+  font-feature-settings: 'cv05' 1, 'cv11' 1, 'ss01' 1;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   color: var(--fg-color);
   background-color: var(--bg-color);
 }
@@ -28,8 +64,17 @@ body {
   color: var(--fg-color);
 }
 
+code,
+pre {
+  font-family: 'SF Mono', ui-monospace, 'Cascadia Mono', 'Menlo', monospace;
+}
+
 a {
   color: var(--accent-color);
+}
+
+a:hover {
+  color: var(--accent-hover);
 }
 
 .page {

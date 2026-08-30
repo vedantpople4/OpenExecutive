@@ -9,13 +9,13 @@
   border: none;
   border-bottom: 2px solid transparent;
   background: transparent;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   font: inherit;
   font-size: 0.85rem;
   cursor: pointer;
 }
 
 .tab-switcher__tab--active {
-  color: var(--fg-color, #ecefea);
-  border-bottom-color: var(--accent-color, #34c77b);
+  color: var(--fg-color);
+  border-bottom-color: var(--accent-color);
 }

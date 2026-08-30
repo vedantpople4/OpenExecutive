@@ -4,10 +4,10 @@
 }
 
 .run-status-badge--error {
-  color: var(--danger-color, #e5534b);
+  color: var(--danger-color);
   font-weight: 700;
 }
 
 .run-status-badge--stopped {
-  color: var(--muted-color, #8b949e);
+  color: var(--muted-color);
 }

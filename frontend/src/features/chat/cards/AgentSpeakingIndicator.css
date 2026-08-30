@@ -3,7 +3,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   font-size: 0.85rem;
 }
 
@@ -22,7 +22,7 @@
   width: 0.3rem;
   height: 0.3rem;
   border-radius: 50%;
-  background: var(--accent-color, #34c77b);
+  background: var(--accent-color);
   animation: agent-speaking-pulse 1.2s infinite ease-in-out;
 }
 

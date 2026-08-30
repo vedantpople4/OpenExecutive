@@ -9,19 +9,19 @@
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   padding: 0.3rem 0.6rem;
 }
 
 .agent-score-delta-table td {
   padding: 0.4rem 0.6rem;
-  border-top: 1px solid var(--border-color, #20302a);
+  border-top: 1px solid var(--border-color);
 }
 
 .agent-score-delta-table__positive {
-  color: var(--accent-color, #34c77b);
+  color: var(--accent-color);
 }
 
 .agent-score-delta-table__negative {
-  color: #ff8c8c;
+  color: var(--danger-color);
 }

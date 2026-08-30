@@ -17,10 +17,10 @@
 }
 
 .compare-panel {
-  border: 1px solid var(--border-color, #20302a);
+  border: 1px solid var(--border-color);
   border-radius: 0.75rem;
   padding: 1rem 1.25rem;
-  background: var(--panel-color, #0f1b15);
+  background: var(--panel-color);
 }
 
 .compare-panel h2 {

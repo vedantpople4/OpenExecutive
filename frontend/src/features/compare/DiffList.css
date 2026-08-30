@@ -3,7 +3,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .diff-list ul {
@@ -17,15 +17,15 @@
 }
 
 .diff-list__added {
-  color: var(--accent-color, #34c77b);
+  color: var(--accent-color);
 }
 
 .diff-list__removed {
-  color: #ff8c8c;
+  color: var(--danger-color);
 }
 
 .diff-list__empty {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }

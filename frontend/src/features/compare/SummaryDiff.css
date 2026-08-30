@@ -1,6 +1,6 @@
 .summary-diff__note {
   font-size: 0.8rem;
-  color: #ffb454;
+  color: var(--warning-color);
   margin: 0 0 0.75rem;
 }
 
@@ -15,7 +15,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .summary-diff__prompt {

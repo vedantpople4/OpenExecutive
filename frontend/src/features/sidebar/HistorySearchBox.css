@@ -2,9 +2,9 @@
   width: 100%;
   padding: 0.35rem 0.5rem;
   border-radius: 0.4rem;
-  border: 1px solid var(--border-color, #20302a);
-  background: var(--panel-color, #0f1b15);
-  color: var(--fg-color, #ecefea);
+  border: 1px solid var(--border-color);
+  background: var(--panel-color);
+  color: var(--fg-color);
   font: inherit;
   font-size: 0.8rem;
 }

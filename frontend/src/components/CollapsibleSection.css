@@ -15,7 +15,7 @@
 .collapsible__chevron {
   display: inline-block;
   transition: transform 0.15s ease;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .collapsible__chevron--open {

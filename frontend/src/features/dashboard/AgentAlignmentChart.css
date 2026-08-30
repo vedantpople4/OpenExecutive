@@ -14,13 +14,13 @@
   flex: 1;
   height: 0.5rem;
   border-radius: 999px;
-  background: var(--border-color, #20302a);
+  background: var(--border-color);
   overflow: hidden;
 }
 
 .agent-alignment-chart__fill {
   height: 100%;
-  background: var(--accent-color, #34c77b);
+  background: var(--accent-color);
 }
 
 .agent-alignment-chart__value {
@@ -31,11 +31,11 @@
 
 .agent-alignment-chart__samples {
   font-size: 0.7rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   width: 6rem;
 }
 
 .agent-alignment-chart__empty {
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   font-size: 0.85rem;
 }

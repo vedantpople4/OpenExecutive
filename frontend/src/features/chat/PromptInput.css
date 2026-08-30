@@ -3,13 +3,13 @@
   flex-direction: column;
   gap: 0.4rem;
   padding: 1rem 1.5rem 1.5rem;
-  border-top: 1px solid var(--border-color, #20302a);
+  border-top: 1px solid var(--border-color);
 }
 
 .prompt-input__config-summary {
   margin: 0;
   font-size: 0.75rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .prompt-input__row {
@@ -24,9 +24,9 @@
   min-height: 2.5rem;
   padding: 0.6rem 0.75rem;
   border-radius: 0.6rem;
-  border: 1px solid var(--border-color, #20302a);
-  background: var(--panel-color, #0f1b15);
-  color: var(--fg-color, #ecefea);
+  border: 1px solid var(--border-color);
+  background: var(--panel-color);
+  color: var(--fg-color);
   font: inherit;
 }
 
@@ -38,9 +38,9 @@
 .prompt-input__stop {
   padding: 0.6rem 1.1rem;
   border-radius: 0.6rem;
-  border: 1px solid var(--accent-color, #34c77b);
-  background: var(--accent-color, #34c77b);
-  color: #04150c;
+  border: 1px solid var(--accent-color);
+  background: var(--accent-color);
+  color: var(--accent-contrast);
   font-weight: 600;
   cursor: pointer;
 }
@@ -52,6 +52,6 @@
 
 .prompt-input__stop {
   background: transparent;
-  border-color: #6b2b2b;
-  color: #ff8c8c;
+  border-color: var(--danger-border);
+  color: var(--danger-color);
 }

@@ -1,5 +1,5 @@
 .round-card {
-  border: 1px solid var(--border-color, #20302a);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -20,7 +20,7 @@
 
 .round-card__chevron {
   transition: transform 0.15s ease;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .round-card__chevron--open {
@@ -37,13 +37,13 @@
   font-size: 0.7rem;
   padding: 0.1rem 0.4rem;
   border-radius: 999px;
-  border: 1px solid var(--border-color, #20302a);
-  color: var(--dim-color, #8a9690);
+  border: 1px solid var(--border-color);
+  color: var(--dim-color);
 }
 
 .round-card__status--running {
-  color: var(--accent-color, #34c77b);
-  border-color: var(--accent-color, #34c77b);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 .round-card__body {

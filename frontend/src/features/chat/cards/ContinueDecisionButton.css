@@ -2,9 +2,9 @@
   align-self: flex-start;
   padding: 0.45rem 0.9rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--accent-color, #34c77b);
+  border: 1px solid var(--accent-color);
   background: transparent;
-  color: var(--accent-color, #34c77b);
+  color: var(--accent-color);
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
