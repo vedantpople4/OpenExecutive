@@ -1,20 +1,29 @@
 .history-item {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+  align-items: center;
+  gap: 0.25rem;
   padding: 0.4rem 0.5rem;
   border-radius: 0.4rem;
-  text-decoration: none;
-  color: var(--fg-color, #ecefea);
+  color: var(--fg-color);
 }
 
 .history-item:hover {
-  background: var(--panel-color, #0f1b15);
+  background: var(--panel-color);
 }
 
 .history-item--active {
-  background: var(--panel-color, #0f1b15);
-  border: 1px solid var(--accent-color, #34c77b);
+  background: var(--panel-color);
+  border: 1px solid var(--accent-color);
+}
+
+.history-item__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
 }
 
 .history-item__prompt {
@@ -29,12 +38,85 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.7rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .history-item__risk-dot {
   width: 0.4rem;
   height: 0.4rem;
   border-radius: 50%;
-  background: #ffb454;
+  background: var(--warning-color);
+}
+
+/* Hidden until the row is hovered or the button itself has focus, so the
+   sidebar is not a column of trash cans -- but never hidden from keyboards,
+   which is why this is opacity and not display. */
+.history-item__delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--dim-color);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.history-item:hover .history-item__delete,
+.history-item__delete:focus-visible {
+  opacity: 1;
+}
+
+.history-item__delete:hover {
+  color: var(--danger-color);
+  background: var(--danger-bg);
+}
+
+.history-item--confirming {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.3rem;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+}
+
+.history-item__confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+}
+
+.history-item__confirm-label {
+  flex: 1;
+  min-width: 0;
+  color: var(--danger-color);
+}
+
+.history-item__confirm-yes,
+.history-item__confirm-no {
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: none;
+  color: var(--fg-color);
+}
+
+.history-item__confirm-yes {
+  border-color: var(--danger-border);
+  color: var(--danger-color);
+}
+
+.history-item__confirm-yes:disabled,
+.history-item__confirm-no:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
