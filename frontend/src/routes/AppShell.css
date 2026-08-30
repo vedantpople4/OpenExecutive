@@ -3,10 +3,24 @@
   grid-template-columns: 280px 1fr;
   height: 100vh;
   width: 100%;
+  /* Animates the column width, so the chat area widens rather than jumping. */
+  transition: grid-template-columns 160ms ease;
+}
+
+/* Wide enough for the toggle button's hit area and nothing else. Collapsing to
+   0 would leave no way back in without a second control somewhere else. */
+.app-shell--collapsed {
+  grid-template-columns: 3.25rem 1fr;
 }
 
 .app-shell__content {
   min-width: 0;
   overflow-y: auto;
   height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell {
+    transition: none;
+  }
 }
