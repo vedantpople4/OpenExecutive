@@ -1,9 +1,11 @@
 /* Self-hosted rather than a CDN link: the app ships in an nginx container with
    no guarantee of outbound network, and a font that silently fails to load is
-   a visual regression nobody notices until it is in front of someone. */
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
+   a visual regression nobody notices until it is in front of someone.
+
+   Variable rather than three static weight files -- one request covers every
+   weight, and it is smaller than the two static cuts it replaces. */
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
 
 :root {
   /* Neutrals: Claude's dark surfaces -- warm near-blacks, not pure #000, which
@@ -36,10 +38,10 @@
   --muted-color: var(--dim-color);
 
   color-scheme: dark;
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  /* Inter's defaults; without these it reads noticeably wider and softer than
-     the editor UIs it is imitating. */
-  font-feature-settings: 'cv05' 1, 'cv11' 1, 'ss01' 1;
+  font-family: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Geist sets its own optical defaults, so no feature overrides here. Slightly
+     negative tracking at UI sizes -- it is drawn a touch wide for body copy. */
+  letter-spacing: -0.006em;
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -66,7 +68,7 @@ body {
 
 code,
 pre {
-  font-family: 'SF Mono', ui-monospace, 'Cascadia Mono', 'Menlo', monospace;
+  font-family: 'Geist Mono Variable', ui-monospace, 'SF Mono', 'Menlo', monospace;
 }
 
 a {
