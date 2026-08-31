@@ -41,6 +41,12 @@ Thumbs.db
 settings.json
 settings.local.json
 
+# Docker Compose reads .env automatically; it carries deployment config and is
+# the natural place for a stray credential. Only .env.example is tracked.
+.env
+.env.*
+!.env.example
+
 decisions/
 
 graphify-out/*

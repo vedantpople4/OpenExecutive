@@ -1,11 +1,12 @@
 # OpenExec Backend
 
 FastAPI service backing the OpenExec frontend. Implements the 10 Phase-1
-endpoints against DynamoDB + S3, and runs real multi-agent LLM deliberations
-by reusing the `openexec/` CLI engine as a library.
+endpoints against DynamoDB, and runs real multi-agent LLM deliberations by
+reusing the `openexec/` CLI engine as a library.
 
 See the design docs for the full rationale: API contract and DynamoDB schema,
-plus the LLM orchestration integration.
+plus the LLM orchestration integration. For deploying the whole stack (API +
+SPA behind nginx on EC2), see [`../deploy/README.md`](../deploy/README.md).
 
 ## Running the tests
 
@@ -31,8 +32,9 @@ Either real AWS, or a local stand-in:
 # Local, in-memory (no Docker needed)
 moto_server -p 5001
 
-# Or dynamodb-local via Docker
-docker compose up -d
+# Or dynamodb-local via Docker, on host port 8001
+docker compose -f ../docker-compose.yml -f ../docker-compose.local.yml \
+    up -d dynamodb-local
 ```
 
 Then create the tables:
