@@ -54,6 +54,17 @@ export const useRunStore = create<RunStoreState>((set) => ({
   appendEvent: (event) =>
     set((state) => {
       if (!state.activeRun) return state
+      // EventSource reconnects on its own after a transient network error, and the backend
+      // replays the whole stored history from the top on every connect (no Last-Event-ID
+      // handling in backend/app/routers/events.py). Without this guard a single reconnect
+      // leaves every event in the log twice, which the projectors then fold into duplicate
+      // report/round/decision cards sharing one id.
+      //
+      // event_id is the identity: to_wire_event() defaults it to '' when absent, so an
+      // id-less event is passed through rather than collapsing all of them into one.
+      if (event.event_id && state.activeRun.events.some((e) => e.event_id === event.event_id)) {
+        return state
+      }
       return {
         activeRun: {
           ...state.activeRun,
