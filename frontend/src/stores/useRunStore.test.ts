@@ -53,4 +53,41 @@ describe('useRunStore', () => {
     useRunStore.getState().setRunStatus('streaming')
     expect(useRunStore.getState().activeRun?.status).toBe('streaming')
   })
+
+  it('ignores an event it has already seen, so an EventSource reconnect cannot duplicate cards', () => {
+    useRunStore.getState().startRun('run-1', new AbortController())
+
+    const event = {
+      event_id: 'e1',
+      timestamp: new Date().toISOString(),
+      aggregate_id: 'run-1',
+      type: 'simulation_initialized' as const,
+      core_prompt: 'test',
+      decision_point: null,
+      agent_names: ['ceo'],
+    }
+
+    // EventSource reconnects by itself and the backend replays from the top, so the same
+    // event genuinely arrives twice in production -- not a hypothetical.
+    useRunStore.getState().appendEvent(event)
+    useRunStore.getState().appendEvent(event)
+
+    expect(useRunStore.getState().activeRun?.events).toHaveLength(1)
+  })
+
+  it('keeps events that carry no event_id rather than collapsing them into one', () => {
+    useRunStore.getState().startRun('run-1', new AbortController())
+
+    // to_wire_event() in backend/app/routers/events.py defaults a missing event_id to ''.
+    const base = {
+      event_id: '',
+      timestamp: new Date().toISOString(),
+      aggregate_id: 'run-1',
+      type: 'agent_speaking' as const,
+    }
+    useRunStore.getState().appendEvent({ ...base, agent_name: 'ceo' })
+    useRunStore.getState().appendEvent({ ...base, agent_name: 'cfo' })
+
+    expect(useRunStore.getState().activeRun?.events).toHaveLength(2)
+  })
 })
