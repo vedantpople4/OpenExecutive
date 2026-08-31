@@ -37,11 +37,11 @@ export function PhaseCard({ phase }: PhaseCardProps) {
 
       {isOpen && (
         <div className="phase-card__body">
-          {phase.speaking.map((entry, i) => (
-            <AgentSpeakingIndicator key={`speaking-${entry.agentName}-${i}`} entry={entry} />
+          {phase.speaking.map((entry) => (
+            <AgentSpeakingIndicator key={`speaking-${entry.agentName}`} entry={entry} />
           ))}
-          {phase.reports.map((entry, i) => (
-            <AgentReportCard key={`${entry.agentName}-${i}`} entry={entry} />
+          {phase.reports.map((entry) => (
+            <AgentReportCard key={`report-${entry.agentName}`} entry={entry} />
           ))}
           {phase.rounds.map((round) => (
             <RoundCard key={round.id} round={round} />

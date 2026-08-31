@@ -39,11 +39,11 @@ export function RoundCard({ round }: RoundCardProps) {
 
       {isOpen && (
         <div className="round-card__body">
-          {round.speaking.map((entry, i) => (
-            <AgentSpeakingIndicator key={`speaking-${entry.agentName}-${round.roundNumber}-${i}`} entry={entry} />
+          {round.speaking.map((entry) => (
+            <AgentSpeakingIndicator key={`speaking-${entry.agentName}`} entry={entry} />
           ))}
-          {round.reports.map((entry, i) => (
-            <AgentReportCard key={`${entry.agentName}-${round.roundNumber}-${i}`} entry={entry} />
+          {round.reports.map((entry) => (
+            <AgentReportCard key={`report-${entry.agentName}`} entry={entry} />
           ))}
         </div>
       )}
