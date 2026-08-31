@@ -1,0 +1,30 @@
+OpenExec — Executive Board Simulation
+Run a strategic meeting in your head, but with real arguments.
+
+OpenExec went from a working demo to an investor-ready prototype.
+See it work in 5 minutes with no LLM required.
+
+openexec demo — runs a canned board decision, zero setup
+→ demo_board_report.md + demo_board_report.html
+
+The board commits to the integration path as the primary strategy to
+secure immediate revenue and protect runway, accepting controlled technical
+debt for speed to market.
+
+Improvements since the last release:
+- 6 new commands: compare, register, demo, render, history, review, search
+- --dry-run with cost + ETA estimates
+- --html flag for a standalone board-ready report
+- 440 tests (was 18) — 22× more coverage
+- CI-gated: ruff, pytest on Python 3.10/3.12/3.14, coverage gate, secrets scan
+- repo hygiene: runtime data + local settings untracked, settings.example.json
+- reliability: provider retries, memory fixes, prompt-injection guard
+
+Commands:
+run, setup, discuss, history, search, register, performance, feedback,
+kb-list, kb-ingest, kb-search, kb-categories, kb-stats, config, quick,
+compare, demo, render, review, batch
+
+--dry-run:
+Estimated LLM calls: 9-15
+Estimated time: 3m-5m

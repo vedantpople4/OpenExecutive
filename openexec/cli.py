@@ -4,6 +4,7 @@
 import sys
 import json
 import copy
+import time
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 import typer
@@ -1383,10 +1384,62 @@ def compare(
     console.print(SEPARATOR)
 
 
+def _demo_step(n: int, title: str, pause: bool) -> None:
+    """One numbered step header in the fake, no-LLM demo trace."""
+    console.print(f"\n[Step {n}] {title}")
+    if pause:
+        time.sleep(0.25)
+
+
+def _demo_line(text: str, pause: bool) -> None:
+    console.print(f"    -> {text}")
+    if pause:
+        time.sleep(0.15)
+
+
+def _print_demo_steps(raw: Dict[str, Any], pause: bool) -> None:
+    """Narrate the canned deliberation step by step -- same fixture data the
+    report is built from, just walked in order instead of only rendered at
+    the end. No LLM calls, no network calls; the only thing simulated here
+    is the pacing (a few tenths of a second per line) so it reads like a
+    live run instead of a wall of text dumped at once."""
+    rounds = raw["deliberation_rounds"]
+
+    _demo_step(1, "Board convenes -- CEO frames the decision", pause)
+    r1 = rounds["1"]["ceo"]
+    _demo_line(f"CEO speaking... \"{r1['summary']}\"", pause)
+
+    _demo_step(2, "Round 2 -- CFO and CTO stake out positions", pause)
+    for agent in ("cfo", "cto"):
+        r2 = rounds["2"][agent]
+        _demo_line(f"{agent.upper()} speaking... \"{r2['summary']}\"", pause)
+
+    _demo_step(3, "Specialist analysis -- each executive's independent report", pause)
+    for agent, report in raw["agent_reports"].items():
+        _demo_line(f"{agent.upper()} analyzing... alignment {report['alignment_score']:.2f}", pause)
+
+    _demo_step(4, "Round 5 -- CEO synthesizes the board decision", pause)
+    r5 = rounds["5"]["ceo"]
+    _demo_line(f"CEO synthesizing... \"{r5['summary']}\"", pause)
+
+    _demo_step(5, "Board decision assembled", pause)
+    bd = raw["board_decision"]
+    _demo_line(
+        f"{len(bd['consensus_points'])} consensus point(s), "
+        f"{len(bd['dissent_points'])} dissent point(s), "
+        f"{len(bd['final_priority_actions'])} action item(s)",
+        pause,
+    )
+
+    _demo_step(6, "Writing reports", pause)
+
+
 @app.command()
 def demo(
     output: Optional[str] = typer.Option(None, "-o", "--output", help="Output report file"),
-    html_out: bool = typer.Option(True, "--html/--no-html", help="Also write an HTML report")
+    html_out: bool = typer.Option(True, "--html/--no-html", help="Also write an HTML report"),
+    steps: bool = typer.Option(True, "--steps/--no-steps",
+                                help="Narrate the canned deliberation step by step (no LLM calls either way)"),
 ):
     """
     Run a canned demo simulation with no LLM required.
@@ -1400,11 +1453,15 @@ def demo(
     print_section("Demo Simulation (canned data, no LLM)",
                   "Decision: Should we build an internal platform or integrate with a partner?")
 
-    results = quantify_risks(demo_results())
+    raw = demo_results()
+    if steps:
+        _print_demo_steps(raw, pause=True)
+
+    results = quantify_risks(raw)
 
     md_path = output or "demo_board_report.md"
     write_report(results, md_path)
-    console.print(f"-> Report: {md_path}")
+    console.print(f"\n-> Report: {md_path}")
 
     if html_out:
         html_path = md_path.replace(".md", ".html")

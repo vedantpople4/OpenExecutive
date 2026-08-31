@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Frame 7 — CTA</title>
+    <!-- Head is metadata for the source file only; the runtime ignores it.
+         All styles, markup, and scripts MUST live inside <template> below. -->
+  </head>
+  <body>
+    <template>
+      <!--
+        HyperFrames sub-composition — Frame 7: CTA / SIGN-OFF
+        Blueprint: logo-assemble-lockup (CTA — the sign-off resolves into a
+        centered lockup, extended to a repo/CTA end card)
+        Design preset: openexec-demo terminal identity — same stage/brand/cmd
+        pattern as videos/openexec-demo/compositions/06-cta.html (Oswald
+        wordmark-weight statement, mono command line, plain power2.out
+        settles, no bounce/elastic, no pill/rounded chrome).
+        Duration: 6.0s
+      -->
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+      <style>
+        :root {
+          --bg: #0A130F;
+          --panel: #0F1B15;
+          --fg: #ECEFEA;
+          --fg-dim: #8A9690;
+          --accent: #34C77B;
+          --hairline: #20302A;
+          --display: "Oswald", sans-serif;
+          --mono: "JetBrains Mono", monospace;
+        }
+
+        #f7-root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          background: var(--bg);
+          font-family: var(--mono);
+          overflow: hidden;
+        }
+
+        #f7-root .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(var(--hairline) 1px, transparent 1px),
+            linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+
+        #f7-root .stage {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 1400px;
+          text-align: center;
+        }
+
+        #f7-root .statement {
+          font-family: var(--display);
+          font-size: 60px;
+          font-weight: 700;
+          letter-spacing: 0.005em;
+          color: var(--accent);
+          margin: 0 0 34px;
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+
+        #f7-root .cmd-line {
+          font-family: var(--mono);
+          font-size: 26px;
+          color: var(--accent);
+          font-weight: 700;
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+        #f7-root .cmd-line .dim { color: var(--fg-dim); font-weight: 400; }
+
+        #f7-root .repo {
+          margin-top: 44px;
+          font-family: var(--mono);
+          font-size: 18px;
+          letter-spacing: 0.04em;
+          color: var(--fg-dim);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+
+        #f7-root .frame-kicker {
+          position: absolute;
+          bottom: 44px;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: var(--mono);
+          font-size: 16px;
+          letter-spacing: 0.06em;
+          color: var(--fg-dim);
+        }
+      </style>
+
+      <div id="f7-root"
+           data-composition-id="f7"
+           data-start="0"
+           data-width="1920"
+           data-height="1080"
+           data-duration="6">
+
+        <div class="grid"></div>
+
+        <div class="stage">
+          <p class="statement" id="f7-statement">See it work in five minutes.</p>
+          <div class="cmd-line" id="f7-cmd">$ openexec <span class="dim">demo</span></div>
+          <div class="repo" id="f7-repo">github.com/vedantpople4/OpenExecutive</div>
+        </div>
+
+        <div class="frame-kicker" id="f7-frame-kicker">
+          07 &nbsp;/&nbsp; SEE IT FOR YOURSELF
+        </div>
+
+      </div>
+
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#f7-frame-kicker",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.1
+          );
+
+          /* The sign-off statement lands first — plain autoAlpha + y settle,
+             no bounce (a terminal does not bounce). */
+          tl.fromTo("#f7-statement",
+            { autoAlpha: 0, y: 18 },
+            { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" },
+            0.2
+          );
+
+          tl.fromTo("#f7-cmd",
+            { autoAlpha: 0, y: 10 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+            1.0
+          );
+
+          tl.fromTo("#f7-repo",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            1.7
+          );
+
+          window.__timelines["f7"] = tl;
+        })();
+      </script>
+      </template>
+  </body>
+</html>

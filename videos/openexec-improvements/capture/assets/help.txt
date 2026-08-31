@@ -1,0 +1,40 @@
+                                                                                
+ Usage: openexec [OPTIONS] COMMAND [ARGS]...                                    
+                                                                                
+ OpenExec - Executive Board Simulation System                                   
+                                                                                
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.      │
+│ --show-completion             Show completion for the current shell, to copy │
+│                               it or customize the installation.              │
+│ --help                        Show this message and exit.                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────╮
+│ run            Run an executive board simulation.                            │
+│ setup          Create or update settings.json for AI provider configuration. │
+│ discuss        Start interactive discussion mode.                            │
+│ history        View recent decision history with verdicts, actions, and      │
+│                risks.                                                        │
+│ search         Search past decisions or knowledge base.                      │
+│ register       Show a dashboard of all stored decisions: counts, risks,      │
+│                alignment trends.                                             │
+│ performance    View agent performance metrics.                               │
+│ feedback       Provide feedback on a decision's outcome.                     │
+│ kb-list        List knowledge base documents.                                │
+│ kb-ingest      Ingest document into knowledge base.                          │
+│ kb-search      Search knowledge base for relevant content.                   │
+│ kb-categories  List all knowledge base categories.                           │
+│ kb-stats       Show knowledge base statistics.                               │
+│ list-docs      Alias for kb-list.                                            │
+│ ingest         Alias for kb-ingest.                                          │
+│ config         Manage configuration.                                         │
+│ quick          Quick simulation with a named preset.                         │
+│ compare        Compare two stored decision runs: verdict, consensus/dissent, │
+│                action items,                                                 │
+│                risks, and per-agent alignment deltas.                        │
+│ demo           Run a canned demo simulation with no LLM required.            │
+│ review         Review a previous decision, showing its verdict, actions, and │
+│                risks.                                                        │
+│ batch          Run multiple simulations from a file.                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
