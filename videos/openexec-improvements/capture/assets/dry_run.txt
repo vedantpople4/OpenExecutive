@@ -1,0 +1,15 @@
+Starting Simulation...
+------------------------------------------------------------
+Dry Run -- No Simulation Executed
+------------------------------------------------------------
+Decision: Should we build or integrate?
+Active agents: ceo, cfo, cto, cmo
+Teams: False  |  Research: False
+
+Estimated LLM calls: 9-15
+(15 is a hard ceiling -- every scheduled agent speaks at most once per round. 9 
+is a typical floor assuming normal early convergence; per-round content-based 
+pruning can occasionally push the real count even lower, never higher.)
+Estimated time: 3m-5m
+Note: set 'estimate.price_per_call' in config to see cost. seconds_per_call 
+defaults to 20s.

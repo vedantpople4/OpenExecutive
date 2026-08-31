@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Frame 5 — The New Commands</title>
+    <!-- Head is metadata for the source file only; the runtime ignores it.
+         All styles, markup, and scripts MUST live inside <template> below. -->
+  </head>
+  <body>
+    <template>
+      <!--
+        HyperFrames sub-composition — Frame 5: THE NEW COMMANDS
+        Blueprint: grid-card-assemble (Key_Feature — six items self-assemble
+        in a staggered cascade into a grid and hold)
+        Design preset: openexec-demo terminal identity — panel cards
+        (#0F1B15, hairline border, no radius), accent-green command names.
+        Motion uses plain power2.out settles (no spring/back overshoot),
+        matching the "no bounce anywhere" rule in videos/openexec-demo/frame.md.
+        Duration: 7.0s
+      -->
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+      <style>
+        :root {
+          --bg: #0A130F;
+          --panel: #0F1B15;
+          --fg: #ECEFEA;
+          --fg-dim: #8A9690;
+          --accent: #34C77B;
+          --hairline: #20302A;
+          --display: "Oswald", sans-serif;
+          --mono: "JetBrains Mono", monospace;
+        }
+
+        #f5-root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          background: var(--bg);
+          font-family: var(--mono);
+          overflow: hidden;
+        }
+
+        #f5-root .grid-bg {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(var(--hairline) 1px, transparent 1px),
+            linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+
+        #f5-root .heading {
+          position: absolute;
+          top: 130px;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: var(--display);
+          font-weight: 700;
+          font-size: 26px;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: var(--fg-dim);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+
+        #f5-root .cards {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 1560px;
+          transform: translate(-50%, -46%);
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 28px;
+        }
+
+        #f5-root .card {
+          background: var(--panel);
+          border: 1px solid var(--hairline);
+          padding: 34px 30px;
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+
+        #f5-root .card-cmd {
+          font-family: var(--mono);
+          font-weight: 700;
+          font-size: 28px;
+          color: var(--accent);
+          margin-bottom: 12px;
+        }
+        #f5-root .card-cmd::before {
+          content: "$ ";
+          color: var(--fg-dim);
+        }
+        #f5-root .card-benefit {
+          font-family: var(--mono);
+          font-size: 17px;
+          line-height: 1.45;
+          color: var(--fg-dim);
+        }
+
+        #f5-root .frame-kicker {
+          position: absolute;
+          bottom: 44px;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: var(--mono);
+          font-size: 16px;
+          letter-spacing: 0.06em;
+          color: var(--fg-dim);
+        }
+      </style>
+
+      <div id="f5-root"
+           data-composition-id="f5"
+           data-start="0"
+           data-width="1920"
+           data-height="1080"
+           data-duration="7">
+
+        <div class="grid-bg"></div>
+
+        <div class="heading" id="f5-heading">SIX NEW COMMANDS</div>
+
+        <div class="cards">
+          <div class="card" id="f5-c1">
+            <div class="card-cmd">compare</div>
+            <div class="card-benefit">See the board change its mind, run to run.</div>
+          </div>
+          <div class="card" id="f5-c2">
+            <div class="card-cmd">register</div>
+            <div class="card-benefit">Every stored decision, one dashboard.</div>
+          </div>
+          <div class="card" id="f5-c3">
+            <div class="card-cmd">render</div>
+            <div class="card-benefit">Any decision &rarr; board-ready HTML.</div>
+          </div>
+          <div class="card" id="f5-c4">
+            <div class="card-cmd">history</div>
+            <div class="card-benefit">Real verdicts and risks, not just prompts.</div>
+          </div>
+          <div class="card" id="f5-c5">
+            <div class="card-cmd">review</div>
+            <div class="card-benefit">Replay any past decision in full.</div>
+          </div>
+          <div class="card" id="f5-c6">
+            <div class="card-cmd">search</div>
+            <div class="card-benefit">Find the decision you need, fast.</div>
+          </div>
+        </div>
+
+        <div class="frame-kicker" id="f5-frame-kicker">
+          05 &nbsp;/&nbsp; THE NEW COMMANDS
+        </div>
+
+      </div>
+
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#f5-heading",
+            { autoAlpha: 0, y: -10 },
+            { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            0.1
+          );
+          tl.fromTo("#f5-frame-kicker",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.15
+          );
+
+          /* Six cards self-assemble in a staggered cascade — plain
+             autoAlpha + y settle (power2.out), no spring/back overshoot. */
+          tl.fromTo(["#f5-c1", "#f5-c2", "#f5-c3", "#f5-c4", "#f5-c5", "#f5-c6"],
+            { autoAlpha: 0, y: 22 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out",
+              stagger: 0.28 },
+            0.6
+          );
+
+          window.__timelines["f5"] = tl;
+        })();
+      </script>
+      </template>
+  </body>
+</html>

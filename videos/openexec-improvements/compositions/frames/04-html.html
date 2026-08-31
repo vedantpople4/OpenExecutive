@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Frame 4 — HTML Export</title>
+    <!-- Head is metadata for the source file only; the runtime ignores it.
+         All styles, markup, and scripts MUST live inside <template> below. -->
+  </head>
+  <body>
+    <template>
+      <!--
+        HyperFrames sub-composition — Frame 4: THE HTML EXPORT
+        Blueprint: device-surface-showcase (browser window surface)
+        Design preset: openexec-demo terminal identity for the browser CHROME
+        (bg #0A130F, panel #0F1B15, hairline #20302A, accent #34C77B, no radius,
+        no shadow). The DOCUMENT inside the browser keeps the real, captured
+        demo_board_report.html styling (#fafafa ground / white card / #1a1a1a
+        text) — that page is real tool output, not brand chrome, so its colors
+        are sourced from capture/assets/demo_board_report.html rather than
+        re-skinned, matching the "no invented output" rule from the sibling
+        openexec-demo project's frame.md.
+        Duration: 5.0s
+      -->
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+      <style>
+        :root {
+          --bg: #0A130F;
+          --panel: #0F1B15;
+          --fg: #ECEFEA;
+          --fg-dim: #8A9690;
+          --accent: #34C77B;
+          --hairline: #20302A;
+          --display: "Oswald", sans-serif;
+          --mono: "JetBrains Mono", monospace;
+          /* Real demo_board_report.html tokens (captured, not brand colors) */
+          --doc-bg: #fafafa;
+          --doc-border: #e3e3e3;
+          --doc-ink: #1a1a1a;
+          --doc-meta: #555555;
+        }
+
+        #f4-root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          background: var(--bg);
+          font-family: var(--mono);
+          overflow: hidden;
+        }
+
+        #f4-root .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(var(--hairline) 1px, transparent 1px),
+            linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+
+        /* ── Browser window (hard rectangle — no radius, no shadow) ───────── */
+        #f4-root .browser {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 1240px;
+          height: 740px;
+          transform: translate(-50%, -50%);
+          background: var(--panel);
+          border: 1px solid var(--hairline);
+          overflow: hidden;
+        }
+        #f4-root .browser-inner {
+          position: absolute;
+          inset: 0;
+          transform-origin: center center;
+          will-change: transform, opacity;
+        }
+
+        /* ── Browser chrome (title bar) ──────────────────────────────────── */
+        #f4-root .chrome {
+          display: flex;
+          align-items: center;
+          height: 52px;
+          padding: 0 20px;
+          border-bottom: 1px solid var(--hairline);
+          gap: 10px;
+        }
+        #f4-root .traffic { display: flex; gap: 10px; flex-shrink: 0; }
+        #f4-root .traffic .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 1px solid var(--fg-dim);
+        }
+
+        /* URL bar */
+        #f4-root .url-bar {
+          flex: 1;
+          margin: 0 0 0 14px;
+          display: flex;
+          align-items: center;
+          height: 32px;
+          padding: 0 14px;
+          background: var(--bg);
+          border: 1px solid var(--hairline);
+          color: var(--fg-dim);
+          font-family: var(--mono);
+          font-size: 15px;
+          letter-spacing: 0.01em;
+          white-space: nowrap;
+          overflow: hidden;
+          position: relative;
+        }
+        #f4-root .url-text { display: inline-block; }
+        #f4-root .url-caret {
+          display: inline-block;
+          width: 2px;
+          height: 16px;
+          margin-left: 1px;
+          background: var(--accent);
+          vertical-align: -3px;
+        }
+        #f4-root .chrome-spacer { width: 52px; flex-shrink: 0; }
+
+        /* ── Browser content area — the real captured report page ─────────── */
+        #f4-root .viewport {
+          position: relative;
+          width: 100%;
+          height: calc(100% - 52px);
+          background: var(--doc-bg);
+          overflow: hidden;
+        }
+
+        #f4-root .doc-wrap {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 920px;
+          transform: translate(-50%, -50%) scale(0.86);
+          transform-origin: center center;
+        }
+
+        #f4-root .doc {
+          background: #FFFFFF;
+          border: 1px solid var(--doc-border);
+          border-radius: 8px;
+          padding: 40px 48px 36px;
+          font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          color: var(--doc-ink);
+        }
+
+        #f4-root .doc-kicker {
+          font-family: var(--mono);
+          font-size: 12px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--doc-meta);
+          margin-bottom: 10px;
+        }
+        #f4-root .doc-title {
+          font-size: 30px;
+          font-weight: 700;
+          letter-spacing: -0.005em;
+          line-height: 1.2;
+          color: var(--doc-ink);
+          margin: 0 0 20px;
+          max-width: 720px;
+        }
+        #f4-root .doc .rule {
+          height: 1px;
+          background: var(--doc-border);
+          margin: 0 0 24px;
+        }
+        #f4-root .decision-label {
+          font-family: var(--mono);
+          font-size: 11px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--doc-meta);
+          margin-bottom: 8px;
+        }
+        #f4-root .decision {
+          font-size: 21px;
+          font-weight: 600;
+          line-height: 1.35;
+          color: var(--doc-ink);
+          margin: 0 0 22px;
+          max-width: 760px;
+        }
+        #f4-root .bullets { list-style: none; margin: 0 0 28px; padding: 0; }
+        #f4-root .bullets li {
+          position: relative;
+          padding-left: 22px;
+          margin-bottom: 12px;
+          font-size: 15px;
+          line-height: 1.5;
+          color: #333333;
+          max-width: 740px;
+        }
+        #f4-root .bullets li::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 9px;
+          width: 6px;
+          height: 6px;
+          border: 1px solid #999999;
+          border-radius: 50%;
+        }
+
+        /* Send-to-board CTA — the one accent moment inside the real page,
+           styled with the brand accent rather than an invented color. */
+        #f4-root .send-cta {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-family: var(--mono);
+          font-size: 16px;
+          font-weight: 700;
+          letter-spacing: 0.01em;
+          color: #0f7a45;
+          padding: 10px 20px;
+          border: 1px solid #0f7a45;
+          background: rgba(15, 122, 69, 0.06);
+          white-space: nowrap;
+        }
+
+        #f4-root .frame-kicker {
+          position: absolute;
+          bottom: 44px;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: var(--mono);
+          font-size: 16px;
+          letter-spacing: 0.06em;
+          color: var(--fg-dim);
+        }
+      </style>
+
+      <div id="f4-root" data-composition-id="f4" data-start="0" data-width="1920" data-height="1080" data-duration="5">
+
+        <div class="grid"></div>
+
+        <div class="browser" id="f4-browser">
+          <div class="browser-inner" id="f4-browser-inner">
+
+            <div class="chrome" id="f4-chrome">
+              <div class="traffic" id="f4-traffic">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              <div class="url-bar" id="f4-url-bar">
+                <span class="url-text" id="f4-url-text">file://</span>
+                <span class="url-caret" id="f4-url-caret"></span>
+              </div>
+              <div class="chrome-spacer"></div>
+            </div>
+
+            <div class="viewport" id="f4-viewport">
+              <div class="doc-wrap" id="f4-doc-wrap">
+                <div class="doc" id="f4-doc">
+
+                  <div class="doc-kicker" id="f4-doc-kicker">
+                    OpenExec &#160;&middot;&#160; Simulation Report &#160;&middot;&#160; v1
+                  </div>
+
+                  <h1 class="doc-title" id="f4-doc-title">
+                    Executive Board Simulation Report
+                  </h1>
+
+                  <div class="rule" id="f4-rule"></div>
+
+                  <div class="decision-label" id="f4-decision-label">
+                    Recommended decision
+                  </div>
+                  <p class="decision" id="f4-decision">
+                    Commit to the integration path for Q2 revenue
+                  </p>
+
+                  <ul class="bullets" id="f4-bullets">
+                    <li id="f4-bullet-1">
+                      Accelerates the pipeline by 4&ndash;6 weeks and aligns
+                      with the board's fiscal-year mandate.
+                    </li>
+                    <li id="f4-bullet-2">
+                      Risk-weighted upside of $3.8M against a $620K integration
+                      cost &mdash; board-ready with one dissent.
+                    </li>
+                  </ul>
+
+                  <span class="send-cta" id="f4-send-cta">
+                    Send to board &rarr;
+                  </span>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="frame-kicker" id="f4-frame-kicker">
+          04 &#160;/&#160; HTML EXPORT &#160;&middot;&#160; STANDALONE REPORT
+        </div>
+
+      </div>
+
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var tl = gsap.timeline({ paused: true });
+
+          /* Browser coasts in — plain autoAlpha + y settle, no scale bounce,
+             matching the terminal-window entrance pattern used everywhere
+             else in this project and in the sibling openexec-demo scenes. */
+          tl.fromTo("#f4-browser",
+            { y: 16, autoAlpha: 0 },
+            { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.0
+          );
+
+          tl.fromTo("#f4-frame-kicker",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.1
+          );
+
+          /* URL bar types out concurrently with doc content below — the
+             page must never sit empty while the address bar finishes. */
+          var fullUrl = "file://demo_board_report.html";
+          var proxy = { n: "file://".length };
+          var urlTextEl = document.getElementById("f4-url-text");
+          tl.to(proxy, {
+            n: fullUrl.length,
+            duration: 0.8,
+            ease: "none",
+            onUpdate: function () {
+              var i = Math.round(proxy.n);
+              urlTextEl.textContent = fullUrl.slice(0, i);
+            }
+          }, 0.35);
+
+          var caretCycles = Math.max(0, Math.floor(0.8 / 0.26) - 1);
+          tl.to("#f4-url-caret",
+            { autoAlpha: 0.0, duration: 0.13, ease: "power1.inOut",
+              repeat: caretCycles, yoyo: true },
+            0.35
+          );
+          tl.set("#f4-url-caret", { autoAlpha: 0 }, 1.15);
+
+          /* Report preview sections appear almost immediately after the
+             browser coasts in. */
+          tl.fromTo("#f4-doc-kicker",
+            { autoAlpha: 0, y: 8 },
+            { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" },
+            0.35
+          );
+          tl.fromTo("#f4-doc-title",
+            { autoAlpha: 0, y: 14 },
+            { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            0.42
+          );
+          tl.fromTo("#f4-rule",
+            { scaleX: 0, autoAlpha: 0 },
+            { scaleX: 1, autoAlpha: 1, duration: 0.35, ease: "power2.out",
+              transformOrigin: "left center" },
+            0.58
+          );
+          tl.fromTo("#f4-decision-label",
+            { autoAlpha: 0, y: 6 },
+            { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" },
+            0.7
+          );
+          tl.fromTo("#f4-decision",
+            { autoAlpha: 0, y: 12 },
+            { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            0.78
+          );
+          tl.fromTo("#f4-bullets li",
+            { autoAlpha: 0, x: -10 },
+            { autoAlpha: 1, x: 0, duration: 0.35, ease: "power2.out",
+              stagger: 0.1 },
+            0.95
+          );
+
+          /* "Send to board →" CTA appears, then holds — plain power2.out
+             settle, no spring/back overshoot (a terminal does not bounce). */
+          tl.fromTo("#f4-send-cta",
+            { autoAlpha: 0, y: 10 },
+            { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            1.5
+          );
+
+          window.__timelines["f4"] = tl;
+        })();
+        </script>
+      </template>
+  </body>
+</html>

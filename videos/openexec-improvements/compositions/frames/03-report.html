@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Frame 3 — The Report Is Real</title>
+    <!-- Head is metadata for the source file only; the runtime ignores it.
+         All styles, markup, and scripts MUST live inside <template> below. -->
+  </head>
+  <body>
+    <template>
+      <!--
+        HyperFrames sub-composition — Frame 3: THE REPORT IS REAL
+        Blueprint: video-text-pivot (Key_Feature), adapted — reveal-in-place
+        report sections rather than a literal video slide-aside (no footage
+        to cut to; the artifact IS the proof).
+        Design preset: openexec-demo terminal identity — reuses the
+        board_report.md terminal panel from videos/openexec-demo/compositions/05-report.html
+        almost verbatim (same chrome, h1/h2/p/item classes, reveal cadence).
+        Duration: 6.0s
+      -->
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+      <style>
+        :root {
+          --bg: #0A130F;
+          --panel: #0F1B15;
+          --fg: #ECEFEA;
+          --fg-dim: #8A9690;
+          --accent: #34C77B;
+          --hairline: #20302A;
+          --display: "Oswald", sans-serif;
+          --mono: "JetBrains Mono", monospace;
+        }
+
+        #f3-root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          background: var(--bg);
+          font-family: var(--mono);
+          overflow: hidden;
+        }
+
+        #f3-root .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(var(--hairline) 1px, transparent 1px),
+            linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+
+        #f3-root .term {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 1360px;
+          height: 800px;
+          transform: translate(-50%, -50%);
+          background: var(--panel);
+          border: 1px solid var(--hairline);
+        }
+
+        #f3-root .chrome {
+          height: 52px;
+          border-bottom: 1px solid var(--hairline);
+          display: flex;
+          align-items: center;
+          padding: 0 20px;
+          gap: 10px;
+        }
+        #f3-root .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 1px solid var(--fg-dim);
+        }
+        #f3-root .chrome-label {
+          margin-left: 16px;
+          font-size: 18px;
+          color: var(--fg-dim);
+        }
+
+        #f3-root .body {
+          padding: 40px 52px;
+        }
+        #f3-root .row { opacity: 0; will-change: transform, opacity; }
+
+        #f3-root .h1 {
+          font-family: var(--display);
+          font-weight: 700;
+          font-size: 34px;
+          color: var(--fg);
+          letter-spacing: 0.005em;
+        }
+        #f3-root .h2 {
+          font-family: var(--display);
+          font-weight: 700;
+          font-size: 22px;
+          color: var(--accent);
+          margin-top: 26px;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+        }
+        #f3-root .p {
+          font-size: 22px;
+          line-height: 1.5;
+          color: var(--fg);
+          margin-top: 10px;
+          max-width: 1100px;
+        }
+        #f3-root .item {
+          font-size: 20px;
+          line-height: 1.55;
+          color: var(--fg);
+          margin-top: 8px;
+          padding-left: 22px;
+          position: relative;
+        }
+        #f3-root .item::before {
+          content: "-";
+          position: absolute;
+          left: 0;
+          color: var(--fg-dim);
+        }
+      </style>
+
+      <div id="f3-root"
+           data-composition-id="f3"
+           data-start="0"
+           data-width="1920"
+           data-height="1080"
+           data-duration="6">
+
+        <div class="grid"></div>
+
+        <div class="term" id="f3-term">
+          <div class="chrome">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            <span class="chrome-label">demo_board_report.md</span>
+          </div>
+          <div class="body">
+            <div class="row h1" id="f3-h1"># Executive Board Simulation Report</div>
+
+            <div class="row h2" id="f3-h2a">Board Decision</div>
+            <div class="row p" id="f3-p1">
+              Commit to the integration path for Q2 revenue, with a shared
+              platform roadmap to revisit architecture in Q4.
+            </div>
+
+            <div class="row h2" id="f3-h2b">Consensus</div>
+            <div class="row item" id="f3-c1">Immediate revenue traction via integration is mandatory for Q2 targets.</div>
+            <div class="row item" id="f3-c2">Runway protection outweighs long-term architectural purity.</div>
+
+            <div class="row h2" id="f3-h2c">Final Priority Actions</div>
+            <div class="row item" id="f3-a1">Launch a partnership pilot with the top two candidates within 30 days.</div>
+            <div class="row item" id="f3-a2">Freeze the internal platform build until pilot results land.</div>
+          </div>
+        </div>
+
+        <div class="frame-kicker" id="f3-frame-kicker" style="position:absolute;bottom:44px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:16px;letter-spacing:0.06em;color:var(--fg-dim);opacity:0;">
+          03 &nbsp;/&nbsp; THE REPORT IS REAL
+        </div>
+
+      </div>
+
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#f3-term",
+            { y: 16, autoAlpha: 0 },
+            { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.0
+          );
+          tl.fromTo("#f3-frame-kicker",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.1
+          );
+
+          /* Report lines reveal in sequence — matches openexec-demo's
+             seq.forEach cadence in 05-report.html (fromTo autoAlpha/y,
+             power2.out, ~0.5-0.6s between rows). Pulled forward from the
+             reference's slower cadence to fit this frame's shorter 6.0s
+             duration (vs. the source scene's ~9s). */
+          var seq = [
+            ["#f3-h1", 0.35],
+            ["#f3-h2a", 0.85],
+            ["#f3-p1", 1.15],
+            ["#f3-h2b", 2.1],
+            ["#f3-c1", 2.4],
+            ["#f3-c2", 2.7],
+            ["#f3-h2c", 3.4],
+            ["#f3-a1", 3.7],
+            ["#f3-a2", 4.0]
+          ];
+          seq.forEach(function (pair) {
+            tl.fromTo(pair[0],
+              { autoAlpha: 0, y: 10 },
+              { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+              pair[1]
+            );
+          });
+
+          window.__timelines["f3"] = tl;
+        })();
+      </script>
+      </template>
+  </body>
+</html>

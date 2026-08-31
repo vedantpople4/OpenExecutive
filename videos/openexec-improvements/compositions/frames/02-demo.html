@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Frame 2 — The Demo</title>
+    <!-- Head is metadata for the source file only; the runtime ignores it.
+         All styles, markup, and scripts MUST live inside <template> below. -->
+  </head>
+  <body>
+    <template>
+      <!--
+        HyperFrames sub-composition — Frame 2: THE DEMO, ZERO SETUP
+        Blueprint: cursor-ui-demo (Product_Intro — first cursor-led look at the surface)
+        Design preset: openexec-demo terminal identity — terminal-window pattern
+        reused verbatim from videos/openexec-demo/compositions/03-command.html
+        (panel #0F1B15, hairline #20302A border, outline traffic dots, no radius,
+        no shadow, mono body, accent-green cmdline).
+        Duration: 6.0s
+      -->
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+      <style>
+        :root {
+          --bg: #0A130F;
+          --panel: #0F1B15;
+          --fg: #ECEFEA;
+          --fg-dim: #8A9690;
+          --accent: #34C77B;
+          --hairline: #20302A;
+          --display: "Oswald", sans-serif;
+          --mono: "JetBrains Mono", monospace;
+        }
+
+        #f2-root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          background: var(--bg);
+          font-family: var(--mono);
+          overflow: hidden;
+        }
+
+        #f2-root .grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(var(--hairline) 1px, transparent 1px),
+            linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+          background-size: 64px 64px;
+          opacity: 0.18;
+        }
+
+        /* ── Terminal window (matches openexec-demo's .term exactly) ──────── */
+        #f2-root .term {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 1440px;
+          height: 700px;
+          transform: translate(-50%, -50%);
+          background: var(--panel);
+          border: 1px solid var(--hairline);
+        }
+        #f2-root .term-inner {
+          position: absolute;
+          inset: 0;
+          will-change: transform, opacity;
+        }
+
+        #f2-root .chrome {
+          display: flex;
+          align-items: center;
+          height: 52px;
+          padding: 0 20px;
+          gap: 10px;
+          border-bottom: 1px solid var(--hairline);
+        }
+        #f2-root .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 1px solid var(--fg-dim);
+        }
+        #f2-root .chrome-label {
+          margin-left: 16px;
+          font-size: 18px;
+          color: var(--fg-dim);
+        }
+
+        #f2-root .body {
+          padding: 40px 44px;
+          font-size: 26px;
+          line-height: 1.9;
+        }
+
+        #f2-root .prompt-line {
+          color: var(--accent);
+          font-weight: 700;
+        }
+        #f2-root .caret {
+          display: inline-block;
+          width: 15px;
+          height: 28px;
+          margin-left: 2px;
+          background: var(--accent);
+          transform: translateY(6px);
+        }
+
+        #f2-root .output { margin-top: 26px; }
+        #f2-root .output .line {
+          color: var(--fg);
+          margin-bottom: 8px;
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+        #f2-root .output .check { color: var(--accent); margin-right: 12px; }
+
+        #f2-root .kicker {
+          position: absolute;
+          left: 44px;
+          right: 44px;
+          bottom: 36px;
+          font-family: var(--mono);
+          font-weight: 700;
+          font-size: 20px;
+          letter-spacing: 0.04em;
+          color: var(--accent);
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+
+        #f2-root .frame-kicker {
+          position: absolute;
+          bottom: 44px;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: var(--mono);
+          font-size: 16px;
+          letter-spacing: 0.06em;
+          color: var(--fg-dim);
+        }
+      </style>
+
+      <div id="f2-root"
+           data-composition-id="f2"
+           data-start="0"
+           data-width="1920"
+           data-height="1080"
+           data-duration="6">
+
+        <div class="grid"></div>
+
+        <div class="term" id="f2-term">
+          <div class="term-inner" id="f2-term-inner">
+            <div class="chrome">
+              <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+              <span class="chrome-label">zsh</span>
+            </div>
+            <div class="body">
+              <div class="prompt-line">$ <span id="f2-cmd-text"></span><span class="caret" id="f2-caret"></span></div>
+              <div class="output" id="f2-output">
+                <div class="line" id="f2-o1"><span class="check">&#10003;</span>Running canned board simulation&nbsp;&mdash;&nbsp;no LLM required</div>
+                <div class="line" id="f2-o2"><span class="check">&#10003;</span>demo_board_report.md written</div>
+                <div class="line" id="f2-o3"><span class="check">&#10003;</span>demo_board_report.html written</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kicker" id="f2-kicker">NO LLM REQUIRED &nbsp;&middot;&nbsp; RUNS IN SECONDS</div>
+
+        <div class="frame-kicker" id="f2-frame-kicker">
+          02 &nbsp;/&nbsp; THE DEMO &nbsp;&middot;&nbsp; ZERO SETUP
+        </div>
+
+      </div>
+
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#f2-term",
+            { y: 16, autoAlpha: 0 },
+            { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.0
+          );
+          tl.fromTo("#f2-frame-kicker",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.1
+          );
+
+          /* Type "openexec demo" character by character — deterministic
+             proxy-driven reveal, matching openexec-demo's typeInto pattern. */
+          var fullCmd = "openexec demo";
+          var proxy = { n: 0 };
+          var cmdEl = document.getElementById("f2-cmd-text");
+          tl.to(proxy, {
+            n: fullCmd.length,
+            duration: 1.1,
+            ease: "none",
+            onUpdate: function () {
+              var i = Math.round(proxy.n);
+              cmdEl.textContent = fullCmd.slice(0, i);
+            }
+          }, 0.4);
+
+          var caretCycles = Math.max(0, Math.floor(1.1 / 0.24) - 1);
+          tl.to("#f2-caret",
+            { autoAlpha: 0.0, duration: 0.12, ease: "power1.inOut",
+              repeat: caretCycles, yoyo: true },
+            0.4
+          );
+          tl.set("#f2-caret", { autoAlpha: 0 }, 1.5);
+
+          /* Output lines cascade in after the "Enter" beat. */
+          tl.fromTo(["#f2-o1", "#f2-o2", "#f2-o3"],
+            { autoAlpha: 0, y: 8 },
+            { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out",
+              stagger: 0.18 },
+            1.75
+          );
+
+          /* "No LLM required" accent kicker lands as the closing beat. */
+          tl.fromTo("#f2-kicker",
+            { autoAlpha: 0, y: 10 },
+            { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            2.9
+          );
+
+          window.__timelines["f2"] = tl;
+        })();
+      </script>
+      </template>
+  </body>
+</html>

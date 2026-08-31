@@ -1,0 +1,53 @@
+------------------------------------------------------------
+DECISION REGISTER
+------------------------------------------------------------
+Total decisions: 26
+Distinct prompts: 15
+Total action items: 661 (114 HIGH priority)
+
+Top recurring risks:
+  x1  [ceo] over-reliance on internal ai agents to solve complex infrastructure 
+problems. conseq
+  x1  [ceo] slowing down general platform maintenance due to resource 
+reallocation. consequence:
+  x1  [cfo] agents fail to deliver measurable efficiency gains or add 
+maintenance complexity. ($
+  x1  [cfo] the initial engineering team cannot build the agents due to scope 
+creep or lack of s
+  x1  [cfo] overreliance on ai agents creates technical debt and vendor lock-in 
+for our internal
+
+Agent alignment (mean):
+  BUDGET_PLANNER: 1.47 (n=9)
+  CEO: 0.80 (n=26)
+  CFO: 0.77 (n=16)
+  CHIEF_OF_STAFF: 1.36 (n=9)
+  CMO: 0.81 (n=17)
+  CONTENT_STRATEGIST: 1.54 (n=9)
+  CTO: 0.78 (n=24)
+  ENGINEERING_LEAD: 1.41 (n=9)
+  FINANCIAL_ANALYST: 1.61 (n=9)
+  GROWTH_MARKETER: 1.55 (n=9)
+  RISK_ANALYST: 7.68 (n=9)
+  SEO_SPECIALIST: 1.59 (n=9)
+  SOLUTIONS_ARCHITECT: 1.69 (n=9)
+  SRE: 1.37 (n=9)
+  STRATEGY_ASSOCIATE: 1.63 (n=9)
+  TEAM_BUDGET_PLANNER: 1.71 (n=6)
+  TEAM_CHIEF_OF_STAFF: 1.76 (n=6)
+  TEAM_CONTENT_STRATEGIST: 2.07 (n=6)
+  TEAM_ENGINEERING_LEAD: 1.28 (n=9)
+  TEAM_FINANCIAL_ANALYST: 2.09 (n=6)
+  TEAM_GROWTH_MARKETER: 2.12 (n=6)
+  TEAM_RISK_ANALYST: 1.73 (n=6)
+  TEAM_SEO_SPECIALIST: 2.04 (n=6)
+  TEAM_SOLUTIONS_ARCHITECT: 1.68 (n=9)
+  TEAM_SRE: 1.37 (n=9)
+  TEAM_STRATEGY_ASSOCIATE: 1.96 (n=6)
+
+Activity by month:
+  202607: 16 decision(s)
+  202606: 10 decision(s)
+
+Most recent: 20260731_175932
+------------------------------------------------------------
