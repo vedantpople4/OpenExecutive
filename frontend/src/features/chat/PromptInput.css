@@ -2,56 +2,103 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  padding: 1rem 1.5rem 1.5rem;
-  border-top: 1px solid var(--border-color);
+  /* flex-shrink guards the composer against a tall transcript: without it a
+     flex column will squash the last child before it scrolls the first. */
+  flex-shrink: 0;
+  padding: 0.75rem 1.5rem 1.25rem;
+  /* Matches the page so the composer reads as part of the window edge rather
+     than as a card sitting on it. */
+  background: var(--bg-color);
 }
 
-.prompt-input__config-summary {
-  margin: 0;
-  font-size: 0.75rem;
-  color: var(--dim-color);
-}
-
-.prompt-input__row {
+/* The bordered container. The border lives here rather than on the textarea so
+   the round button can sit inside the same visual box. */
+.prompt-input__box {
+  position: relative;
   display: flex;
-  gap: 0.5rem;
   align-items: flex-end;
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+  background: var(--panel-color);
+  transition: border-color 120ms ease;
+}
+
+.prompt-input__box:focus-within {
+  border-color: var(--accent-color);
 }
 
 .prompt-input__textarea {
   flex: 1;
-  resize: vertical;
-  min-height: 2.5rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 0.6rem;
-  border: 1px solid var(--border-color);
-  background: var(--panel-color);
+  min-width: 0;
+  /* Height is driven by useAutoGrow; resize would fight it. */
+  resize: none;
+  max-height: 200px;
+  /* Right padding clears the button so text never runs underneath it. */
+  padding: 0.85rem 3.25rem 0.85rem 1.1rem;
+  border: none;
+  background: none;
   color: var(--fg-color);
   font: inherit;
+  line-height: 1.5;
+  outline: none;
+}
+
+.prompt-input__textarea::placeholder {
+  color: var(--dim-color);
 }
 
 .prompt-input__textarea:disabled {
   opacity: 0.6;
 }
 
-.prompt-input__submit,
-.prompt-input__stop {
-  padding: 0.6rem 1.1rem;
-  border-radius: 0.6rem;
-  border: 1px solid var(--accent-color);
+/* Pinned to the bottom-right of the box, so a growing textarea pushes the
+   button down with it instead of stranding it beside the first line. */
+.prompt-input__action {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
   background: var(--accent-color);
   color: var(--accent-contrast);
-  font-weight: 600;
   cursor: pointer;
+  transition:
+    background 120ms ease,
+    opacity 120ms ease;
 }
 
-.prompt-input__submit:disabled {
-  opacity: 0.4;
+.prompt-input__action:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.prompt-input__action:disabled {
+  /* Dimmed in place rather than hidden: a control that disappears when the box
+     empties makes the box feel broken. */
+  background: var(--border-color);
+  color: var(--dim-color);
   cursor: not-allowed;
 }
 
-.prompt-input__stop {
-  background: transparent;
-  border-color: var(--danger-border);
-  color: var(--danger-color);
+.prompt-input__action--stop {
+  background: var(--danger-color);
+  color: var(--bg-color);
+}
+
+.prompt-input__config-summary {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 48rem;
+  padding: 0 0.5rem;
+  font-size: 0.7rem;
+  color: var(--dim-color);
+  text-align: center;
 }

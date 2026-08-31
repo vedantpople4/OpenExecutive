@@ -45,7 +45,7 @@ describe('ChatPage handleStop', () => {
 
     renderChatPageAt(runId)
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Stop' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Stop the deliberation' }))
 
     expect(stopDecisionMock).toHaveBeenCalledTimes(1)
     expect(stopDecisionMock).toHaveBeenCalledWith(runId)
@@ -60,7 +60,7 @@ describe('ChatPage handleStop', () => {
 
     renderChatPageAt(runId)
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Stop' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Stop the deliberation' }))
 
     expect(stopDecisionMock).toHaveBeenCalledTimes(1)
     expect(useRunStore.getState().activeRun?.status).toBe('stopped')

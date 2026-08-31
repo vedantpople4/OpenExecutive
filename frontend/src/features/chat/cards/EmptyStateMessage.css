@@ -1,6 +1,13 @@
+/* This is what a fresh session shows, and it returns in place of .message-list
+   rather than inside it -- so without flex:1 it does not fill the column and
+   the composer rides up directly beneath the examples instead of resting at
+   the bottom of the screen. Centred rather than top-aligned, since a short
+   block of examples stranded at the top of an empty column looks unfinished. */
 .empty-state {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  justify-content: center;
   gap: 0.75rem;
   padding: 2rem;
   color: var(--dim-color);
