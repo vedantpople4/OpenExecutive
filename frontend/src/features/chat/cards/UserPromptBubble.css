@@ -1,8 +1,8 @@
 .user-prompt-bubble {
   align-self: flex-end;
   max-width: 70%;
-  background: var(--accent-color, #34c77b);
-  color: #04150c;
+  background: var(--accent-color);
+  color: var(--accent-contrast);
   border-radius: 0.75rem 0.75rem 0.1rem 0.75rem;
   padding: 0.6rem 0.9rem;
 }

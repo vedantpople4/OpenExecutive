@@ -3,7 +3,7 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.8rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   padding: 0.5rem 1.5rem;
-  border-bottom: 1px solid var(--border-color, #20302a);
+  border-bottom: 1px solid var(--border-color);
 }

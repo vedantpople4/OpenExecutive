@@ -8,6 +8,7 @@ from app.models.decisions import (
     SubmitDecisionResponse,
 )
 from app.repositories import decisions as repo
+from app.repositories import events as events_repo
 from app.services import orchestration
 
 router = APIRouter()
@@ -55,6 +56,31 @@ def get_decision(run_id: str) -> DecisionDetail:
     if item is None:
         raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")
     return DecisionDetail(**repo.to_detail(item))
+
+
+@router.delete("/decisions/{run_id}", status_code=204)
+def delete_decision(run_id: str) -> None:
+    """Removes a decision and its whole event timeline.
+
+    Refuses a running decision with 409 rather than deleting it. The worker
+    thread writes results back when it finishes, so deleting underneath it
+    would resurrect the row minutes later with no way for the caller to tell
+    that had happened. Stop it first -- POST /decisions/{id}/stop -- and the
+    delete then succeeds.
+    """
+    decision = repo.get_decision(run_id)
+    if decision is None:
+        raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")
+    if decision.get("status") == "running":
+        raise HTTPException(
+            status_code=409,
+            detail="Decision is still running. Stop it before deleting.",
+        )
+
+    # Events first: a failure here leaves the decision row in place, so the
+    # timeline is still reachable. The other order would orphan the events.
+    events_repo.delete_events(run_id)
+    repo.delete_decision(run_id)
 
 
 @router.post("/decisions/{run_id}/stop")

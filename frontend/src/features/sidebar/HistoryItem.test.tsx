@@ -1,8 +1,12 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { screen, fireEvent, waitFor } from '@testing-library/react'
+import { renderWithProviders } from '../../test/renderWithProviders'
 import { HistoryItem } from './HistoryItem'
+import { deleteDecision } from '../../api/endpoints'
+
+vi.mock('../../api/endpoints', () => ({ deleteDecision: vi.fn() }))
+const deleteDecisionMock = vi.mocked(deleteDecision)
 import type { DecisionSummary, RunOutcome } from '../../api/types'
 
 function makeDecision(status?: RunOutcome): DecisionSummary {
@@ -18,11 +22,7 @@ function makeDecision(status?: RunOutcome): DecisionSummary {
 }
 
 function renderItem(status?: RunOutcome) {
-  return render(
-    <MemoryRouter>
-      <HistoryItem decision={makeDecision(status)} isActive={false} />
-    </MemoryRouter>,
-  )
+  return renderWithProviders(<HistoryItem decision={makeDecision(status)} isActive={false} />)
 }
 
 describe('HistoryItem run status badge', () => {
@@ -44,4 +44,56 @@ describe('HistoryItem run status badge', () => {
       expect(screen.queryByLabelText('Stopped before a decision')).not.toBeInTheDocument()
     },
   )
+})
+
+
+describe('HistoryItem delete', () => {
+  beforeEach(() => {
+    deleteDecisionMock.mockReset()
+    deleteDecisionMock.mockResolvedValue(undefined)
+  })
+
+  it('does not delete on the first click -- it asks first', () => {
+    renderItem()
+
+    fireEvent.click(screen.getByLabelText(/^Delete decision:/))
+
+    expect(screen.getByText('Delete permanently?')).toBeInTheDocument()
+    expect(deleteDecisionMock).not.toHaveBeenCalled()
+  })
+
+  it('deletes the run once confirmed', async () => {
+    renderItem()
+    fireEvent.click(screen.getByLabelText(/^Delete decision:/))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    await waitFor(() => expect(deleteDecisionMock).toHaveBeenCalledWith('run-1'))
+  })
+
+  it('cancel backs out without calling the API', () => {
+    renderItem()
+    fireEvent.click(screen.getByLabelText(/^Delete decision:/))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(screen.queryByText('Delete permanently?')).not.toBeInTheDocument()
+    expect(deleteDecisionMock).not.toHaveBeenCalled()
+  })
+
+  it("surfaces the server's reason instead of failing silently", async () => {
+    // What a 409 looks like: the backend refuses to delete a running decision
+    // because its worker would write the row back minutes later.
+    deleteDecisionMock.mockRejectedValue(
+      new Error('Decision is still running. Stop it before deleting.'),
+    )
+    renderItem()
+    fireEvent.click(screen.getByLabelText(/^Delete decision:/))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    expect(
+      await screen.findByText('Decision is still running. Stop it before deleting.'),
+    ).toBeInTheDocument()
+  })
 })

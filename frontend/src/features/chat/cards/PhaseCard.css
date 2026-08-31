@@ -1,5 +1,5 @@
 .phase-card {
-  border: 1px solid var(--border-color, #20302a);
+  border: 1px solid var(--border-color);
   border-radius: 0.75rem;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.01);
@@ -21,7 +21,7 @@
 
 .phase-card__chevron {
   transition: transform 0.15s ease;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .phase-card__chevron--open {
@@ -37,13 +37,13 @@
   font-size: 0.7rem;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-  border: 1px solid var(--border-color, #20302a);
-  color: var(--dim-color, #8a9690);
+  border: 1px solid var(--border-color);
+  color: var(--dim-color);
 }
 
 .phase-card__status--running {
-  color: var(--accent-color, #34c77b);
-  border-color: var(--accent-color, #34c77b);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 .phase-card__body {

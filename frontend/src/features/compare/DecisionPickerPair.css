@@ -10,25 +10,25 @@
   flex-direction: column;
   gap: 0.3rem;
   font-size: 0.8rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
   min-width: 280px;
 }
 
 .decision-picker-pair select {
   padding: 0.5rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--border-color, #20302a);
-  background: var(--panel-color, #0f1b15);
-  color: var(--fg-color, #ecefea);
+  border: 1px solid var(--border-color);
+  background: var(--panel-color);
+  color: var(--fg-color);
   font: inherit;
 }
 
 .decision-picker-pair button {
   padding: 0.55rem 1.2rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--accent-color, #34c77b);
-  background: var(--accent-color, #34c77b);
-  color: #04150c;
+  border: 1px solid var(--accent-color);
+  background: var(--accent-color);
+  color: var(--accent-contrast);
   font-weight: 600;
   cursor: pointer;
 }
@@ -39,5 +39,5 @@
 }
 
 .decision-picker-pair__loading {
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }

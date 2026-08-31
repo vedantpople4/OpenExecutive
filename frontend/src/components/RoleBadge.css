@@ -1,35 +1,13 @@
+/* Plain text, deliberately. This was a coloured pill with one hue per role --
+   green CEO, blue CFO, amber CTO, pink CMO. Four accent colours competing in
+   every card header made the actual accent colour meaningless, and the colours
+   carried no information the label did not already carry. */
 .role-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 2rem;
-  height: 2rem;
-  padding: 0 0.4rem;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  background: var(--panel-color, #0f1b15);
-  border: 1px solid var(--border-color, #20302a);
-  color: var(--fg-color, #ecefea);
-}
-
-.role-badge--ceo {
-  border-color: #34c77b;
-  color: #34c77b;
-}
-
-.role-badge--cfo {
-  border-color: #4f9dff;
-  color: #4f9dff;
-}
-
-.role-badge--cto {
-  border-color: #ffb454;
-  color: #ffb454;
-}
-
-.role-badge--cmo {
-  border-color: #ff6fa5;
-  color: #ff6fa5;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--fg-color);
+  white-space: nowrap;
 }

@@ -1,8 +1,8 @@
 .board-decision-card {
-  border: 1px solid var(--accent-color, #34c77b);
+  border: 1px solid var(--accent-color);
   border-radius: 0.75rem;
   padding: 1rem 1.25rem;
-  background: var(--panel-color, #0f1b15);
+  background: var(--panel-color);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -16,7 +16,7 @@
 
 .board-decision-card__badge {
   font-weight: 700;
-  color: var(--accent-color, #34c77b);
+  color: var(--accent-color);
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.05em;
@@ -26,8 +26,8 @@
   font-size: 0.7rem;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
-  border: 1px solid var(--border-color, #20302a);
-  color: var(--dim-color, #8a9690);
+  border: 1px solid var(--border-color);
+  color: var(--dim-color);
 }
 
 .board-decision-card__summary {
@@ -46,7 +46,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .board-decision-card ul {
@@ -58,7 +58,7 @@
 .board-decision-card__empty {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .board-decision-card__actions {
@@ -75,9 +75,9 @@
   gap: 0.5rem;
   align-items: baseline;
   padding: 0.35rem 0.5rem;
-  background: var(--bg-color, #0a130f);
+  background: var(--bg-color);
   border-radius: 0.4rem;
-  border: 1px solid var(--border-color, #20302a);
+  border: 1px solid var(--border-color);
 }
 
 .board-decision-card__action-text {
@@ -87,5 +87,5 @@
 .board-decision-card__action-owner,
 .board-decision-card__action-timeframe {
   font-size: 0.75rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }

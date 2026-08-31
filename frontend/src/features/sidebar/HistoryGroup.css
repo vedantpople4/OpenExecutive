@@ -3,7 +3,7 @@
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .history-group__label:first-child {

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
 import uuid
 from datetime import datetime, timezone
 from typing import Any
@@ -11,9 +12,13 @@ from typing import Any
 from decimal import Decimal
 
 from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
 
 from app.config import get_settings
 from app.db import to_dynamodb_safe, get_dynamodb_resource
+
+
+logger = logging.getLogger(__name__)
 
 
 def _table():
@@ -85,16 +90,47 @@ def stop_decision(run_id: str) -> str | None:
     return "stopped"
 
 
+def delete_decision(run_id: str) -> bool:
+    """Removes the decision row. False if it was not there to begin with.
+
+    Callers are responsible for the events (see events.delete_events) -- they
+    live in a different table and DynamoDB has no cascade.
+    """
+    item = get_decision(run_id)
+    if item is None:
+        return False
+    _table().delete_item(Key={"id": run_id})
+    return True
+
+
 def _update_item(run_id: str, updates: dict[str, Any]) -> None:
+    """Writes result fields back, but only onto a decision that still exists.
+
+    DynamoDB's update_item is an upsert, so without the condition a worker
+    finishing after its decision was deleted would silently recreate the row.
+    That is a real sequence: stop a run, delete it from the history, and the
+    worker's in-flight LLM call returns up to two minutes later and writes its
+    partial results to a key nobody expects to exist any more.
+
+    The callers read the decision first, but that read-then-write leaves a
+    window a concurrent DELETE fits through; this closes it at the write.
+    """
     names = {f"#{k}": k for k in updates}
     values = {f":{k}": v for k, v in updates.items()}
     expr = "SET " + ", ".join(f"#{k} = :{k}" for k in updates)
-    _table().update_item(
-        Key={"id": run_id},
-        UpdateExpression=expr,
-        ExpressionAttributeNames=names,
-        ExpressionAttributeValues=values,
-    )
+    try:
+        _table().update_item(
+            Key={"id": run_id},
+            UpdateExpression=expr,
+            ExpressionAttributeNames=names,
+            ExpressionAttributeValues=values,
+            ConditionExpression="attribute_exists(id)",
+        )
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
+            raise
+        # Deleted mid-flight. Dropping the write is the whole point.
+        logger.info("Discarded results for deleted decision %s", run_id)
 
 
 def _result_fields(

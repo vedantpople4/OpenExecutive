@@ -1,14 +1,21 @@
+/* This is what a fresh session shows, and it returns in place of .message-list
+   rather than inside it -- so without flex:1 it does not fill the column and
+   the composer rides up directly beneath the examples instead of resting at
+   the bottom of the screen. Centred rather than top-aligned, since a short
+   block of examples stranded at the top of an empty column looks unfinished. */
 .empty-state {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  justify-content: center;
   gap: 0.75rem;
   padding: 2rem;
-  color: var(--dim-color, #8a9690);
+  color: var(--dim-color);
 }
 
 .empty-state h2 {
   margin: 0;
-  color: var(--fg-color, #ecefea);
+  color: var(--fg-color);
 }
 
 .empty-state__examples {
@@ -24,12 +31,12 @@
   text-align: left;
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--border-color, #20302a);
-  background: var(--panel-color, #0f1b15);
-  color: var(--fg-color, #ecefea);
+  border: 1px solid var(--border-color);
+  background: var(--panel-color);
+  color: var(--fg-color);
   cursor: pointer;
 }
 
 .empty-state__examples button:hover {
-  border-color: var(--accent-color, #34c77b);
+  border-color: var(--accent-color);
 }

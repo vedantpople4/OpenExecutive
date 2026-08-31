@@ -69,6 +69,22 @@ export function stopDecision(runId: string): Promise<StopDecisionResponse> {
   })
 }
 
+/** 204 No Content, so there is no body to parse -- apiFetch would choke on
+ * response.json(). Rejects with the server's message on 409 (still running)
+ * and 404 so the caller can surface why nothing was deleted. */
+export async function deleteDecision(runId: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/decisions/${encodeURIComponent(runId)}`, {
+    method: 'DELETE',
+  })
+  if (!response.ok) {
+    const detail = await response
+      .json()
+      .then((body: { detail?: string }) => body.detail)
+      .catch(() => undefined)
+    throw new Error(detail ?? `Could not delete this decision (${response.status})`)
+  }
+}
+
 /**
  * A real EventSource already satisfies DeliberationStreamHandle structurally — this just adapts
  * its addEventListener's Event-typed listener to the narrower {data: string}/{message: string}

@@ -70,6 +70,12 @@ export function stopDecision(_runId: string): Promise<StopDecisionResponse> {
   return mockDelay({ status: 'stopped' })
 }
 
+/** The mock history is a static fixture, so there is nothing to remove -- this
+ * exists to satisfy the shared contract that endpoints.ts dispatches through. */
+export function deleteDecision(_runId: string): Promise<void> {
+  return mockDelay(undefined)
+}
+
 /**
  * Opens the (mocked) streaming connection for a run started via submitPrompt. Only takes a
  * runId — mirrors a real backend, which already knows the run's prompt/agents from when it was

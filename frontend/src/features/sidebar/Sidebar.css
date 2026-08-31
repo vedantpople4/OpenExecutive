@@ -3,14 +3,55 @@
   flex-direction: column;
   height: 100vh;
   padding: 1rem;
-  border-right: 1px solid var(--border-color, #2a2a2a);
+  border-right: 1px solid var(--border-color);
   overflow-y: auto;
   gap: 1rem;
 }
 
-.sidebar__brand {
-  font-weight: 700;
+.sidebar--collapsed {
+  padding: 1rem 0.5rem;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+.sidebar__top {
+  display: flex;
+  align-items: center;
+  /* Toggle sits on the edge the panel collapses toward. */
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.sidebar--collapsed .sidebar__top {
+  justify-content: center;
+}
+
+.sidebar__collapse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--dim-color);
+  cursor: pointer;
+}
+
+.sidebar__collapse:hover {
+  background: var(--panel-color);
+  border-color: var(--border-color);
+  color: var(--fg-color);
+}
+
+.sidebar__new-chat--icon {
+  width: 2rem;
+  padding: 0;
   font-size: 1.1rem;
+  line-height: 1;
 }
 
 .sidebar__section {
@@ -42,7 +83,7 @@
 .sidebar__new-chat {
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--border-color, #2a2a2a);
+  border: 1px solid var(--border-color);
   background: transparent;
   cursor: pointer;
   text-align: left;

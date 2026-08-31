@@ -9,6 +9,6 @@
   font-size: 0.7rem;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-  border: 1px solid var(--border-color, #20302a);
-  color: var(--dim-color, #8a9690);
+  border: 1px solid var(--border-color);
+  color: var(--dim-color);
 }

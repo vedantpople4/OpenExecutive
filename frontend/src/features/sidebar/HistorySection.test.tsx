@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, act } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { screen, fireEvent, act } from '@testing-library/react'
+import { renderWithProviders } from '../../test/renderWithProviders'
 import { HistorySection } from './HistorySection'
 import type { DecisionSummary } from '../../api/types'
 
@@ -23,11 +23,7 @@ function makeDecision(runId: string): DecisionSummary {
 }
 
 function renderSection() {
-  return render(
-    <MemoryRouter>
-      <HistorySection />
-    </MemoryRouter>,
-  )
+  return renderWithProviders(<HistorySection />)
 }
 
 describe('HistorySection', () => {

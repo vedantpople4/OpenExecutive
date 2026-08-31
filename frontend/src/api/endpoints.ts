@@ -18,6 +18,7 @@ export const getCompare = impl.getCompare
 export const getRegisterDashboard = impl.getRegisterDashboard
 export const submitPrompt = impl.submitPrompt
 export const stopDecision = impl.stopDecision
+export const deleteDecision = impl.deleteDecision
 export const openDeliberationStream = impl.openDeliberationStream
 
 export type {
