@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { motion } from 'motion/react'
 import { PhaseCard } from './cards/PhaseCard'
 import { BoardDecisionCard } from './cards/BoardDecisionCard'
 import { ContinueDecisionButton } from './cards/ContinueDecisionButton'
@@ -71,21 +72,34 @@ export function MessageList({
   return (
     <div className="message-list" ref={containerRef}>
       <UserPromptBubble prompt={prompt} />
-      {cards.map((card) => {
-        if (card.kind === 'phase') return <PhaseCard key={card.id} phase={card} />
-        if (card.kind === 'board_decision') {
-          return (
-            <BoardDecisionCard key={card.id} boardDecision={card.boardDecision}>
+      {cards.map((card) => (
+        // Transform and opacity only -- deliberately never height. The effect below scrolls to
+        // an anchor whenever cards.length changes, and animating height would keep moving that
+        // anchor while the scroll is still in flight, so the view would chase it down the page.
+        //
+        // No AnimatePresence: this list is append-only, cards are never removed, and it exists
+        // for exit animations. Entrance only needs initial -> animate, which runs on mount --
+        // and because the keys are stable, an existing card does not remount when a new one
+        // arrives, so nothing already on screen replays its entrance.
+        <motion.div
+          key={card.id}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.24, ease: 'easeOut' }}
+        >
+          {card.kind === 'phase' && <PhaseCard phase={card} />}
+          {card.kind === 'board_decision' && (
+            <BoardDecisionCard boardDecision={card.boardDecision}>
               {onContinueDecision && (
                 <ContinueDecisionButton
                   onContinue={() => onContinueDecision(card.sourceRunId, card.sourcePrompt)}
                 />
               )}
             </BoardDecisionCard>
-          )
-        }
-        return <ErrorCard key={card.id} error={card} />
-      })}
+          )}
+          {card.kind === 'error' && <ErrorCard error={card} />}
+        </motion.div>
+      ))}
       <div ref={anchorRef} />
     </div>
   )
