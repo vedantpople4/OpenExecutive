@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { AgentReportCard } from './AgentReportCard'
 import { AgentSpeakingIndicator } from './AgentSpeakingIndicator'
 import type { RoundCardData } from '../chat.types'
+import { listVariants, itemVariants } from './transcriptMotion'
 import './RoundCard.css'
 
 const ROUND_LABELS: Record<number, string> = {
@@ -38,14 +40,30 @@ export function RoundCard({ round }: RoundCardProps) {
       </button>
 
       {isOpen && (
-        <div className="round-card__body">
-          {round.speaking.map((entry) => (
-            <AgentSpeakingIndicator key={`speaking-${entry.agentName}`} entry={entry} />
-          ))}
-          {round.reports.map((entry) => (
-            <AgentReportCard key={`report-${entry.agentName}`} entry={entry} />
-          ))}
-        </div>
+        <motion.div
+          className="round-card__body"
+          variants={listVariants}
+          initial="hidden"
+          animate="show"
+        >
+          {/* One AnimatePresence over both lists: a speaking placeholder is replaced by its
+              report card at the same position, so the exit and the entrance are two halves of
+              one substitution and have to be tracked together. popLayout pulls the exiting node
+              out of flow immediately, so the report lands where the placeholder was instead of
+              waiting for the fade to finish. */}
+          <AnimatePresence mode="popLayout">
+            {round.speaking.map((entry) => (
+              <motion.div key={`speaking-${entry.agentName}`} variants={itemVariants} exit="exit">
+                <AgentSpeakingIndicator entry={entry} />
+              </motion.div>
+            ))}
+            {round.reports.map((entry) => (
+              <motion.div key={`report-${entry.agentName}`} variants={itemVariants} exit="exit">
+                <AgentReportCard entry={entry} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       )}
     </div>
   )
