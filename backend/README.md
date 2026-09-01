@@ -6,7 +6,7 @@ reusing the `openexec/` CLI engine as a library.
 
 See the design docs for the full rationale: API contract and DynamoDB schema,
 plus the LLM orchestration integration. For deploying the whole stack (API +
-SPA behind nginx on a single host), see [`../deploy/README.md`](../deploy/README.md).
+SPA behind nginx on EC2), see [`../deploy/README.md`](../deploy/README.md).
 
 ## Running the tests
 

@@ -1,5 +1,5 @@
 """In-process pub/sub for live SSE tailing (Section 5 of the plan): the
-future orchestration loop and the API server share one server process, so a
+future orchestration loop and the API server share one EC2 process, so a
 per-run asyncio.Queue is enough fan-out — no external broker needed at this
 scale. Nothing publishes to this yet; the deferred LLM-orchestration phase
 is the intended caller of publish()."""
