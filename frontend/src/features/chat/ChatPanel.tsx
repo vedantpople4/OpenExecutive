@@ -20,6 +20,7 @@ interface ChatPanelProps {
   onStop: () => void
   onContinueDecision: (sourceRunId: string, sourcePrompt: string) => void
   onCancelContinue: () => void
+  onRetry?: () => void
 }
 
 /** Owns the scroll container + composes MessageList/PromptInput (or DecisionSummaryTab, when
@@ -38,6 +39,7 @@ export function ChatPanel({
   onStop,
   onContinueDecision,
   onCancelContinue,
+  onRetry,
 }: ChatPanelProps) {
   const showSummary = tab === 'summary' && boardDecisionCard !== undefined
 
@@ -53,6 +55,7 @@ export function ChatPanel({
           isErrorReplay={isErrorReplay}
           onPickExample={onSubmit}
           onContinueDecision={onContinueDecision}
+          onRetry={onRetry}
         />
       )}
       {continuingFromPrompt && (

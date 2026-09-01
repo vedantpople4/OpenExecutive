@@ -31,3 +31,25 @@
   font-size: 0.75rem;
   color: var(--dim-color);
 }
+
+.error-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.error-card__retry {
+  margin-top: 0.55rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--danger-color);
+  background: transparent;
+  color: var(--danger-color);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.error-card__retry:hover {
+  background: var(--danger-border);
+}
