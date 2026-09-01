@@ -4,4 +4,11 @@
 
 fastapi>=0.115
 uvicorn[standard]>=0.32
+# boto3 goes when the DynamoDB repositories do; still imported today.
 boto3>=1.35
+# psycopg 3, sync. Not asyncpg: the repositories are called from a plain
+# OS thread (orchestration runs off BackgroundTasks), not the event loop.
+# The pool is small on purpose -- one uvicorn worker, and Supabase's free
+# tier is connection-constrained.
+psycopg[binary]>=3.2
+psycopg-pool>=3.2

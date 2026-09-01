@@ -11,6 +11,22 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.12", "3.14"]
+    # The backend suite runs against a real Postgres. There is no in-memory
+    # stand-in the way moto stood in for DynamoDB, and SQLite would not be
+    # faithful -- jsonb and ILIKE both differ.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: openexec_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -54,6 +70,8 @@ jobs:
         # backend/pytest.ini sets `pythonpath = . ..`, which only resolves
         # `app` and `openexec` when pytest runs from backend/.
         working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/openexec_test
         run: pytest -q
 
       - name: Test
