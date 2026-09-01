@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { AgentReportCard } from './AgentReportCard'
 import { AgentSpeakingIndicator } from './AgentSpeakingIndicator'
@@ -21,6 +21,7 @@ interface PhaseCardProps {
 export function PhaseCard({ phase }: PhaseCardProps) {
   const [manuallyOpen, setManuallyOpen] = useState<boolean | null>(null)
   const isOpen = manuallyOpen ?? phase.status === 'running'
+  const panelId = useId()
 
   return (
     <div className="phase-card">
@@ -29,6 +30,7 @@ export function PhaseCard({ phase }: PhaseCardProps) {
         className="phase-card__header"
         onClick={() => setManuallyOpen(!isOpen)}
         aria-expanded={isOpen}
+        aria-controls={isOpen ? panelId : undefined}
       >
         <span className={`phase-card__chevron ${isOpen ? 'phase-card__chevron--open' : ''}`}>▸</span>
         <span className="phase-card__title">{PHASE_LABELS[phase.phase]}</span>
@@ -39,6 +41,7 @@ export function PhaseCard({ phase }: PhaseCardProps) {
 
       {isOpen && (
         <motion.div
+          id={panelId}
           className="phase-card__body"
           variants={listVariants}
           initial="hidden"
