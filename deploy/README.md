@@ -148,6 +148,12 @@ docker compose run --rm api python -m scripts.create_tables
 Recommended over a DNS A record because it needs no open ports, so step 3
 disappears along with the firewall problem, and your origin IP stays unlisted.
 
+**A tunnel needs a domain whose nameservers you control.** It works with a
+domain you own or a delegated one (`eu.org`); it does *not* work with a free
+subdomain like `is-a.dev`, because the record lives in someone else's
+Cloudflare zone and a tunnel route can only be created inside your own. On a
+free subdomain, use the A-record path below instead.
+
 In the Cloudflare dashboard: **Zero Trust → Networks → Tunnels → Create**, then
 route your hostname to `http://web:80`. Copy the connector token:
 
@@ -159,11 +165,20 @@ docker compose -f docker-compose.yml -f docker-compose.cloudflare.yml up -d
 <details>
 <summary>Alternative: DNS A record</summary>
 
-Point an `A` record at the instance's public IP with the proxy enabled (orange
-cloud), and complete step 3. Set **SSL/TLS → Full (strict)** and install a
-Cloudflare Origin Certificate on nginx — this needs a TLS server block that
-`deploy/nginx.conf` does not currently have. The "Flexible" mode avoids that
-work but leaves Cloudflare-to-origin traffic in plaintext across the internet.
+Complete step 3, then point an `A` record at the instance's public IP with
+the proxy enabled.
+
+**On your own Cloudflare zone:** enable the orange cloud, set **SSL/TLS → Full
+(strict)**, and install a Cloudflare Origin Certificate on nginx. That needs a
+TLS server block `deploy/nginx.conf` does not currently have. "Flexible" mode
+skips that work but leaves Cloudflare-to-origin traffic in plaintext across
+the internet.
+
+**On a free subdomain such as `is-a.dev`:** set `"proxied": true` in your
+registration JSON — their `dnsconfig.js` maps it to `CF_PROXY_ON`, so you get
+Cloudflare-terminated TLS on an origin still serving plain `:80`. You do not
+control that zone's SSL mode, so Full (strict) is not available to you; the
+origin hop is plaintext. Fine for a demo, not for real data.
 
 </details>
 
