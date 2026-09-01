@@ -9,7 +9,7 @@ import { projectEventsToCards } from './projectEventsToCards'
 import { projectDecisionDetailToCards } from './projectDecisionDetailToCards'
 import { useRunStore } from '../../stores/useRunStore'
 import { submitPrompt, stopDecision } from '../../api/endpoints'
-import type { BoardDecisionCardData } from './chat.types'
+import type { BoardDecisionCardData, ErrorCardData, TranscriptCard } from './chat.types'
 import './ChatPage.css'
 
 /**
@@ -25,6 +25,10 @@ export function ChatPage() {
 
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  // A submit that never reaches the server produces no run and therefore no events, so no
+  // projector can ever surface it. Without this the prompt bubble just hangs there forever
+  // with no indication anything went wrong.
+  const [submitError, setSubmitError] = useState<string | null>(null)
   // The parent this run was branched from, if any — set at submit time (see handleContinue),
   // distinct from `continuingFrom` below which is the *next* submission's pending parent.
   const [liveRunParentId, setLiveRunParentId] = useState<string | null>(null)
@@ -61,6 +65,7 @@ export function ChatPage() {
     setPendingPrompt(null)
     setLiveRunParentId(null)
     setContinuingFrom(null)
+    setSubmitError(null)
   }
 
   const cards = useMemo(() => {
@@ -68,6 +73,16 @@ export function ChatPage() {
     if (isReplayingPastRun && decisionDetail) return projectDecisionDetailToCards(decisionDetail)
     return []
   }, [isViewingActiveRun, activeRun, isReplayingPastRun, decisionDetail])
+
+  // Appended rather than folded into the projectors: a failed submit is a client-side fact
+  // about a run that never existed, not an event any projector could have produced. Rendered
+  // inline as an ErrorCard for the same reason run errors are (see ErrorCard) -- and that
+  // reuse means the retry button already works here.
+  const cardsWithSubmitError: TranscriptCard[] = useMemo(() => {
+    if (!submitError) return cards
+    const card: ErrorCardData = { kind: 'error', id: 'submit-error', message: submitError }
+    return [...cards, card]
+  }, [cards, submitError])
 
   const displayPrompt = isReplayingPastRun ? (decisionDetail?.prompt ?? null) : pendingPrompt
   const isLoadingReplay = isReplayingPastRun && isDecisionLoading
@@ -88,6 +103,7 @@ export function ChatPage() {
 
   async function handleSubmit(prompt: string) {
     setPendingPrompt(prompt)
+    setSubmitError(null)
     setIsSubmitting(true)
     const parentRunId = continuingFrom?.runId
     try {
@@ -102,6 +118,14 @@ export function ChatPage() {
       setLiveRunParentId(parentRunId ?? null)
       setContinuingFrom(null)
       navigate(`/chat/${runId}`)
+    } catch (err) {
+      // continuingFrom is deliberately left alone: the branch the user set up is still what
+      // they want, and clearing it would silently downgrade the retry to an unparented run.
+      setSubmitError(
+        err instanceof Error && err.message
+          ? `Couldn't start this deliberation: ${err.message}`
+          : "Couldn't start this deliberation. Check your connection and try again.",
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -142,7 +166,7 @@ export function ChatPage() {
       />
       <ChatPanel
         prompt={displayPrompt}
-        cards={cards}
+        cards={cardsWithSubmitError}
         isLoadingReplay={isLoadingReplay}
         isErrorReplay={isErrorReplay}
         isStreaming={isStreaming}
