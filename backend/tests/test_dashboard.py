@@ -1,23 +1,29 @@
-from decimal import Decimal
+from psycopg.types.json import Json
 
-from app.config import get_settings
-from app.db import get_dynamodb_resource
+from app.db import connection
 
 
 def _put_decision(run_id, prompt, created_at, action_items, risks, agent_reports):
-    table = get_dynamodb_resource().Table(get_settings().decisions_table)
-    table.put_item(
-        Item={
-            "id": run_id,
-            "entity_type": "DECISION",
-            "status": "completed",
-            "created_at": created_at,
-            "prompt": prompt,
-            "action_items": action_items,
-            "overall_risk_assessment": risks,
-            "agent_reports": agent_reports,
-        }
-    )
+    """Seeds a finished decision straight into the table, bypassing the
+    orchestrator. The result fields live in the jsonb blob, which is what the
+    repository flattens back out on read."""
+    with connection() as conn:
+        conn.execute(
+            """INSERT INTO decisions (id, status, created_at, prompt, data)
+               VALUES (%s, 'completed', %s, %s, %s)""",
+            (
+                run_id,
+                created_at,
+                prompt,
+                Json(
+                    {
+                        "action_items": action_items,
+                        "overall_risk_assessment": risks,
+                        "agent_reports": agent_reports,
+                    }
+                ),
+            ),
+        )
 
 
 def test_dashboard_empty_when_no_decisions(client):
@@ -42,7 +48,7 @@ def test_dashboard_aggregates_across_decisions(client):
         "2026-06-01T00:00:00.000Z",
         action_items=[{"priority": "HIGH", "task": "Hire lead"}, {"priority": "LOW", "task": "Update deck"}],
         risks=["Currency exposure", "Regulatory delay"],
-        agent_reports={"ceo": {"alignment_score": Decimal("0.8")}, "cfo": {"alignment_score": Decimal("0.6")}},
+        agent_reports={"ceo": {"alignment_score": 0.8}, "cfo": {"alignment_score": 0.6}},
     )
     _put_decision(
         "run-2",
@@ -50,7 +56,7 @@ def test_dashboard_aggregates_across_decisions(client):
         "2026-07-15T00:00:00.000Z",
         action_items=[{"priority": "HIGH", "task": "Sign lease"}],
         risks=["Currency exposure"],
-        agent_reports={"ceo": {"alignment_score": Decimal("0.9")}},
+        agent_reports={"ceo": {"alignment_score": 0.9}},
     )
 
     response = client.get("/dashboard")

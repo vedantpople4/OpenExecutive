@@ -1,115 +1,84 @@
-"""Verifies the DynamoDB schema from Section 2 of the plan
-(.claude/plans/curious-orbiting-shore.md) against moto's in-memory AWS mock —
-no Docker/dynamodb-local required to run this suite. docker-compose.yml is
-still provided for anyone who wants to point a real dynamodb-local at the
-same code via DYNAMODB_ENDPOINT_URL."""
+"""Schema creation, against a real Postgres (see tests/conftest.py).
 
-import pytest
-from boto3.dynamodb.conditions import Key
-from moto import mock_aws
+The session fixture has already applied the schema by the time these run, so
+they double as a check that create_tables() is genuinely idempotent -- it has
+now executed at least twice.
+"""
 
-from app.db import get_dynamodb_resource
+from app.db import connection
 from scripts.create_tables import create_tables
 
 
-@pytest.fixture(autouse=True)
-def _aws_env(monkeypatch):
-    # Dummy creds so boto3 doesn't refuse to build a client under moto.
-    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "testing")
-    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "testing")
-    monkeypatch.setenv("AWS_REGION", "us-east-1")
-    monkeypatch.setenv("OPENEXEC_DECISIONS_TABLE", "test-decisions")
-    monkeypatch.setenv("OPENEXEC_EVENTS_TABLE", "test-events")
-    monkeypatch.delenv("DYNAMODB_ENDPOINT_URL", raising=False)
+def _columns(table: str) -> dict[str, str]:
+    with connection() as conn:
+        rows = conn.execute(
+            """
+            SELECT column_name, data_type FROM information_schema.columns
+            WHERE table_name = %s
+            """,
+            (table,),
+        ).fetchall()
+    return {r["column_name"]: r["data_type"] for r in rows}
 
 
-@mock_aws
-def test_create_tables_creates_expected_tables_and_gsis():
+def test_creates_both_tables(client):
+    with connection() as conn:
+        rows = conn.execute(
+            """
+            SELECT table_name FROM information_schema.tables
+            WHERE table_schema = 'public'
+            """
+        ).fetchall()
+    assert {"decisions", "events"} <= {r["table_name"] for r in rows}
+
+
+def test_rerunning_is_idempotent(client):
+    # Every statement is CREATE ... IF NOT EXISTS, so this must not raise and
+    # must not disturb existing rows.
     create_tables()
-    dynamodb = get_dynamodb_resource()
-    names = {t.name for t in dynamodb.tables.all()}
-    assert names == {"test-decisions", "test-events"}
-
-    decisions_table = dynamodb.Table("test-decisions")
-    gsi_names = {gsi["IndexName"] for gsi in decisions_table.global_secondary_indexes}
-    assert gsi_names == {"gsi_recency", "gsi_parent"}
-
-
-@mock_aws
-def test_create_tables_is_idempotent():
     create_tables()
-    create_tables()  # must not raise on the second run
-    dynamodb = get_dynamodb_resource()
-    assert {t.name for t in dynamodb.tables.all()} == {"test-decisions", "test-events"}
+    assert "id" in _columns("decisions")
 
 
-@mock_aws
-def test_gsi_recency_returns_items_newest_query_works():
-    create_tables()
-    dynamodb = get_dynamodb_resource()
-    decisions_table = dynamodb.Table("test-decisions")
-
-    decisions_table.put_item(
-        Item={
-            "id": "run-1",
-            "entity_type": "DECISION",
-            "created_at": "2026-01-01T00:00:00.000Z",
-            "prompt": "Should we expand into a new market?",
-        }
-    )
-
-    response = decisions_table.query(
-        IndexName="gsi_recency",
-        KeyConditionExpression=Key("entity_type").eq("DECISION"),
-    )
-    assert [item["id"] for item in response["Items"]] == ["run-1"]
+def test_result_payload_is_jsonb_not_columns(client):
+    """The hybrid shape is load-bearing: promoted columns for what is
+    filtered or ordered on, one jsonb blob for everything else. If someone
+    promotes a result field to a column, _row_to_item stops merging it."""
+    columns = _columns("decisions")
+    assert columns["data"] == "jsonb"
+    assert columns["requested_agents"] == "jsonb"
+    assert "agent_reports" not in columns
+    assert "executive_summary" not in columns
 
 
-@mock_aws
-def test_gsi_parent_is_sparse_and_finds_children():
-    create_tables()
-    dynamodb = get_dynamodb_resource()
-    decisions_table = dynamodb.Table("test-decisions")
-
-    decisions_table.put_item(
-        Item={"id": "run-root", "entity_type": "DECISION", "created_at": "2026-01-01T00:00:00.000Z"}
-    )
-    decisions_table.put_item(
-        Item={
-            "id": "run-child",
-            "entity_type": "DECISION",
-            "created_at": "2026-01-02T00:00:00.000Z",
-            "parent_run_id": "run-root",
-        }
-    )
-
-    response = decisions_table.query(
-        IndexName="gsi_parent",
-        KeyConditionExpression=Key("parent_run_id").eq("run-root"),
-    )
-    assert [item["id"] for item in response["Items"]] == ["run-child"]
-
-    # The root item never appears in gsi_parent — it has no parent_run_id.
-    root_children = decisions_table.query(
-        IndexName="gsi_parent",
-        KeyConditionExpression=Key("parent_run_id").eq("run-root"),
-        Limit=1,
-    )
-    assert len(root_children["Items"]) == 1
+def test_entity_type_is_gone(client):
+    """It existed only as the gsi_recency partition key. ORDER BY needs no
+    partition key, so carrying it into Postgres would be cargo cult."""
+    assert "entity_type" not in _columns("decisions")
 
 
-@mock_aws
-def test_events_table_orders_by_sort_key():
-    create_tables()
-    dynamodb = get_dynamodb_resource()
-    events_table = dynamodb.Table("test-events")
+def test_recency_and_parent_indexes_exist(client):
+    with connection() as conn:
+        rows = conn.execute(
+            "SELECT indexname FROM pg_indexes WHERE tablename = 'decisions'"
+        ).fetchall()
+    names = {r["indexname"] for r in rows}
+    assert "decisions_recency" in names
+    assert "decisions_parent" in names
 
-    events_table.put_item(
-        Item={"aggregate_id": "run-1", "sk": "2026-01-01T00:00:02.000Z#evt2", "type": "inception_completed"}
-    )
-    events_table.put_item(
-        Item={"aggregate_id": "run-1", "sk": "2026-01-01T00:00:01.000Z#evt1", "type": "inception_started"}
-    )
 
-    response = events_table.query(KeyConditionExpression=Key("aggregate_id").eq("run-1"))
-    assert [item["type"] for item in response["Items"]] == ["inception_started", "inception_completed"]
+def test_events_cascade_on_decision_delete(client):
+    """The DynamoDB version had no cascade, so a failure between the two
+    delete calls in the router orphaned a whole timeline."""
+    with connection() as conn:
+        conn.execute(
+            "INSERT INTO decisions (id, status, prompt) VALUES ('run-x', 'completed', 'p')"
+        )
+        conn.execute(
+            "INSERT INTO events (aggregate_id, sk, type) VALUES ('run-x', '1#a', 't')"
+        )
+        conn.execute("DELETE FROM decisions WHERE id = 'run-x'")
+        remaining = conn.execute(
+            "SELECT count(*) AS n FROM events WHERE aggregate_id = 'run-x'"
+        ).fetchone()
+    assert remaining["n"] == 0

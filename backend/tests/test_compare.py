@@ -1,25 +1,30 @@
-from decimal import Decimal
+from psycopg.types.json import Json
 
-from app.config import get_settings
-from app.db import get_dynamodb_resource
+from app.db import connection
 
 
 def _put_decision(run_id, prompt, board_decision, action_items, risks, agent_reports):
-    table = get_dynamodb_resource().Table(get_settings().decisions_table)
-    table.put_item(
-        Item={
-            "id": run_id,
-            "entity_type": "DECISION",
-            "status": "completed",
-            "created_at": "2026-01-01T00:00:00.000Z",
-            "prompt": prompt,
-            "executive_summary": f"Summary for {run_id}",
-            "board_decision": board_decision,
-            "action_items": action_items,
-            "overall_risk_assessment": risks,
-            "agent_reports": agent_reports,
-        }
-    )
+    """Seeds a finished decision directly. Result fields go in the jsonb blob,
+    which the repository flattens back out on read."""
+    with connection() as conn:
+        conn.execute(
+            """INSERT INTO decisions (id, status, created_at, prompt, data)
+               VALUES (%s, 'completed', %s, %s, %s)""",
+            (
+                run_id,
+                "2026-01-01T00:00:00.000Z",
+                prompt,
+                Json(
+                    {
+                        "executive_summary": f"Summary for {run_id}",
+                        "board_decision": board_decision,
+                        "action_items": action_items,
+                        "overall_risk_assessment": risks,
+                        "agent_reports": agent_reports,
+                    }
+                ),
+            ),
+        )
 
 
 def test_compare_two_decisions(client):
@@ -30,8 +35,8 @@ def test_compare_two_decisions(client):
         action_items=[{"priority": "HIGH", "task": "Hire regional lead", "owner": "CEO", "due_date": "2026-02-01"}],
         risks=["Currency exposure"],
         agent_reports={
-            "ceo": {"alignment_score": Decimal("0.6")},
-            "cfo": {"alignment_score": Decimal("0.4")},
+            "ceo": {"alignment_score": 0.6},
+            "cfo": {"alignment_score": 0.4},
         },
     )
     _put_decision(
@@ -44,8 +49,8 @@ def test_compare_two_decisions(client):
         ],
         risks=["Currency exposure", "Regulatory delay"],
         agent_reports={
-            "ceo": {"alignment_score": Decimal("0.8")},
-            "cfo": {"alignment_score": Decimal("0.4")},
+            "ceo": {"alignment_score": 0.8},
+            "cfo": {"alignment_score": 0.4},
         },
     )
 

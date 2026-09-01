@@ -1,6 +1,5 @@
 import asyncio
 import json
-from decimal import Decimal
 
 from app.repositories import events as events_repo
 from app.routers import events as events_router
@@ -47,7 +46,7 @@ def test_events_stream_replays_stored_events_for_finished_decision(client, monke
             "event_id": "e2",
             "timestamp": "2026-01-01T00:00:02.000Z",
             "type": "agent_report_generated",
-            "payload": {"agent_name": "ceo", "report_data": {"alignment_score": Decimal("0.8")}},
+            "payload": {"agent_name": "ceo", "report_data": {"alignment_score": 0.8}},
         },
     )
 

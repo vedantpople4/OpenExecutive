@@ -17,7 +17,6 @@ import dataclasses
 from datetime import datetime
 from typing import Any
 
-from app.db import to_dynamodb_safe
 from app.repositories import events as events_repo
 from app.services import event_bus
 
@@ -44,7 +43,7 @@ class BackendEventSink:
                 "event_id": event_id,
                 "timestamp": timestamp_str,
                 "type": type_str,
-                "payload": to_dynamodb_safe(data),
+                "payload": data,
             },
         )
 

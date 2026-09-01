@@ -1,3 +1,4 @@
+from app.db import connection
 from app.repositories import decisions as decisions_repo
 from app.repositories import events as events_repo
 from app.services import orchestration
@@ -90,7 +91,10 @@ def test_a_worker_finishing_late_cannot_resurrect_a_deleted_decision(client, mon
         item = real_get(rid)
         # delete_item directly, not delete_decision -- that calls get_decision,
         # which is the function being patched here.
-        decisions_repo._table().delete_item(Key={"id": rid})  # the DELETE lands here
+        # The DELETE lands here. Straight SQL, not delete_decision() --
+        # that calls the patched get_decision and would recurse.
+        with connection() as conn:
+            conn.execute("DELETE FROM decisions WHERE id = %s", (rid,))
         return item
 
     monkeypatch.setattr(decisions_repo, "get_decision", get_then_delete)
