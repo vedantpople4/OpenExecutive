@@ -56,6 +56,7 @@ export function ChatPanel({
           onPickExample={onSubmit}
           onContinueDecision={onContinueDecision}
           onRetry={onRetry}
+          isStreaming={isStreaming}
         />
       )}
       {continuingFromPrompt && (

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { motion } from 'motion/react'
 import { PhaseCard } from './cards/PhaseCard'
 import { BoardDecisionCard } from './cards/BoardDecisionCard'
@@ -6,6 +6,7 @@ import { ContinueDecisionButton } from './cards/ContinueDecisionButton'
 import { ErrorCard } from './cards/ErrorCard'
 import { UserPromptBubble } from './cards/UserPromptBubble'
 import { EmptyStateMessage } from './cards/EmptyStateMessage'
+import { describeLatestActivity } from './describeLatestActivity'
 import type { TranscriptCard } from './chat.types'
 import './MessageList.css'
 
@@ -21,6 +22,9 @@ interface MessageListProps {
   onContinueDecision?: (sourceRunId: string, sourcePrompt: string) => void
   /** Re-asks the prompt as a fresh run. Absent when there is no prompt to re-ask with. */
   onRetry?: () => void
+  /** Gates the live region: announcements are for a run unfolding, not a replayed transcript
+   * that arrives all at once. */
+  isStreaming?: boolean
 }
 
 const NEAR_BOTTOM_THRESHOLD_PX = 120
@@ -33,7 +37,12 @@ export function MessageList({
   onPickExample,
   onContinueDecision,
   onRetry,
+  isStreaming,
 }: MessageListProps) {
+  const latestActivity = useMemo(
+    () => (isStreaming ? describeLatestActivity(cards) : null),
+    [isStreaming, cards],
+  )
   const containerRef = useRef<HTMLDivElement>(null)
   const anchorRef = useRef<HTMLDivElement>(null)
   const wasNearBottomRef = useRef(true)
@@ -74,6 +83,12 @@ export function MessageList({
 
   return (
     <div className="message-list" ref={containerRef}>
+      {/* Polite, so it waits for a gap rather than cutting across whatever the user is
+          reading. role="status" carries the same politeness on the browsers that ignore a
+          bare aria-live on a non-live-region element. */}
+      <div className="sr-only" role="status" aria-live="polite">
+        {latestActivity}
+      </div>
       <UserPromptBubble prompt={prompt} />
       {cards.map((card) => (
         // Transform and opacity only -- deliberately never height. The effect below scrolls to
