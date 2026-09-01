@@ -19,6 +19,8 @@ interface MessageListProps {
   isErrorReplay?: boolean
   onPickExample?: (prompt: string) => void
   onContinueDecision?: (sourceRunId: string, sourcePrompt: string) => void
+  /** Re-asks the prompt as a fresh run. Absent when there is no prompt to re-ask with. */
+  onRetry?: () => void
 }
 
 const NEAR_BOTTOM_THRESHOLD_PX = 120
@@ -30,6 +32,7 @@ export function MessageList({
   isErrorReplay,
   onPickExample,
   onContinueDecision,
+  onRetry,
 }: MessageListProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -97,7 +100,11 @@ export function MessageList({
               )}
             </BoardDecisionCard>
           )}
-          {card.kind === 'error' && <ErrorCard error={card} />}
+          {card.kind === 'error' && (
+            // Not on a stopped run: the user stopped it themselves, so the way to continue
+            // is the prompt box, not a button that implies something went wrong.
+            <ErrorCard error={card} onRetry={card.variant === 'stopped' ? undefined : onRetry} />
+          )}
         </motion.div>
       ))}
       <div ref={anchorRef} />

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { MessageList } from './MessageList'
 import { projectEventsToCards } from './projectEventsToCards'
 import { buildMockTimeline } from '../../api/mock/timeline'
@@ -39,5 +39,41 @@ describe('MessageList', () => {
 
     render(<MessageList prompt="test prompt" cards={cards} />)
     expect(screen.getByText(/is thinking/i)).toBeInTheDocument()
+  })
+})
+
+describe('MessageList — retrying a failed run', () => {
+  const failed = {
+    kind: 'error',
+    id: 'error-1',
+    message: 'LLM provider unreachable after 3 attempts.',
+    variant: 'error',
+  } as const
+  const stopped = {
+    kind: 'error',
+    id: 'error-2',
+    message: 'This deliberation was stopped.',
+    variant: 'stopped',
+  } as const
+
+  it('re-asks the prompt when the retry button on a failed run is clicked', () => {
+    const onRetry = vi.fn()
+    render(<MessageList prompt="test prompt" cards={[failed]} onRetry={onRetry} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
+    expect(onRetry).toHaveBeenCalledOnce()
+  })
+
+  it('announces a failure to assistive tech but not a stop the user asked for', () => {
+    const { rerender } = render(<MessageList prompt="test prompt" cards={[failed]} />)
+    expect(screen.getByRole('alert')).toHaveTextContent('LLM provider unreachable')
+
+    rerender(<MessageList prompt="test prompt" cards={[stopped]} />)
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('offers no retry on a stopped run -- the user stopped it on purpose', () => {
+    render(<MessageList prompt="test prompt" cards={[stopped]} onRetry={vi.fn()} />)
+    expect(screen.queryByRole('button', { name: 'Try again' })).not.toBeInTheDocument()
   })
 })

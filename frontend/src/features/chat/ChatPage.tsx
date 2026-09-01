@@ -114,6 +114,14 @@ export function ChatPage() {
     if (activeRun) void stopDecision(activeRun.runId).catch(() => {})
   }
 
+  // Re-asks the same question as a brand new run. Deliberately not a branch: parentRunId
+  // stays unset because a retry is the same question asked again, not a decision built on
+  // top of a previous one. displayPrompt already resolves to the right string for both
+  // sources -- the live run's pendingPrompt, or a replayed run's persisted prompt.
+  function handleRetry() {
+    if (displayPrompt) void handleSubmit(displayPrompt)
+  }
+
   function handleContinueDecision(sourceRunId: string, sourcePrompt: string) {
     setPendingPrompt(null)
     setContinuingFrom({ runId: sourceRunId, prompt: sourcePrompt })
@@ -146,6 +154,7 @@ export function ChatPage() {
         onStop={handleStop}
         onContinueDecision={handleContinueDecision}
         onCancelContinue={handleCancelContinue}
+        onRetry={displayPrompt ? handleRetry : undefined}
       />
     </div>
   )
