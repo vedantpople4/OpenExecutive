@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { AgentReportCard } from './AgentReportCard'
 import { AgentSpeakingIndicator } from './AgentSpeakingIndicator'
@@ -21,6 +21,7 @@ interface RoundCardProps {
 export function RoundCard({ round }: RoundCardProps) {
   const [manuallyOpen, setManuallyOpen] = useState<boolean | null>(null)
   const isOpen = manuallyOpen ?? round.status === 'running'
+  const panelId = useId()
 
   return (
     <div className="round-card">
@@ -29,6 +30,7 @@ export function RoundCard({ round }: RoundCardProps) {
         className="round-card__header"
         onClick={() => setManuallyOpen(!isOpen)}
         aria-expanded={isOpen}
+        aria-controls={isOpen ? panelId : undefined}
       >
         <span className={`round-card__chevron ${isOpen ? 'round-card__chevron--open' : ''}`}>▸</span>
         <span className="round-card__title">
@@ -41,6 +43,7 @@ export function RoundCard({ round }: RoundCardProps) {
 
       {isOpen && (
         <motion.div
+          id={panelId}
           className="round-card__body"
           variants={listVariants}
           initial="hidden"

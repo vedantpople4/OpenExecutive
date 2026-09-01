@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { RoleBadge } from '../../components/RoleBadge'
 import { AgentPromptPreview } from './AgentPromptPreview'
 import { SpecialistList } from './SpecialistList'
@@ -15,6 +15,7 @@ interface TeamRosterItemProps {
  * users may want to compare two CXOs' prompts side by side while scrolling. */
 export function TeamRosterItem({ agent, specialists, teamModeEnabled }: TeamRosterItemProps) {
   const [open, setOpen] = useState(false)
+  const panelId = useId()
 
   return (
     <div className="team-roster-item">
@@ -23,6 +24,7 @@ export function TeamRosterItem({ agent, specialists, teamModeEnabled }: TeamRost
         className="team-roster-item__header"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
+        aria-controls={open ? panelId : undefined}
       >
         <span className={`team-roster-item__chevron ${open ? 'team-roster-item__chevron--open' : ''}`}>
           ▸
@@ -33,7 +35,7 @@ export function TeamRosterItem({ agent, specialists, teamModeEnabled }: TeamRost
       </button>
 
       {open && (
-        <div className="team-roster-item__body">
+        <div id={panelId} className="team-roster-item__body">
           <AgentPromptPreview agentName={agent.name} />
           {teamModeEnabled && <SpecialistList specialists={specialists} />}
         </div>

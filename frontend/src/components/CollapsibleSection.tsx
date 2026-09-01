@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import './CollapsibleSection.css'
 
@@ -20,6 +20,9 @@ export function CollapsibleSection({
 }: CollapsibleSectionProps) {
   const [internalOpen, setInternalOpen] = useState(defaultOpen)
   const isOpen = open ?? internalOpen
+  // Only pointed at while open. The panel unmounts when closed, and aria-controls naming an
+  // id that is not in the document is worse than omitting it.
+  const panelId = useId()
 
   function toggle() {
     const next = !isOpen
@@ -34,6 +37,7 @@ export function CollapsibleSection({
         className="collapsible__trigger"
         onClick={toggle}
         aria-expanded={isOpen}
+        aria-controls={isOpen ? panelId : undefined}
       >
         <span className={`collapsible__chevron ${isOpen ? 'collapsible__chevron--open' : ''}`}>
           ▸
@@ -52,6 +56,7 @@ export function CollapsibleSection({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={panelId}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

@@ -5,6 +5,7 @@ orchestration phase actually calls event_bus.publish()."""
 
 from __future__ import annotations
 
+import asyncio
 import json
 from decimal import Decimal
 from typing import Any, AsyncIterator
@@ -19,6 +20,16 @@ from app.services import event_bus
 router = APIRouter()
 
 _TERMINAL_EVENT_TYPES = {"synthesis_completed", "error_occurred"}
+
+# Longest silence allowed on a live tail before we put a byte on the wire
+# anyway. Cloudflare closes a proxied connection that has been idle for 100s
+# (HTTP 524) and that ceiling is fixed on every plan below Enterprise, so a
+# quiet stretch -- one slow specialist LLM call between two events -- would
+# otherwise kill the stream mid-deliberation. 30s leaves room to miss two
+# beats and still stay under the limit. nginx alone never hit this because
+# deploy/nginx.conf sets proxy_read_timeout 3600s; the proxy in front of it
+# is the constraint.
+_HEARTBEAT_SECONDS = 30
 
 
 def _json_default(value: Any) -> Any:

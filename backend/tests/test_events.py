@@ -3,6 +3,7 @@ import json
 from decimal import Decimal
 
 from app.repositories import events as events_repo
+from app.routers import events as events_router
 from app.routers.events import event_stream
 from app.services import event_bus, orchestration
 from tests.test_decisions import _submit
@@ -91,3 +92,72 @@ def test_event_stream_tails_live_events_until_terminal(client):
     received = asyncio.run(scenario())
     assert [e["type"] for e in received] == ["inception_started", "synthesis_completed"]
     assert event_bus._subscribers.get("run-live-test") in (None, [])
+
+
+def test_event_stream_emits_keepalive_while_the_tail_is_silent(client, monkeypatch):
+    """A live tail that goes quiet still has to put bytes on the wire.
+
+    Cloudflare drops a proxied connection idle for 100s with a 524, and that
+    ceiling is not raisable below Enterprise. A gap between two events is just
+    an LLM call running long, so without a keepalive the stream dies partway
+    through a deliberation. nginx never surfaced this -- proxy_read_timeout is
+    3600s there -- so it only appears once a CDN sits in front.
+
+    Reads _HEARTBEAT_SECONDS off the module rather than importing the value,
+    so monkeypatch actually reaches the running generator.
+    """
+    monkeypatch.setattr(events_router, "_HEARTBEAT_SECONDS", 0.01)
+
+    async def scenario() -> list[str]:
+        run_id = "run-keepalive-test"
+        chunks: list[str] = []
+
+        async def consume() -> None:
+            async for chunk in event_stream(run_id, is_running=True):
+                chunks.append(chunk)
+
+        consumer = asyncio.create_task(consume())
+        # Several heartbeat intervals with nothing published.
+        await asyncio.sleep(0.05)
+        event_bus.publish(run_id, {"type": "synthesis_completed", "event_id": "e1"})
+
+        await asyncio.wait_for(consumer, timeout=1)
+        return chunks
+
+    chunks = asyncio.run(scenario())
+
+    assert ": keepalive\n\n" in chunks, "silent stretch produced no keepalive frame"
+    # The real event still arrives, and still ends the stream.
+    assert chunks[-1].startswith("data: ")
+    assert json.loads(chunks[-1][len("data: ") :])["type"] == "synthesis_completed"
+    assert event_bus._subscribers.get("run-keepalive-test") in (None, [])
+
+
+def test_keepalive_frames_are_not_data_events(client, monkeypatch):
+    """The comment frame must not reach the client as an event -- an SSE
+    comment starts with ':' and carries no data field, so EventSource discards
+    it. If it were ever emitted as `data:` the frontend would try to render a
+    card for it."""
+    monkeypatch.setattr(events_router, "_HEARTBEAT_SECONDS", 0.01)
+
+    async def scenario() -> list[str]:
+        run_id = "run-keepalive-shape"
+        chunks: list[str] = []
+
+        async def consume() -> None:
+            async for chunk in event_stream(run_id, is_running=True):
+                chunks.append(chunk)
+
+        consumer = asyncio.create_task(consume())
+        await asyncio.sleep(0.05)
+        event_bus.publish(run_id, {"type": "error_occurred", "event_id": "e1"})
+        await asyncio.wait_for(consumer, timeout=1)
+        return chunks
+
+    chunks = asyncio.run(scenario())
+    keepalives = [c for c in chunks if not c.startswith("data: ")]
+
+    assert keepalives, "expected at least one non-data frame"
+    for frame in keepalives:
+        assert frame.startswith(":"), f"keepalive must be an SSE comment, got {frame!r}"
+    assert _sse_data_lines("".join(chunks)) == [{"type": "error_occurred", "event_id": "e1"}]
