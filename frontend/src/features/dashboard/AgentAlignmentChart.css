@@ -19,6 +19,8 @@
 }
 
 .agent-alignment-chart__fill {
+  /* Full width, then scaled down on the X axis by the component. */
+  width: 100%;
   height: 100%;
   background: var(--accent-color);
 }
