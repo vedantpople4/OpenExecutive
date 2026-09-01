@@ -1,46 +1,86 @@
+/* @property is what makes --beam-angle interpolable. Without the registration the browser
+   treats a custom property as an unanimatable string, and the keyframe below would snap from
+   0deg to 360deg instead of sweeping. Where @property is unsupported the gradient still
+   paints -- it just sits still at 0deg, which degrades to a static highlight rather than
+   to nothing. */
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Shaped like AgentReportCard on purpose. A speaking row is a placeholder that gets replaced
+   by that card at the same list position, so matching its box means the report lands in a
+   slot the eye has already accepted instead of the row changing shape underneath it. */
 .agent-speaking {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--panel-color);
   color: var(--dim-color);
   font-size: 0.85rem;
+}
+
+/* The beam: a conic gradient rotated by the property above, then masked down to the 1px ring
+   so only the border lights up. Two masks composited with `exclude` cut the content box out
+   of the padding box, which is what leaves a ring -- there is no border-image path that
+   takes a rotating gradient and a border-radius at the same time. */
+.agent-speaking::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  /* A narrow bright arc, not a soft glow, so the light reads as travelling rather than as
+     the whole ring breathing. --accent-hover is the existing brighter step of the accent,
+     used here as the beam's core; --accent-color flanks it and falls off to --border-color,
+     which is exactly AgentReportCard's border. So the ring the beam rides on is already the
+     edge the report card will have when it replaces this row. */
+  background: conic-gradient(
+    from var(--beam-angle),
+    var(--border-color) 0deg,
+    var(--border-color) 296deg,
+    var(--accent-color) 326deg,
+    var(--accent-hover) 340deg,
+    var(--accent-color) 351deg,
+    var(--border-color) 360deg
+  );
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: agent-speaking-beam 2.6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes agent-speaking-beam {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+/* The beam animates a custom property, not a transform, so MotionConfig reducedMotion="user"
+   does not reach it -- this guard is the only thing that switches it off. Matches the
+   hand-written guard on the sidebar collapse transition (routes/AppShell.css).
+   What is left is a plain static ring: the row still reads as its own container, and
+   "CEO is thinking" carries the state on its own. */
+@media (prefers-reduced-motion: reduce) {
+  .agent-speaking::before {
+    animation: none;
+    background: var(--border-color);
+  }
 }
 
 .agent-speaking__label {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-}
-
-.agent-speaking__dots {
-  display: inline-flex;
-  gap: 0.15rem;
-}
-
-.agent-speaking__dots span {
-  width: 0.3rem;
-  height: 0.3rem;
-  border-radius: 50%;
-  background: var(--accent-color);
-  animation: agent-speaking-pulse 1.2s infinite ease-in-out;
-}
-
-.agent-speaking__dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.agent-speaking__dots span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes agent-speaking-pulse {
-  0%,
-  80%,
-  100% {
-    opacity: 0.2;
-  }
-  40% {
-    opacity: 1;
-  }
 }
