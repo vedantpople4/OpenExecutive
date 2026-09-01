@@ -97,3 +97,9 @@ a:hover {
   white-space: nowrap;
   border: 0;
 }
+
+/* Shown only while a lazy route chunk is in flight (routes/router.tsx). */
+.route-loading {
+  padding: 1.5rem 2rem;
+  color: var(--dim-color);
+}
