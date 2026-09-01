@@ -72,6 +72,32 @@ describe('useDeliberationStream', () => {
 })
 
 describe('useDeliberationStream — server-side failure', () => {
+  it('closes the stream on a transport error so it cannot reconnect in a loop', async () => {
+    let fail: (() => void) | undefined
+    const close = vi.fn()
+    const endpoints = await import('../../../api/endpoints')
+    const spy = vi.spyOn(endpoints, 'openDeliberationStream').mockReturnValue({
+      addEventListener: (type: string, listener: unknown) => {
+        if (type === 'error') fail = listener as () => void
+      },
+      close,
+    } as unknown as ReturnType<typeof endpoints.openDeliberationStream>)
+
+    try {
+      useRunStore.getState().startRun('test-run-transport-error', new AbortController())
+      renderHook(() => useDeliberationStream('test-run-transport-error'))
+
+      expect(close).not.toHaveBeenCalled()
+
+      act(() => fail!())
+
+      expect(close).toHaveBeenCalled()
+      expect(useRunStore.getState().activeRun?.status).toBe('error')
+    } finally {
+      spy.mockRestore()
+    }
+  })
+
   it('treats error_occurred as terminal so the run stops looking live', async () => {
     // The scripted mock timeline has no failure path, so drive a hand-rolled
     // handle directly rather than trying to make timeline.ts emit an error.

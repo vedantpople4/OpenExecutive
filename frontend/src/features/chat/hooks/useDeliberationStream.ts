@@ -32,6 +32,14 @@ export function useDeliberationStream(runId: string | null): void {
     }
 
     function handleError() {
+      // Close before flipping status. A real EventSource reconnects on its own after any
+      // transport error and the backend replays the whole stored history from the top on
+      // every connect (no Last-Event-ID handling in backend/app/routers/events.py), so
+      // leaving it open means an endless reconnect loop underneath a UI that already says
+      // the run failed. The dedup guard in useRunStore stops that loop from duplicating
+      // cards, but only closing stops the requests -- and only a closed stream can be
+      // safely replaced by a retry.
+      stream.close()
       setRunStatus('error')
     }
 
