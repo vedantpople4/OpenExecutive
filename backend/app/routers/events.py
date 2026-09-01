@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-from decimal import Decimal
 from typing import Any, AsyncIterator
 
 from fastapi import APIRouter, HTTPException
@@ -32,17 +31,9 @@ _TERMINAL_EVENT_TYPES = {"synthesis_completed", "error_occurred"}
 _HEARTBEAT_SECONDS = 30
 
 
-def _json_default(value: Any) -> Any:
-    # Raw DynamoDB items surface Decimal for every numeric attribute (see the
-    # note in app/db.py) — json.dumps doesn't know how to serialize it.
-    if isinstance(value, Decimal):
-        return int(value) if value % 1 == 0 else float(value)
-    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
-
-
 def to_wire_event(item: dict[str, Any]) -> dict[str, Any]:
-    """DynamoDB item (aggregate_id/sk/event_id/timestamp/type/payload) ->
-    the flat shape frontend/src/api/types.ts's DeliberationEvent expects."""
+    """Stored row (aggregate_id/sk/event_id/timestamp/type/payload) -> the
+    flat shape frontend/src/api/types.ts's DeliberationEvent expects."""
     payload = item.get("payload") or {}
     return {
         "event_id": item.get("event_id", ""),
@@ -55,7 +46,7 @@ def to_wire_event(item: dict[str, Any]) -> dict[str, Any]:
 
 async def event_stream(run_id: str, is_running: bool) -> AsyncIterator[str]:
     for item in events_repo.list_events(run_id):
-        yield f"data: {json.dumps(to_wire_event(item), default=_json_default)}\n\n"
+        yield f"data: {json.dumps(to_wire_event(item))}\n\n"
 
     if not is_running:
         return
@@ -71,7 +62,7 @@ async def event_stream(run_id: str, is_running: bool) -> AsyncIterator[str]:
                 # as traffic and resets its idle timer.
                 yield ": keepalive\n\n"
                 continue
-            yield f"data: {json.dumps(event, default=_json_default)}\n\n"
+            yield f"data: {json.dumps(event)}\n\n"
             if event.get("type") in _TERMINAL_EVENT_TYPES:
                 break
     finally:
