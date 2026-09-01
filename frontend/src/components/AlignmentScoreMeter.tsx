@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import './AlignmentScoreMeter.css'
 
 interface AlignmentScoreMeterProps {
@@ -11,7 +12,17 @@ export function AlignmentScoreMeter({ score }: AlignmentScoreMeterProps) {
   return (
     <span className="alignment-meter" title={`Alignment score: ${percent}%`}>
       <span className="alignment-meter__track">
-        <span className="alignment-meter__fill" style={{ width: `${percent}%` }} />
+        {/* scaleX rather than width: a transform is what <MotionConfig reducedMotion="user">
+            switches off, so this reads as a measurement being taken for everyone else and
+            snaps straight to its value for anyone who asked the OS for less motion.
+            Animating width would ignore that setting and thrash layout besides. */}
+        <motion.span
+          className="alignment-meter__fill"
+          style={{ transformOrigin: 'left' }}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: clamped }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
+        />
       </span>
       <span className="alignment-meter__label">{percent}%</span>
     </span>
