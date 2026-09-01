@@ -63,7 +63,14 @@ async def event_stream(run_id: str, is_running: bool) -> AsyncIterator[str]:
     queue = event_bus.subscribe(run_id)
     try:
         while True:
-            event = await queue.get()
+            try:
+                event = await asyncio.wait_for(queue.get(), timeout=_HEARTBEAT_SECONDS)
+            except asyncio.TimeoutError:
+                # An SSE comment frame. The spec has clients discard it, so no
+                # handler ever sees it, but every proxy in the path counts it
+                # as traffic and resets its idle timer.
+                yield ": keepalive\n\n"
+                continue
             yield f"data: {json.dumps(event, default=_json_default)}\n\n"
             if event.get("type") in _TERMINAL_EVENT_TYPES:
                 break
