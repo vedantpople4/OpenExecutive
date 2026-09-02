@@ -4,11 +4,6 @@ One Always Free ARM instance, two containers: nginx serves the SPA and proxies
 `/api` to the FastAPI service. Cloudflare provides DNS and TLS. Supabase
 provides Postgres. Total cost: nothing.
 
-> **Status.** Steps 1–4 and 6–8 work against the code on `main` today.
-> **Step 5 does not yet** — the repository still persists to DynamoDB, and the
-> Postgres/Supabase backend is a pending change. Until it lands, follow
-> [step 5b](#5b-interim-dynamodb) instead. This note comes out with that change.
-
 ## Before you start
 
 | You need | Notes |
@@ -110,8 +105,6 @@ sudo chmod 600 /etc/openexec/settings.json
 
 ## 5. Database — Supabase
 
-> Pending the Postgres backend. Use [5b](#5b-interim-dynamodb) until then.
-
 Create a project, then take the connection string from **Connect → Session
 pooler**, not the direct connection.
 
@@ -128,16 +121,6 @@ echo 'DATABASE_URL=postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.
 ```
 
 Then create the schema:
-
-```bash
-docker compose run --rm api python -m scripts.create_tables
-```
-
-### 5b. Interim: DynamoDB
-
-Until the Postgres change lands, the app still talks to DynamoDB and needs AWS
-credentials in the environment or an attached instance role. This is the one
-part of this runbook that still requires an AWS account.
 
 ```bash
 docker compose run --rm api python -m scripts.create_tables
@@ -244,7 +227,7 @@ directory before writing the real file.
 
 ## Local development
 
-Same images, plus dynamodb-local and dummy credentials:
+Same images, plus a disposable Postgres instead of Supabase:
 
 ```bash
 cp .env.example .env       # set OPENEXEC_SETTINGS_FILE=./settings.json
@@ -253,4 +236,5 @@ docker compose -f docker-compose.yml -f docker-compose.local.yml \
   run --rm api python -m scripts.create_tables
 ```
 
-The app is on `http://localhost/`; dynamodb-local is on host port 8001.
+The app is on `http://localhost/`; Postgres is on host port 5433 (5432 is left
+free for a Homebrew instance already running on the same machine).

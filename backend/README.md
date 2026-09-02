@@ -1,10 +1,10 @@
 # OpenExec Backend
 
 FastAPI service backing the OpenExec frontend. Implements the 10 Phase-1
-endpoints against DynamoDB, and runs real multi-agent LLM deliberations by
+endpoints against Postgres, and runs real multi-agent LLM deliberations by
 reusing the `openexec/` CLI engine as a library.
 
-See the design docs for the full rationale: API contract and DynamoDB schema,
+See the design docs for the full rationale: API contract and database schema,
 plus the LLM orchestration integration. For deploying the whole stack (API +
 SPA behind nginx on a single host), see [`../deploy/README.md`](../deploy/README.md).
 
@@ -16,34 +16,36 @@ source ../venv/bin/activate
 python -m pytest
 ```
 
-Tests use `moto` for in-memory DynamoDB and never touch the network — the
-orchestrator is monkeypatched, so no LLM is required.
+Tests run against a real Postgres and never touch the network — the
+orchestrator is monkeypatched, so no LLM is required. There is no in-memory
+stand-in the way `moto` stood in for DynamoDB:
+
+```bash
+brew services start postgresql@16 && createdb openexec_test
+```
+
+Override the target with `DATABASE_URL`.
 
 ## Running locally
 
-The backend needs DynamoDB and (for real deliberations) an OpenAI-compatible
+The backend needs Postgres and (for real deliberations) an OpenAI-compatible
 LLM endpoint.
 
-### 1. DynamoDB
+### 1. Postgres
 
-Either real AWS, or a local stand-in:
+Homebrew, or the compose override on host port 5433:
 
 ```bash
-# Local, in-memory (no Docker needed)
-moto_server -p 5001
-
-# Or dynamodb-local via Docker, on host port 8001
-docker compose -f ../docker-compose.yml -f ../docker-compose.local.yml \
-    up -d dynamodb-local
+brew services start postgresql@16 && createdb openexec
+# or
+docker compose -f ../docker-compose.yml -f ../docker-compose.local.yml up -d postgres
 ```
 
-Then create the tables:
+Then apply the schema:
 
 ```bash
 cd backend
-AWS_ACCESS_KEY_ID=devlocal AWS_SECRET_ACCESS_KEY=devlocal \
-AWS_DEFAULT_REGION=us-east-1 DYNAMODB_ENDPOINT_URL=http://127.0.0.1:5001 \
-python -m scripts.create_tables
+DATABASE_URL=postgresql://localhost:5432/openexec python -m scripts.create_tables
 ```
 
 ### 2. LLM provider
@@ -64,8 +66,7 @@ at Ollama, LM Studio, or any OpenAI-compatible endpoint.
 
 ```bash
 cd /path/to/OpenExec          # repo root
-AWS_ACCESS_KEY_ID=devlocal AWS_SECRET_ACCESS_KEY=devlocal \
-AWS_DEFAULT_REGION=us-east-1 DYNAMODB_ENDPOINT_URL=http://127.0.0.1:5001 \
+DATABASE_URL=postgresql://localhost:5432/openexec \
 PYTHONPATH=backend \
 uvicorn app.main:app --port 8000
 ```
@@ -108,9 +109,9 @@ marked `status="error"` with an `error_message`.
 
 - A full deliberation is 5–26 sequential blocking LLM calls (~5–10 min), so it
   runs as a background task, and runs are serialized process-wide by a lock.
-- Anything written to DynamoDB must go through `app/db.py`'s
-  `to_dynamodb_safe()` — boto3 rejects both Python floats and non-string map
-  keys, and orchestration output contains both.
+- Result fields live in the `data` jsonb column and are flattened back to the
+  top level on read, so repository callers see one flat dict. Promoting a
+  field to a real column means teaching `_row_to_item` about it.
 
 ### Stopping a run
 
