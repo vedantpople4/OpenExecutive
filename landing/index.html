@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenExec — get your executive team's read before you commit</title>
+<meta name="description" content="Submit a decision. A panel of AI executives — CEO, CFO, CTO, CMO — deliberates in rounds, live, and hands you a board decision with alignment scores.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <div class="nav__brand">
+      <a href="#top" class="nav__logo">OpenExec</a>
+      <div class="nav__avatars" aria-hidden="true">
+        <span class="nav__avatar">CEO</span>
+        <span class="nav__avatar">CFO</span>
+        <span class="nav__avatar">CTO</span>
+        <span class="nav__avatar">CMO</span>
+      </div>
+    </div>
+    <div class="nav__links">
+      <a href="#product">Product</a>
+      <a href="#how-it-works" class="is-beam">How it works</a>
+      <a href="#live">Live</a>
+    </div>
+    <a href="/app.html" class="btn btn--primary nav__cta">Start a deliberation</a>
+    <input type="checkbox" id="nav-toggle" class="nav__toggle">
+    <label for="nav-toggle" class="nav__burger" aria-label="Open menu">&#9776;</label>
+    <div class="nav__mobile-panel">
+      <a href="#product">Product</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#live">Live</a>
+      <a href="/app.html" class="nav__mobile-cta">Start a deliberation</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero__inner">
+    <span class="hero__eyebrow">AI boardroom</span>
+    <h1 class="hero__headline">Watch your executive team think it through — live.</h1>
+    <p class="hero__sub">Submit a decision. A panel of AI executives — CEO, CFO, CTO, CMO —
+      deliberates in rounds, live, and hands you a board decision with alignment scores
+      instead of a slide deck.</p>
+    <div class="hero__actions">
+      <a href="#how-it-works" class="btn btn--ghost">See how it works</a>
+      <div class="speaking-preview" id="speaking-preview">
+        <span class="speaking-preview__dot" aria-hidden="true"></span>
+        <span class="speaking-preview__text" id="speaking-preview-text">CFO IS THINKING&hellip;</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="how" id="how-it-works">
+  <div class="section__inner">
+    <p class="section__eyebrow">How it works</p>
+    <h2 class="section__title">Four rounds, no black box.</h2>
+    <ol class="how__steps">
+      <li class="how__step">
+        <span class="how__num">01</span>
+        <h3>Submit your decision</h3>
+        <p>Describe the call you need to make. No forms, no wizard — write it like you'd
+          brief a real board.</p>
+      </li>
+      <li class="how__step">
+        <span class="how__num">02</span>
+        <h3>The board deliberates</h3>
+        <p>CEO, CFO, CTO, and CMO agents reason through it in rounds, live, each pushing
+          back on the others' blind spots.</p>
+      </li>
+      <li class="how__step">
+        <span class="how__num">03</span>
+        <h3>Reports land with alignment scores</h3>
+        <p>Every agent produces a written report and a number: how aligned they are with
+          where the deliberation is heading.</p>
+      </li>
+      <li class="how__step">
+        <span class="how__num">04</span>
+        <h3>You get a board decision</h3>
+        <p>A final, written call, plus the full transcript of how the board got there —
+          nothing hidden.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="board" id="product">
+  <div class="section__inner">
+    <p class="section__eyebrow">The board</p>
+    <h2 class="section__title">Four executives. Four blind spots covered.</h2>
+    <div class="board__grid">
+      <article class="board-card">
+        <span class="board-card__badge">CEO</span>
+        <h3>Chief Executive</h3>
+        <p>Strategy &amp; the final call. Weighs the decision against where the company is
+          actually trying to go.</p>
+      </article>
+      <article class="board-card">
+        <span class="board-card__badge">CFO</span>
+        <h3>Chief Financial</h3>
+        <p>Runway &amp; unit economics. Asks what this costs, and whether you can afford
+          it twice.</p>
+      </article>
+      <article class="board-card">
+        <span class="board-card__badge">CTO</span>
+        <h3>Chief Technology</h3>
+        <p>Feasibility &amp; risk. Asks what breaks, and what it actually takes to build
+          it for real.</p>
+      </article>
+      <article class="board-card">
+        <span class="board-card__badge">CMO</span>
+        <h3>Chief Marketing</h3>
+        <p>Positioning &amp; demand. Asks who wants this, and whether they'll pay for
+          it.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="showcase" id="live">
+  <div class="section__inner">
+    <p class="section__eyebrow">Live, not a black box</p>
+    <h2 class="section__title">You watch the disagreement happen.</h2>
+    <p class="showcase__lede">Every round streams as it happens. Here's a real excerpt —
+      not a mockup of the copy, the actual shape of a deliberation in progress.</p>
+    <div class="transcript">
+      <div class="transcript__row">
+        <span class="transcript__speaking">
+          <span class="transcript__dot" aria-hidden="true"></span>
+          CFO IS THINKING&hellip;
+        </span>
+      </div>
+      <div class="transcript__row transcript__row--report">
+        <div class="report">
+          <div class="report__head">
+            <span class="report__agent">CFO</span>
+            <span class="report__score">82%</span>
+          </div>
+          <p class="report__text">Runway supports this for two quarters. Pushing back on
+            the CEO's timeline &mdash; hiring ahead of revenue here is the risk.</p>
+          <div class="report__meter"><span class="report__meter-fill"></span></div>
+        </div>
+      </div>
+      <div class="transcript__row">
+        <span class="transcript__speaking transcript__speaking--alt">
+          <span class="transcript__dot" aria-hidden="true"></span>
+          CTO IS THINKING&hellip;
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="section__inner cta-band__inner">
+    <h2 class="cta-band__title">Bring a decision. Leave with a board's read on it.</h2>
+    <a href="/app.html" class="btn btn--primary btn--large">Start a deliberation</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="section__inner footer__inner">
+    <div class="footer__brand">
+      <span class="nav__logo">OpenExec</span>
+      <p>An AI executive boardroom for the decisions you'd normally guess at alone.</p>
+    </div>
+    <div class="footer__links">
+      <a href="#product">Product</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#live">Live</a>
+      <a href="https://github.com/vedantpople4/OpenExecutive">GitHub</a>
+    </div>
+  </div>
+  <div class="section__inner footer__legal">&copy; 2026 OpenExec.</div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

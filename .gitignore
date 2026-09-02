@@ -68,3 +68,6 @@ videos/openexec-promo/
 
 
 .gstack/
+
+# Vercel CLI project-link metadata (created by `vercel`/`npx vercel` locally)
+.vercel/
