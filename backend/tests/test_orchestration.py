@@ -11,12 +11,12 @@ from __future__ import annotations
 import asyncio
 import threading
 import time
-from decimal import Decimal
 
 from openexec.events import InceptionCompleted, SynthesisCompleted
 
 from app.repositories import decisions as repo
 from app.repositories import events as events_repo
+from app.db import connection
 from app.services import event_bus, orchestration
 from app.services.orchestration_events import BackendEventSink
 from tests.test_decisions import _submit
@@ -43,6 +43,18 @@ def _fake_final_results(**overrides):
 # -- complete_decision / fail_decision (repository layer) -------------------
 
 
+def _seed_decision(run_id: str) -> None:
+    """Events carry a foreign key to decisions now, so a synthetic run id
+    needs its parent row before any event can land. Production always has
+    one -- create_decision runs before the orchestrator emits anything."""
+    with connection() as conn:
+        conn.execute(
+            "INSERT INTO decisions (id, status, prompt) VALUES (%s, 'running', 'seed')"
+            " ON CONFLICT (id) DO NOTHING",
+            (run_id,),
+        )
+
+
 def test_complete_decision_populates_result_fields(client):
     run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
     action_items = [{"description": "Hire regional lead", "owner": "cfo"}]
@@ -54,12 +66,12 @@ def test_complete_decision_populates_result_fields(client):
     assert item["executive_summary"] == "Yes, proceed."
     assert item["action_item_count"] == 1
     assert item["top_risks"] == ["Risk A", "Risk B", "Risk C"]
-    assert item["agent_alignment"] == {"ceo": Decimal("0.7")}
-    assert item["agent_reports"]["ceo"]["alignment_score"] == Decimal("0.7")
+    assert item["agent_alignment"] == {"ceo": 0.7}
+    assert item["agent_reports"]["ceo"]["alignment_score"] == 0.7
     # Round keys stringified for DynamoDB (see app/db.py) -- a live run
     # failed on exactly this before to_dynamodb_safe handled map keys.
     assert list(item["deliberation_rounds"].keys()) == ["1"]
-    assert item["deliberation_rounds"]["1"]["ceo"]["alignment_score"] == Decimal("0.6")
+    assert item["deliberation_rounds"]["1"]["ceo"]["alignment_score"] == 0.6
 
 
 def test_complete_decision_is_noop_once_terminal(client):
@@ -83,7 +95,7 @@ def test_save_partial_decision_keeps_stopped_status(client):
     # The label survives, but the work the user paid for is kept.
     assert item["status"] == "stopped"
     assert item["executive_summary"] == "Yes, proceed."
-    assert item["agent_reports"]["ceo"]["alignment_score"] == Decimal("0.7")
+    assert item["agent_reports"]["ceo"]["alignment_score"] == 0.7
 
 
 def test_save_partial_decision_on_running_row_leaves_status(client):
@@ -132,6 +144,7 @@ def test_fail_decision_is_noop_once_terminal(client):
 
 def test_backend_event_sink_persists_nested_payload_shape(client):
     event = InceptionCompleted(event_id="e1", aggregate_id="run-sink-test", ceo_report={"title": "t"})
+    _seed_decision("run-sink-test")
     sink = BackendEventSink("run-sink-test", loop=None)
 
     sink.append(event)
@@ -153,12 +166,13 @@ def test_backend_event_sink_stringifies_int_map_keys_in_payload(client):
         final_report={"deliberation_rounds": {1: {"ceo": {"alignment_score": 0.6}}}},
     )
 
+    _seed_decision("run-intkey-test")
     BackendEventSink("run-intkey-test", loop=None).append(event)
 
     stored = events_repo.list_events("run-intkey-test")
     rounds = stored[0]["payload"]["final_report"]["deliberation_rounds"]
     assert list(rounds.keys()) == ["1"]
-    assert rounds["1"]["ceo"]["alignment_score"] == Decimal("0.6")
+    assert rounds["1"]["ceo"]["alignment_score"] == 0.6
 
 
 def test_backend_event_sink_publishes_flattened_live_event(client):
@@ -167,6 +181,7 @@ def test_backend_event_sink_publishes_flattened_live_event(client):
     # test_events.py's live-tail test.
     async def scenario():
         loop = asyncio.get_running_loop()
+        _seed_decision("run-live-sink-test")
         queue = event_bus.subscribe("run-live-sink-test")
         try:
             event = InceptionCompleted(
@@ -199,7 +214,7 @@ def test_run_deliberation_completes_decision_on_success(client, monkeypatch):
     item = repo.get_decision(run_id)
     assert item["status"] == "completed"
     assert item["action_item_count"] == 1
-    assert item["agent_alignment"] == {"ceo": Decimal("0.7")}
+    assert item["agent_alignment"] == {"ceo": 0.7}
 
 
 def test_run_deliberation_fails_decision_on_exception(client, monkeypatch):

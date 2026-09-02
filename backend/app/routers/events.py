@@ -5,8 +5,8 @@ orchestration phase actually calls event_bus.publish()."""
 
 from __future__ import annotations
 
+import asyncio
 import json
-from decimal import Decimal
 from typing import Any, AsyncIterator
 
 from fastapi import APIRouter, HTTPException
@@ -20,18 +20,20 @@ router = APIRouter()
 
 _TERMINAL_EVENT_TYPES = {"synthesis_completed", "error_occurred"}
 
-
-def _json_default(value: Any) -> Any:
-    # Raw DynamoDB items surface Decimal for every numeric attribute (see the
-    # note in app/db.py) — json.dumps doesn't know how to serialize it.
-    if isinstance(value, Decimal):
-        return int(value) if value % 1 == 0 else float(value)
-    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
+# Longest silence allowed on a live tail before we put a byte on the wire
+# anyway. Cloudflare closes a proxied connection that has been idle for 100s
+# (HTTP 524) and that ceiling is fixed on every plan below Enterprise, so a
+# quiet stretch -- one slow specialist LLM call between two events -- would
+# otherwise kill the stream mid-deliberation. 30s leaves room to miss two
+# beats and still stay under the limit. nginx alone never hit this because
+# deploy/nginx.conf sets proxy_read_timeout 3600s; the proxy in front of it
+# is the constraint.
+_HEARTBEAT_SECONDS = 30
 
 
 def to_wire_event(item: dict[str, Any]) -> dict[str, Any]:
-    """DynamoDB item (aggregate_id/sk/event_id/timestamp/type/payload) ->
-    the flat shape frontend/src/api/types.ts's DeliberationEvent expects."""
+    """Stored row (aggregate_id/sk/event_id/timestamp/type/payload) -> the
+    flat shape frontend/src/api/types.ts's DeliberationEvent expects."""
     payload = item.get("payload") or {}
     return {
         "event_id": item.get("event_id", ""),
@@ -44,7 +46,7 @@ def to_wire_event(item: dict[str, Any]) -> dict[str, Any]:
 
 async def event_stream(run_id: str, is_running: bool) -> AsyncIterator[str]:
     for item in events_repo.list_events(run_id):
-        yield f"data: {json.dumps(to_wire_event(item), default=_json_default)}\n\n"
+        yield f"data: {json.dumps(to_wire_event(item))}\n\n"
 
     if not is_running:
         return
@@ -52,8 +54,15 @@ async def event_stream(run_id: str, is_running: bool) -> AsyncIterator[str]:
     queue = event_bus.subscribe(run_id)
     try:
         while True:
-            event = await queue.get()
-            yield f"data: {json.dumps(event, default=_json_default)}\n\n"
+            try:
+                event = await asyncio.wait_for(queue.get(), timeout=_HEARTBEAT_SECONDS)
+            except asyncio.TimeoutError:
+                # An SSE comment frame. The spec has clients discard it, so no
+                # handler ever sees it, but every proxy in the path counts it
+                # as traffic and resets its idle timer.
+                yield ": keepalive\n\n"
+                continue
+            yield f"data: {json.dumps(event)}\n\n"
             if event.get("type") in _TERMINAL_EVENT_TYPES:
                 break
     finally:

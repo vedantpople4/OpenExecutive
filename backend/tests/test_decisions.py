@@ -106,3 +106,59 @@ def test_list_decisions_substring_search(client):
     response = client.get("/decisions", params={"q": "apac"}).json()
     assert len(response["items"]) == 1
     assert "APAC" in response["items"][0]["prompt"]
+
+
+def test_search_matches_beyond_the_first_page(client):
+    """Search filters in SQL, before the limit.
+
+    The DynamoDB version fetched one page and filtered it in Python
+    afterwards, so a match sitting past the page boundary was invisible and
+    the page came back short. This is the behaviour change that move brings.
+    """
+    for i in range(12):
+        _submit(client, f"Routine decision {i}")
+    _submit(client, "Acquire the Bratislava plant")
+
+    # The needle is the oldest row, so a limit of 5 puts it well past the
+    # first page in recency order.
+    body = client.get("/decisions", params={"q": "Bratislava", "limit": 5}).json()
+
+    assert [item["prompt"] for item in body["items"]] == ["Acquire the Bratislava plant"]
+
+
+def test_search_is_case_insensitive(client):
+    _submit(client, "Expand into APAC")
+    body = client.get("/decisions", params={"q": "apac"}).json()
+    assert len(body["items"]) == 1
+
+
+def test_pagination_walks_every_row_exactly_once(client):
+    """Keyset pagination over a full walk: no row repeated, none skipped."""
+    for i in range(7):
+        _submit(client, f"Decision {i}")
+
+    seen, cursor = [], None
+    for _ in range(10):  # generous bound; the walk should finish well inside it
+        params = {"limit": 3}
+        if cursor:
+            params["cursor"] = cursor
+        body = client.get("/decisions", params=params).json()
+        seen.extend(item["runId"] for item in body["items"])
+        cursor = body.get("nextCursor")
+        if not cursor:
+            break
+
+    assert len(seen) == 7
+    assert len(set(seen)) == 7
+
+
+def test_timestamp_keeps_its_wire_format(client):
+    """created_at is timestamptz in Postgres but the API has always emitted
+    ISO with milliseconds and a literal Z. The frontend parses it, so the
+    conversion happens in the repository rather than changing the contract."""
+    import re
+
+    run_id = _submit(client, "Check the wire format").json()["runId"]
+    timestamp = client.get(f"/decisions/{run_id}").json()["timestamp"]
+
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z", timestamp), timestamp
