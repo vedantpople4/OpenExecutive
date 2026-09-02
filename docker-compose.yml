@@ -1,17 +1,16 @@
-# Production topology: one EC2 box, two containers.
+# Production topology: one box, two containers.
 #
 #   docker compose up -d
 #
 # nginx (web) is the only thing listening publicly; the API is reachable only
-# on the compose network. AWS credentials come from the EC2 instance role, so
-# no AWS_* variables appear here on purpose -- setting them, even to empty
-# strings, would shadow the instance role and break DynamoDB access.
+# on the compose network. The database is external (Supabase), reached with a
+# connection string -- there are no ambient cloud credentials to get wrong.
 #
-# For local development against dynamodb-local, layer the override on top:
+# For local development against a Postgres container, layer the override on top:
 #
 #   docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
 #
-# See deploy/README.md for the full EC2 runbook.
+# See deploy/README.md for the full runbook.
 
 services:
   api:
@@ -20,9 +19,11 @@ services:
       dockerfile: backend/Dockerfile
     restart: unless-stopped
     environment:
-      AWS_REGION: ${AWS_REGION:-us-east-1}
-      OPENEXEC_DECISIONS_TABLE: ${OPENEXEC_DECISIONS_TABLE:-openexec-decisions}
-      OPENEXEC_EVENTS_TABLE: ${OPENEXEC_EVENTS_TABLE:-openexec-events}
+      # Supabase: use the session-pooler string, not the direct connection --
+      # direct is IPv6-only without the paid IPv4 add-on. No default on
+      # purpose: a missing URL should stop the stack, not silently point it at
+      # a local Postgres that is not there.
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
       # Path *inside* the container; the host side is the volume below.
       OPENEXEC_SETTINGS_PATH: /etc/openexec/settings.json
       # Turns a missing or misplaced LLM config into a boot failure instead of
