@@ -1,0 +1,463 @@
+/* ============================= TOKENS =============================
+   This page commits to one identity — the same dark palette as the
+   product itself, which has no light mode either. Not a11y-neutral by
+   accident: it's a deliberate brand match, same as Vercel/Linear/Raycast
+   marketing sites staying dark-only. */
+:root {
+  --bg: #1f1e1d;
+  --panel: #262624;
+  --border: #3a3937;
+  --text: #efece6;
+  --dim: #a8a59e;
+  --accent: #5a93d4;
+  --accent-hover: #77a8de;
+  --font-sans: 'Geist', -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-padding-top: 5rem; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+::selection { background: var(--accent); color: #fff; }
+
+.section__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.75rem;
+}
+
+/* ============================= BUTTONS ============================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn--primary { background: var(--accent); color: #fff; }
+.btn--primary:hover { background: var(--accent-hover); }
+.btn--ghost { color: var(--dim); border: 1px solid var(--border); }
+.btn--ghost:hover { color: var(--text); border-color: var(--accent); }
+.btn--large { padding: 0.9rem 1.8rem; font-size: 1rem; }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ============================= NAV =============================
+   Transparent over the hero, agent-avatar presence row, one link
+   carries an animated beam underline (same @property technique as the
+   app's speaking indicator). Solidifies once the page is scrolled, via
+   the .nav--scrolled class toggled in script.js. */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.nav.nav--scrolled {
+  background: rgba(31, 30, 29, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom-color: var(--border);
+}
+.nav__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.1rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.nav__brand { display: flex; align-items: center; gap: 0.9rem; text-decoration: none; }
+.nav__logo { font-weight: 600; font-size: 1rem; text-decoration: none; }
+.nav__avatars { display: flex; }
+.nav__avatar {
+  width: 1.4rem; height: 1.4rem;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 1.5px solid var(--accent);
+  margin-left: -0.4rem;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--dim);
+  position: relative;
+}
+.nav__avatar:first-child { margin-left: 0; }
+.nav__avatar::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  opacity: 0;
+  animation: nav-ping 2.4s ease-out infinite;
+}
+.nav__avatar:nth-child(2)::after { animation-delay: 0.6s; }
+.nav__avatar:nth-child(3)::after { animation-delay: 1.2s; }
+.nav__avatar:nth-child(4)::after { animation-delay: 1.8s; }
+@keyframes nav-ping {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.nav__links { display: flex; gap: 1.6rem; font-size: 0.85rem; color: var(--dim); }
+.nav__links a { text-decoration: none; padding-bottom: 0.3rem; }
+.nav__links a:hover { color: var(--text); }
+.nav__links a.is-beam {
+  color: var(--text);
+  background-image: linear-gradient(90deg, transparent, var(--accent) 35%, var(--accent-hover) 50%, var(--accent) 65%, transparent);
+  background-size: 220% 2px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  animation: nav-sweep 2.6s linear infinite;
+}
+@keyframes nav-sweep {
+  0% { background-position: -60% 100%; }
+  100% { background-position: 160% 100%; }
+}
+.nav__cta { font-size: 0.85rem; }
+.nav__toggle { display: none; }
+.nav__burger {
+  display: none;
+  width: 2.1rem; height: 2.1rem;
+  align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--dim);
+  font-family: var(--font-mono);
+}
+.nav__mobile-panel { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__avatar::after { animation: none; opacity: 0; }
+  .nav__links a.is-beam { animation: none; background: none; color: var(--accent); }
+}
+
+@media (max-width: 700px) {
+  .nav__links, .nav__cta { display: none; }
+  .nav__burger { display: flex; order: 3; }
+  .nav__toggle:checked ~ .nav__mobile-panel {
+    display: flex;
+  }
+  .nav__mobile-panel {
+    display: none;
+    flex-direction: column;
+    gap: 0.9rem;
+    width: 100%;
+    order: 4;
+    padding: 1rem 0 0.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+  .nav__mobile-panel a { text-decoration: none; color: var(--dim); font-size: 0.95rem; }
+  .nav__mobile-cta {
+    align-self: flex-start;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: 7px;
+  }
+}
+
+/* ============================= HERO ============================= */
+.hero {
+  padding: 5.5rem 0 5rem;
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(90, 147, 212, 0.14), transparent 60%),
+    var(--bg);
+}
+
+/* app.html — a single-section standalone page (no sections to scroll to
+   below it), so the hero fills the rest of the viewport and centers its
+   content instead of sitting flush at a fixed height. */
+.coming-soon {
+  min-height: calc(100vh - 4.7rem);
+  display: flex;
+  align-items: center;
+}
+.coming-soon__inner { align-items: flex-start; }
+@media (max-width: 640px) {
+  .coming-soon { min-height: auto; padding-top: 3rem; padding-bottom: 3rem; }
+}
+.hero__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.2rem;
+}
+.hero__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hero__headline {
+  font-size: clamp(2rem, 1.3rem + 3vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  max-width: 18ch;
+  margin: 0;
+}
+.hero__sub {
+  color: var(--dim);
+  font-size: 1.1rem;
+  max-width: 52ch;
+  margin: 0;
+}
+.hero__actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.3rem; }
+
+/* Beam-bordered "speaking" preview — same @property conic-gradient
+   technique shipping on the app's AgentSpeakingIndicator. */
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.speaking-preview {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: 0.5rem;
+  background: var(--panel);
+  color: var(--dim);
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+}
+.speaking-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--beam-angle),
+    var(--border) 0deg, var(--border) 296deg,
+    var(--accent) 326deg, var(--accent-hover) 340deg,
+    var(--accent) 351deg, var(--border) 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: beam-rotate 2.6s linear infinite;
+  pointer-events: none;
+}
+@keyframes beam-rotate { to { --beam-angle: 360deg; } }
+.speaking-preview__dot { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.speaking-preview__text {
+  display: inline-block;
+  min-width: 11ch; /* holds the widest label ("CEO IS THINKING…") so the pill doesn't reflow when it swaps */
+  transition: opacity 0.35s ease;
+}
+.speaking-preview__text.is-fading { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .speaking-preview::before { animation: none; background: var(--border); }
+  .speaking-preview__text { transition: none; }
+}
+
+/* ============================= SECTION HEADS ============================= */
+.section__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.6rem;
+}
+.section__title {
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem);
+  font-weight: 600;
+  text-wrap: balance;
+  margin: 0 0 2.4rem;
+  max-width: 28ch;
+}
+
+/* ============================= HOW IT WORKS ============================= */
+.how { padding: 5rem 0; border-top: 1px solid var(--border); }
+.how__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+.how__step { display: flex; flex-direction: column; gap: 0.5rem; }
+.how__num {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+.how__step h3 { font-size: 1.02rem; margin: 0; }
+.how__step p { color: var(--dim); font-size: 0.92rem; margin: 0; }
+
+@media (max-width: 900px) {
+  .how__steps { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .how__steps { grid-template-columns: 1fr; }
+}
+
+/* ============================= BOARD (product) ============================= */
+.board { padding: 5rem 0; border-top: 1px solid var(--border); }
+.board__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+}
+.board-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.4rem;
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.board-card__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+.board-card h3 { font-size: 1rem; margin: 0; }
+.board-card p { color: var(--dim); font-size: 0.88rem; margin: 0; }
+
+@media (max-width: 900px) {
+  .board__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .board__grid { grid-template-columns: 1fr; }
+}
+
+/* ============================= SHOWCASE (live transcript) ============================= */
+.showcase { padding: 5rem 0; border-top: 1px solid var(--border); }
+.showcase__lede { color: var(--dim); font-size: 1rem; max-width: 56ch; margin: -1.4rem 0 2.4rem; }
+.transcript {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 640px;
+}
+.transcript__speaking {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--dim);
+}
+.transcript__speaking--alt { color: var(--dim); opacity: 0.7; }
+.transcript__dot {
+  width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+}
+.report {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.report__head { display: flex; align-items: center; justify-content: space-between; }
+.report__agent { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; color: var(--dim); }
+.report__score { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--accent); }
+.report__text { font-size: 0.9rem; color: var(--text); margin: 0; }
+.report__meter {
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.report__meter-fill {
+  display: block;
+  height: 100%;
+  width: 82%;
+  background: var(--accent);
+  border-radius: inherit;
+}
+
+/* ============================= CTA BAND ============================= */
+.cta-band { padding: 4.5rem 0; border-top: 1px solid var(--border); }
+.cta-band__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.cta-band__title {
+  font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.7rem);
+  font-weight: 600;
+  text-wrap: balance;
+  max-width: 30ch;
+  margin: 0;
+}
+
+/* ============================= FOOTER ============================= */
+.footer { padding: 3rem 0 2rem; border-top: 1px solid var(--border); }
+.footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+.footer__brand { max-width: 32ch; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer__brand p { color: var(--dim); font-size: 0.88rem; margin: 0; }
+.footer__links { display: flex; gap: 1.5rem; font-size: 0.88rem; color: var(--dim); }
+.footer__links a { text-decoration: none; }
+.footer__links a:hover { color: var(--text); }
+.footer__legal {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--dim);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .hero { padding: 4rem 0 3.5rem; }
+  .how, .board, .showcase, .cta-band { padding: 3.5rem 0; }
+}
