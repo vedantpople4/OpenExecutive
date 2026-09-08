@@ -361,6 +361,16 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.board-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 24px -16px rgba(90, 147, 212, 0.45);
+}
+@media (prefers-reduced-motion: reduce) {
+  .board-card { transition: border-color 0.2s ease-out; }
+  .board-card:hover { transform: none; }
 }
 .board-card__badge {
   display: inline-flex;
