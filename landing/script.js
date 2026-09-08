@@ -23,6 +23,28 @@ document.querySelectorAll('.nav__mobile-panel a').forEach((link) => {
 // as a live process rather than one fixed agent. Purely decorative — no
 // aria-live, so it doesn't interrupt screen reader users with a chat every
 // ~3 seconds for a widget that isn't reporting anything real.
+// Fades + slides each `.reveal` element in as it scrolls into view. The
+// hidden starting state only exists under the `.js` class the head script
+// adds pre-paint, so this never fights a no-JS or reduced-motion visitor —
+// see the `.js .reveal` rule in styles.css for why.
+const revealEls = document.querySelectorAll('.reveal');
+if (revealEls.length && 'IntersectionObserver' in window) {
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+  );
+  revealEls.forEach((el) => revealObserver.observe(el));
+} else {
+  revealEls.forEach((el) => el.classList.add('is-visible'));
+}
+
 const speakingText = document.getElementById('speaking-preview-text');
 if (speakingText) {
   const agents = ['CFO', 'CTO', 'CEO', 'CMO'];

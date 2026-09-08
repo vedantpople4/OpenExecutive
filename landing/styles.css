@@ -299,6 +299,26 @@ a { color: inherit; }
   max-width: 28ch;
 }
 
+/* ============================= SCROLL REVEAL =============================
+   `.js` is added by an inline <script> in <head>, before first paint — so
+   `.reveal` only ever starts hidden when JS actually runs the observer that
+   reveals it. No-JS visitors get every section fully visible from load, no
+   opt-in required. Reduced-motion visitors get the `.js` treatment but the
+   media query below strips the transform/transition, same as the beam and
+   the hero's speaking-preview swap elsewhere on this page. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.js .reveal.is-visible { opacity: 1; transform: translateY(0); }
+.how__step.reveal:nth-child(2), .board-card.reveal:nth-child(2) { transition-delay: 90ms; }
+.how__step.reveal:nth-child(3), .board-card.reveal:nth-child(3) { transition-delay: 180ms; }
+.how__step.reveal:nth-child(4), .board-card.reveal:nth-child(4) { transition-delay: 270ms; }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+}
+
 /* ============================= HOW IT WORKS ============================= */
 .how { padding: 5rem 0; border-top: 1px solid var(--border); }
 .how__steps {
