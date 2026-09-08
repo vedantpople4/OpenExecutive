@@ -154,17 +154,30 @@ a { color: inherit; }
   .nav__links, .nav__cta { display: none; }
   .nav__burger { display: flex; order: 3; }
   .nav__toggle:checked ~ .nav__mobile-panel {
-    display: flex;
+    max-height: 16rem;
+    opacity: 1;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+    margin-top: 1rem;
+    border-top-color: var(--border);
   }
   .nav__mobile-panel {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 0.9rem;
     width: 100%;
     order: 4;
-    padding: 1rem 0 0.5rem;
-    border-top: 1px solid var(--border);
-    margin-top: 1rem;
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    margin-top: 0;
+    overflow: hidden;
+    border-top: 1px solid transparent;
+    transition: max-height 0.25s ease-out, opacity 0.2s ease-out,
+      padding 0.25s ease-out, margin 0.25s ease-out, border-color 0.25s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav__mobile-panel { transition: none; }
   }
   .nav__mobile-panel a { text-decoration: none; color: var(--dim); font-size: 0.95rem; }
   .nav__mobile-cta {
@@ -299,6 +312,26 @@ a { color: inherit; }
   max-width: 28ch;
 }
 
+/* ============================= SCROLL REVEAL =============================
+   `.js` is added by an inline <script> in <head>, before first paint — so
+   `.reveal` only ever starts hidden when JS actually runs the observer that
+   reveals it. No-JS visitors get every section fully visible from load, no
+   opt-in required. Reduced-motion visitors get the `.js` treatment but the
+   media query below strips the transform/transition, same as the beam and
+   the hero's speaking-preview swap elsewhere on this page. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.js .reveal.is-visible { opacity: 1; transform: translateY(0); }
+.how__step.reveal:nth-child(2), .board-card.reveal:nth-child(2) { transition-delay: 90ms; }
+.how__step.reveal:nth-child(3), .board-card.reveal:nth-child(3) { transition-delay: 180ms; }
+.how__step.reveal:nth-child(4), .board-card.reveal:nth-child(4) { transition-delay: 270ms; }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+}
+
 /* ============================= HOW IT WORKS ============================= */
 .how { padding: 5rem 0; border-top: 1px solid var(--border); }
 .how__steps {
@@ -341,6 +374,16 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.board-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 24px -16px rgba(90, 147, 212, 0.45);
+}
+@media (prefers-reduced-motion: reduce) {
+  .board-card { transition: border-color 0.2s ease-out; }
+  .board-card:hover { transform: none; }
 }
 .board-card__badge {
   display: inline-flex;
