@@ -9,7 +9,7 @@ from openexec.agents import register_default_agents
 from openexec.ai.client import resolve_settings_path
 
 from app.config import get_settings
-from app.routers import agents, compare, dashboard, decisions, events, health
+from app.routers import agents, auth, compare, dashboard, decisions, events, health
 from app.services import orchestration
 
 
@@ -67,9 +67,15 @@ app.add_middleware(
     allow_origins=settings.cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
+    # The session cookie is useless without this: a cross-origin fetch with
+    # credentials:'include' drops the Set-Cookie unless the response carries
+    # Access-Control-Allow-Credentials. Production is same-origin behind nginx,
+    # so this only matters for dev against http://localhost:5173.
+    allow_credentials=True,
 )
 
 app.include_router(health.router)
+app.include_router(auth.router)
 app.include_router(agents.router)
 app.include_router(decisions.router)
 app.include_router(compare.router)
