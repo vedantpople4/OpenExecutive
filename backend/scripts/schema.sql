@@ -7,6 +7,12 @@
 
 create table if not exists decisions (
     id                text primary key,
+    -- Plain text, deliberately not a reference to Supabase's auth.users: this
+    -- file also builds the plain postgres:16 that CI and tests/conftest.py use,
+    -- where no auth schema exists. Holds a Supabase user uuid as a string.
+    -- The sentinel default backfills rows written before auth existed; nothing
+    -- filters on user_id yet, so they stay reachable until that lands.
+    user_id           text        not null default '__unmigrated__',
     status            text        not null,
     created_at        timestamptz not null default now(),
     updated_at        timestamptz not null default now(),
@@ -24,12 +30,22 @@ create table if not exists decisions (
     data              jsonb       not null default '{}'::jsonb
 );
 
+-- CREATE TABLE IF NOT EXISTS is a no-op on a database that predates the column,
+-- so the ALTER is what actually migrates an existing deployment.
+alter table decisions add column if not exists user_id text not null default '__unmigrated__';
+
 -- Replaces gsi_recency. No partition key needed: ORDER BY created_at DESC does
 -- the job that entity_type existed only to enable, so that column is gone.
 -- id is the tiebreaker so the keyset cursor is total -- two decisions created
 -- in the same millisecond would otherwise page unstably.
+--
+-- user_id leads so per-user pagination stays one index scan rather than a scan
+-- of everybody's decisions filtered down. The unconditional DROP is how an
+-- existing database picks the new definition up: CREATE INDEX IF NOT EXISTS
+-- matches on name alone and would leave the old two-column index in place.
+drop index if exists decisions_recency;
 create index if not exists decisions_recency
-    on decisions (created_at desc, id desc);
+    on decisions (user_id, created_at desc, id desc);
 
 -- Replaces gsi_parent, which backs has_children().
 create index if not exists decisions_parent
