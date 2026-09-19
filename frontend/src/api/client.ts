@@ -18,3 +18,15 @@ export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as strin
 export function mockDelay<T>(value: T, ms = 300): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(value), ms))
 }
+
+/** Carries the HTTP status so a global handler (App.tsx's QueryCache/MutationCache) can react to
+ * 401 specifically, rather than parsing it back out of a message string. */
+export class ApiError extends Error {
+  readonly status: number
+
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+  }
+}
