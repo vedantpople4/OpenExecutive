@@ -1,5 +1,6 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 
+from app.auth import get_current_user, verify_origin
 from app.models.decisions import (
     DecisionDetail,
     DecisionListResponse,
@@ -14,11 +15,21 @@ from app.services import orchestration
 router = APIRouter()
 
 
-@router.post("/decisions", response_model=SubmitDecisionResponse, status_code=202)
+@router.post(
+    "/decisions",
+    response_model=SubmitDecisionResponse,
+    status_code=202,
+    dependencies=[Depends(verify_origin)],
+)
 def submit_decision(
-    request: SubmitDecisionRequest, background_tasks: BackgroundTasks
+    request: SubmitDecisionRequest,
+    background_tasks: BackgroundTasks,
+    user_id: str = Depends(get_current_user),
 ) -> SubmitDecisionResponse:
-    if request.parent_run_id is not None and repo.get_decision(request.parent_run_id) is None:
+    if (
+        request.parent_run_id is not None
+        and repo.get_owned_decision(request.parent_run_id, user_id) is None
+    ):
         raise HTTPException(status_code=404, detail=f"parentRunId not found: {request.parent_run_id}")
 
     run_id = repo.create_decision(
@@ -26,6 +37,7 @@ def submit_decision(
         agents=request.agents,
         team_mode_enabled=request.team_mode_enabled,
         parent_run_id=request.parent_run_id,
+        user_id=user_id,
     )
     background_tasks.add_task(
         orchestration.run_deliberation,
@@ -42,24 +54,26 @@ def list_decisions(
     q: str | None = None,
     cursor: str | None = None,
     limit: int = Query(default=20, ge=1, le=100),
+    user_id: str = Depends(get_current_user),
 ) -> DecisionListResponse:
-    items, next_cursor = repo.list_decisions(q=q, cursor=cursor, limit=limit)
+    items, next_cursor = repo.list_decisions(q=q, cursor=cursor, limit=limit, user_id=user_id)
     summaries = [
-        DecisionSummary(**repo.to_summary(item, repo.has_children(item["id"]))) for item in items
+        DecisionSummary(**repo.to_summary(item, repo.has_children(item["id"], user_id)))
+        for item in items
     ]
     return DecisionListResponse(items=summaries, nextCursor=next_cursor)
 
 
 @router.get("/decisions/{run_id}", response_model=DecisionDetail)
-def get_decision(run_id: str) -> DecisionDetail:
-    item = repo.get_decision(run_id)
+def get_decision(run_id: str, user_id: str = Depends(get_current_user)) -> DecisionDetail:
+    item = repo.get_owned_decision(run_id, user_id)
     if item is None:
         raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")
     return DecisionDetail(**repo.to_detail(item))
 
 
-@router.delete("/decisions/{run_id}", status_code=204)
-def delete_decision(run_id: str) -> None:
+@router.delete("/decisions/{run_id}", status_code=204, dependencies=[Depends(verify_origin)])
+def delete_decision(run_id: str, user_id: str = Depends(get_current_user)) -> None:
     """Removes a decision and its whole event timeline.
 
     Refuses a running decision with 409 rather than deleting it. The worker
@@ -68,7 +82,7 @@ def delete_decision(run_id: str) -> None:
     that had happened. Stop it first -- POST /decisions/{id}/stop -- and the
     delete then succeeds.
     """
-    decision = repo.get_decision(run_id)
+    decision = repo.get_owned_decision(run_id, user_id)
     if decision is None:
         raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")
     if decision.get("status") == "running":
@@ -80,18 +94,18 @@ def delete_decision(run_id: str) -> None:
     # Events first: a failure here leaves the decision row in place, so the
     # timeline is still reachable. The other order would orphan the events.
     events_repo.delete_events(run_id)
-    repo.delete_decision(run_id)
+    repo.delete_decision(run_id, user_id)
 
 
-@router.post("/decisions/{run_id}/stop")
-def stop_decision(run_id: str) -> dict[str, str]:
+@router.post("/decisions/{run_id}/stop", dependencies=[Depends(verify_origin)])
+def stop_decision(run_id: str, user_id: str = Depends(get_current_user)) -> dict[str, str]:
     # Ordering is load-bearing: signal the worker BEFORE flipping status. The
     # worker picks save_partial_decision vs complete_decision by reading this
     # event, so if the status write landed first and the worker still saw an
     # unset event, it would call complete_decision -- whose terminal guard
     # silently drops the partial results this whole path exists to preserve.
     orchestration.request_cancel(run_id)
-    status = repo.stop_decision(run_id)
+    status = repo.stop_decision(run_id, user_id)
     if status is None:
         raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")
     return {"status": status}

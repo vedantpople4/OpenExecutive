@@ -19,6 +19,7 @@ from app.repositories import events as events_repo
 from app.db import connection
 from app.services import event_bus, orchestration
 from app.services.orchestration_events import BackendEventSink
+from tests.conftest import TEST_USER_ID
 from tests.test_decisions import _submit
 
 
@@ -56,7 +57,7 @@ def _seed_decision(run_id: str) -> None:
 
 
 def test_complete_decision_populates_result_fields(client):
-    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None, TEST_USER_ID)
     action_items = [{"description": "Hire regional lead", "owner": "cfo"}]
 
     repo.complete_decision(run_id, _fake_final_results(), action_items)
@@ -75,8 +76,8 @@ def test_complete_decision_populates_result_fields(client):
 
 
 def test_complete_decision_is_noop_once_terminal(client):
-    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
-    repo.stop_decision(run_id)
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None, TEST_USER_ID)
+    repo.stop_decision(run_id, TEST_USER_ID)
 
     repo.complete_decision(run_id, _fake_final_results(), [])
 
@@ -86,8 +87,8 @@ def test_complete_decision_is_noop_once_terminal(client):
 
 
 def test_save_partial_decision_keeps_stopped_status(client):
-    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
-    repo.stop_decision(run_id)
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None, TEST_USER_ID)
+    repo.stop_decision(run_id, TEST_USER_ID)
 
     repo.save_partial_decision(run_id, _fake_final_results(), [{"description": "do it"}])
 
@@ -100,7 +101,7 @@ def test_save_partial_decision_keeps_stopped_status(client):
 
 def test_save_partial_decision_on_running_row_leaves_status(client):
     """Covers the race where the worker finishes before /stop's status write."""
-    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None, TEST_USER_ID)
 
     repo.save_partial_decision(run_id, _fake_final_results(), [])
 
@@ -110,7 +111,7 @@ def test_save_partial_decision_on_running_row_leaves_status(client):
 
 
 def test_save_partial_decision_never_clobbers_a_finished_run(client):
-    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None, TEST_USER_ID)
     repo.complete_decision(run_id, _fake_final_results(executive_summary="Real result"), [])
 
     repo.save_partial_decision(run_id, _fake_final_results(executive_summary="Stale partial"), [])
@@ -121,7 +122,7 @@ def test_save_partial_decision_never_clobbers_a_finished_run(client):
 
 
 def test_fail_decision_sets_error_status(client):
-    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None, TEST_USER_ID)
 
     repo.fail_decision(run_id, "LLM provider unreachable")
 
@@ -131,8 +132,8 @@ def test_fail_decision_sets_error_status(client):
 
 
 def test_fail_decision_is_noop_once_terminal(client):
-    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None)
-    repo.stop_decision(run_id)
+    run_id = repo.create_decision("Should we expand?", ["ceo"], False, None, TEST_USER_ID)
+    repo.stop_decision(run_id, TEST_USER_ID)
 
     repo.fail_decision(run_id, "too late")
 
@@ -205,7 +206,7 @@ def test_backend_event_sink_publishes_flattened_live_event(client):
 
 
 def test_run_deliberation_completes_decision_on_success(client, monkeypatch):
-    run_id = repo.create_decision("Should we launch?", ["ceo"], False, None)
+    run_id = repo.create_decision("Should we launch?", ["ceo"], False, None, TEST_USER_ID)
     monkeypatch.setattr(orchestration.Orchestrator, "run", lambda self: _fake_final_results())
     monkeypatch.setattr(orchestration, "extract_action_items", lambda results: [{"description": "do it"}])
 
@@ -218,7 +219,7 @@ def test_run_deliberation_completes_decision_on_success(client, monkeypatch):
 
 
 def test_run_deliberation_fails_decision_on_exception(client, monkeypatch):
-    run_id = repo.create_decision("Should we launch?", ["ceo"], False, None)
+    run_id = repo.create_decision("Should we launch?", ["ceo"], False, None, TEST_USER_ID)
 
     def boom(self):
         raise RuntimeError("provider timeout")
@@ -233,8 +234,8 @@ def test_run_deliberation_fails_decision_on_exception(client, monkeypatch):
 
 
 def test_run_deliberation_serializes_concurrent_runs(client, monkeypatch):
-    run_id_1 = repo.create_decision("First", ["ceo"], False, None)
-    run_id_2 = repo.create_decision("Second", ["ceo"], False, None)
+    run_id_1 = repo.create_decision("First", ["ceo"], False, None, TEST_USER_ID)
+    run_id_2 = repo.create_decision("Second", ["ceo"], False, None, TEST_USER_ID)
 
     def slow_run(self):
         time.sleep(0.2)
@@ -269,14 +270,14 @@ def test_request_cancel_returns_false_for_unknown_run(client):
 def test_cancel_registry_is_cleaned_up_after_success_and_failure(client, monkeypatch):
     monkeypatch.setattr(orchestration, "extract_action_items", lambda results: [])
 
-    run_ok = repo.create_decision("ok", ["ceo"], False, None)
+    run_ok = repo.create_decision("ok", ["ceo"], False, None, TEST_USER_ID)
     monkeypatch.setattr(orchestration.Orchestrator, "run", lambda self: _fake_final_results())
     orchestration.run_deliberation(run_ok, "ok", ["ceo"], False)
 
     def boom(self):
         raise RuntimeError("provider timeout")
 
-    run_bad = repo.create_decision("bad", ["ceo"], False, None)
+    run_bad = repo.create_decision("bad", ["ceo"], False, None, TEST_USER_ID)
     monkeypatch.setattr(orchestration.Orchestrator, "run", boom)
     orchestration.run_deliberation(run_bad, "bad", ["ceo"], False)
 
@@ -286,7 +287,7 @@ def test_cancel_registry_is_cleaned_up_after_success_and_failure(client, monkeyp
 def test_run_cancelled_while_queued_never_starts(client, monkeypatch):
     """A run waiting behind the process-wide lock must be cancellable before
     it burns a single LLM call."""
-    run_id = repo.create_decision("Queued", ["ceo"], False, None)
+    run_id = repo.create_decision("Queued", ["ceo"], False, None, TEST_USER_ID)
     started = []
     monkeypatch.setattr(
         orchestration.Orchestrator, "run", lambda self: started.append(1) or _fake_final_results()
@@ -305,7 +306,7 @@ def test_run_cancelled_while_queued_never_starts(client, monkeypatch):
 
 
 def test_cancelled_mid_run_saves_partial_results(client, monkeypatch):
-    run_id = repo.create_decision("Mid-run", ["ceo"], False, None)
+    run_id = repo.create_decision("Mid-run", ["ceo"], False, None, TEST_USER_ID)
 
     def cancel_then_return(self):
         # Stands in for the user hitting /stop while the engine is working.

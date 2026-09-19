@@ -60,21 +60,27 @@ def create_decision(
     agents: list[str],
     team_mode_enabled: bool,
     parent_run_id: str | None,
+    user_id: str,
 ) -> str:
     run_id = f"run-{uuid.uuid4().hex[:12]}"
     with connection() as conn:
         conn.execute(
             """
             INSERT INTO decisions
-                (id, status, prompt, parent_run_id, team_mode_enabled, requested_agents)
-            VALUES (%s, 'running', %s, %s, %s, %s)
+                (id, user_id, status, prompt, parent_run_id, team_mode_enabled, requested_agents)
+            VALUES (%s, %s, 'running', %s, %s, %s, %s)
             """,
-            (run_id, prompt, parent_run_id, team_mode_enabled, Json(agents)),
+            (run_id, user_id, prompt, parent_run_id, team_mode_enabled, Json(agents)),
         )
     return run_id
 
 
 def get_decision(run_id: str) -> dict[str, Any] | None:
+    """Unscoped by design — the background orchestration worker that calls this
+    (via complete_decision/save_partial_decision/fail_decision) has no HTTP
+    request and no authenticated user, only a run_id. Router handlers must use
+    get_owned_decision instead; this function staying unscoped is what lets a
+    result land regardless of who happens to own the run."""
     with connection() as conn:
         row = conn.execute(
             f"SELECT {_SELECT} FROM decisions WHERE id = %s", (run_id,)
@@ -82,13 +88,25 @@ def get_decision(run_id: str) -> dict[str, Any] | None:
     return _row_to_item(row) if row else None
 
 
+def get_owned_decision(run_id: str, user_id: str) -> dict[str, Any] | None:
+    """The read every router handler should call: None both when the run
+    doesn't exist and when it belongs to someone else, so a 404 built from
+    this never tells a caller which case it hit."""
+    with connection() as conn:
+        row = conn.execute(
+            f"SELECT {_SELECT} FROM decisions WHERE id = %s AND user_id = %s",
+            (run_id, user_id),
+        ).fetchone()
+    return _row_to_item(row) if row else None
+
+
 _TERMINAL_STATUSES = {"completed", "stopped", "error"}
 
 
-def stop_decision(run_id: str) -> str | None:
-    """Returns the resulting status, or None if the decision doesn't exist.
-    No-op if already terminal — a finished run is never overwritten back to
-    'stopped'.
+def stop_decision(run_id: str, user_id: str) -> str | None:
+    """Returns the resulting status, or None if the decision doesn't exist
+    (or isn't this user's). No-op if already terminal — a finished run is
+    never overwritten back to 'stopped'.
 
     One statement rather than read-then-write: the status guard is in the
     WHERE clause, so a run that finishes mid-call cannot be reverted.
@@ -97,29 +115,34 @@ def stop_decision(run_id: str) -> str | None:
         row = conn.execute(
             """
             UPDATE decisions SET status = 'stopped', updated_at = now()
-            WHERE id = %s AND status NOT IN ('completed', 'stopped', 'error')
+            WHERE id = %s AND user_id = %s
+                AND status NOT IN ('completed', 'stopped', 'error')
             RETURNING status
             """,
-            (run_id,),
+            (run_id, user_id),
         ).fetchone()
         if row is not None:
             return row["status"]
 
         existing = conn.execute(
-            "SELECT status FROM decisions WHERE id = %s", (run_id,)
+            "SELECT status FROM decisions WHERE id = %s AND user_id = %s",
+            (run_id, user_id),
         ).fetchone()
     return existing["status"] if existing else None
 
 
-def delete_decision(run_id: str) -> bool:
-    """Removes the decision row. False if it was not there to begin with.
+def delete_decision(run_id: str, user_id: str) -> bool:
+    """Removes the decision row. False if it was not there to begin with, or
+    belonged to someone else.
 
     Events go too, via ON DELETE CASCADE -- but routers/decisions.py still
     deletes them explicitly first, so the behaviour does not depend on the
     constraint being present.
     """
     with connection() as conn:
-        cur = conn.execute("DELETE FROM decisions WHERE id = %s", (run_id,))
+        cur = conn.execute(
+            "DELETE FROM decisions WHERE id = %s AND user_id = %s", (run_id, user_id)
+        )
         return cur.rowcount > 0
 
 
@@ -243,10 +266,11 @@ def fail_decision(run_id: str, error_message: str) -> None:
     )
 
 
-def has_children(run_id: str) -> bool:
+def has_children(run_id: str, user_id: str) -> bool:
     with connection() as conn:
         row = conn.execute(
-            "SELECT 1 FROM decisions WHERE parent_run_id = %s LIMIT 1", (run_id,)
+            "SELECT 1 FROM decisions WHERE parent_run_id = %s AND user_id = %s LIMIT 1",
+            (run_id, user_id),
         ).fetchone()
     return row is not None
 
@@ -255,8 +279,9 @@ def list_decisions(
     q: str | None,
     cursor: str | None,
     limit: int,
+    user_id: str,
 ) -> tuple[list[dict[str, Any]], str | None]:
-    """Newest first, keyset paginated.
+    """Newest first, keyset paginated, scoped to one user's own decisions.
 
     The q filter is applied in SQL, before the limit. The DynamoDB version
     fetched a page and filtered it in Python afterwards, so a search only ever
@@ -265,10 +290,11 @@ def list_decisions(
 
     Keyset rather than OFFSET so a decision created mid-scroll cannot shift
     every later page by one. (created_at, id) is a total order thanks to the
-    id tiebreaker in decisions_recency.
+    id tiebreaker in decisions_recency, which now leads with user_id so this
+    stays one index scan per user rather than a scan of every user's rows.
     """
-    where = []
-    params: dict[str, Any] = {"limit": limit}
+    where = ["user_id = %(user_id)s"]
+    params: dict[str, Any] = {"limit": limit, "user_id": user_id}
 
     if q:
         where.append("prompt ILIKE %(pattern)s")
@@ -279,7 +305,7 @@ def list_decisions(
         params["after_ts"] = created_at
         params["after_id"] = run_id
 
-    clause = f"WHERE {' AND '.join(where)}" if where else ""
+    clause = f"WHERE {' AND '.join(where)}"
     with connection() as conn:
         rows = conn.execute(
             f"""
@@ -301,12 +327,15 @@ def list_decisions(
     return items, next_cursor
 
 
-def scan_all_decisions() -> list[dict[str, Any]]:
-    """Every decision — used only by GET /dashboard, a rare endpoint with a
-    small row count at this app's scale. The internal paging loop the
+def scan_all_decisions(user_id: str) -> list[dict[str, Any]]:
+    """Every decision belonging to one user — used only by GET /dashboard.
+    Scoped, not actually a full scan any more: a signed-in user's dashboard
+    must not aggregate anyone else's decisions. The internal paging loop the
     DynamoDB version carried is gone; it existed only for Scan's 1 MB cap."""
     with connection() as conn:
-        rows = conn.execute(f"SELECT {_SELECT} FROM decisions").fetchall()
+        rows = conn.execute(
+            f"SELECT {_SELECT} FROM decisions WHERE user_id = %s", (user_id,)
+        ).fetchall()
     return [_row_to_item(row) for row in rows]
 
 
