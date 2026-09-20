@@ -23,10 +23,8 @@ async function createBackendSession(accessToken: string): Promise<void> {
   }
 }
 
-/** Configuration errors (missing env vars) are knowable at mount, not just after some external
- * event, so that half of the state is a lazy initializer, not a synchronous setState inside the
- * effect below. The effect only ever setState from the onAuthStateChange callback and the
- * createBackendSession promise, both genuine reactions to an external system. */
+// A config error is knowable at mount, so it's a lazy initializer, not a synchronous setState
+// inside the effect below (oxlint's react(set-state-in-effect) flags that pattern).
 function initialAuthState(): AuthState {
   try {
     getSupabaseClient()

@@ -60,7 +60,6 @@ def test_cannot_delete_another_users_decision(client, other_user_client, monkeyp
 
     response = other_user_client.delete(f"/decisions/{run_id}")
     assert response.status_code == 404
-    # And it's still there, for its actual owner.
     assert client.get(f"/decisions/{run_id}").status_code == 200
 
 
@@ -84,11 +83,6 @@ def test_cannot_compare_a_decision_that_belongs_to_someone_else(
 
 
 def test_submit_decision_without_a_matching_origin_is_rejected(anon_client):
-    """A cookie alone is not enough. This is the CSRF-shaped attack the human
-    asked to be closed: a link or an auto-submitting form on another site
-    cannot act as a signed-in user even if the browser attaches the cookie,
-    because that request either carries no Origin header (most such vectors)
-    or one that does not match this app's own."""
     name, value = _cookie_for(TEST_USER_ID)
     client_no_origin = TestClient(app)
     client_no_origin.cookies.set(name, value)
@@ -117,7 +111,4 @@ def test_stop_and_delete_also_require_a_matching_origin(client, monkeypatch):
 
     assert forged.post(f"/decisions/{run_id}/stop").status_code == 403
     assert forged.delete(f"/decisions/{run_id}").status_code == 403
-    # Confirms the 403s above were real refusals, not accidental 404s: the
-    # legitimate owner, same-origin (client already carries the right Origin
-    # by default), can still act on it.
     assert client.post(f"/decisions/{run_id}/stop").status_code == 200

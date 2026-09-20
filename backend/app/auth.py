@@ -34,7 +34,8 @@ EXPECTED_AUDIENCE = "authenticated"
 # Longer than Supabase's one-hour access token, so a single missed refresh or a
 # deliberation that streams for many minutes does not 401 mid-flight. Short
 # enough that a stolen cookie dies within the working day -- which is the only
-# bound there is, since nothing revokes an issued cookie yet.
+# bound there is, since nothing revokes an issued cookie yet (tracked as open
+# work, not silently accepted: see the PR description).
 SESSION_TTL_SECONDS = 8 * 60 * 60
 
 _settings = get_settings()
@@ -70,7 +71,6 @@ def verify_supabase_jwt(token: str) -> dict:
 
 
 def set_session_cookie(response: Response, user_id: str) -> None:
-    """Issue the backend's session cookie. The one place these flags are set."""
     response.set_cookie(
         key=get_settings().session_cookie_name,
         value=_serializer.dumps(user_id),
@@ -83,10 +83,7 @@ def set_session_cookie(response: Response, user_id: str) -> None:
 
 
 def get_current_user(request: Request) -> str:
-    """FastAPI dependency resolving the signed-in user id from the cookie.
-
-    Not attached to any route yet; it lands with the routes it protects.
-    """
+    """FastAPI dependency resolving the signed-in user id from the cookie."""
     raw = request.cookies.get(get_settings().session_cookie_name)
     if raw is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -101,8 +98,6 @@ def get_current_user(request: Request) -> str:
 
 def verify_origin(request: Request) -> None:
     """CSRF guard for cookie-authenticated, state-changing routes.
-
-    Not attached to any route yet; it lands with the routes it protects.
 
     A missing Origin is rejected along with a mismatched one. Browsers send the
     header on every cross-origin fetch and on every same-origin non-GET, so its

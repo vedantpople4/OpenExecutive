@@ -76,11 +76,19 @@ def create_decision(
 
 
 def get_decision(run_id: str) -> dict[str, Any] | None:
-    """Unscoped by design — the background orchestration worker that calls this
+    """Unscoped by design -- the background orchestration worker that calls this
     (via complete_decision/save_partial_decision/fail_decision) has no HTTP
     request and no authenticated user, only a run_id. Router handlers must use
     get_owned_decision instead; this function staying unscoped is what lets a
-    result land regardless of who happens to own the run."""
+    result land regardless of who happens to own the run.
+
+    Not renamed to make that unmistakable: it has 15+ call sites across
+    services/orchestration.py and this module's own internals, several inside
+    a pre-existing test file (test_delete_decision.py) that monkeypatches it
+    by name for a race-condition test. This docstring plus routers/*.py only
+    ever calling get_owned_decision (see test_auth_enforcement.py's isolation
+    tests) is the in-scope mitigation.
+    """
     with connection() as conn:
         row = conn.execute(
             f"SELECT {_SELECT} FROM decisions WHERE id = %s", (run_id,)
@@ -327,11 +335,13 @@ def list_decisions(
     return items, next_cursor
 
 
-def scan_all_decisions(user_id: str) -> list[dict[str, Any]]:
-    """Every decision belonging to one user — used only by GET /dashboard.
-    Scoped, not actually a full scan any more: a signed-in user's dashboard
-    must not aggregate anyone else's decisions. The internal paging loop the
-    DynamoDB version carried is gone; it existed only for Scan's 1 MB cap."""
+def list_decisions_for_user(user_id: str) -> list[dict[str, Any]]:
+    """Every decision belonging to one user -- used only by GET /dashboard.
+    Renamed from scan_all_decisions: it stopped being a full scan the moment
+    dashboards became per-user, and the old name invited exactly the mistake
+    it used to be, a signed-in user's dashboard aggregating everyone's data.
+    The internal paging loop the DynamoDB version carried is gone; it existed
+    only for Scan's 1 MB cap."""
     with connection() as conn:
         rows = conn.execute(
             f"SELECT {_SELECT} FROM decisions WHERE user_id = %s", (user_id,)

@@ -1,9 +1,12 @@
 """Environment-driven settings. Same code runs locally, on a server, or
 against a scratch Postgres in tests — only these values change, via env vars."""
 
+import logging
 import os
 import secrets
 from dataclasses import dataclass
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -28,8 +31,19 @@ class Settings:
 # secret that is stable for the process but different on every deployment and
 # every restart. A hardcoded fallback would be the same on every install; the
 # cost of this one is that restarting the API drops outstanding sessions, which
-# is the right way for a missing secret to be noticed.
+# is the right way for a missing secret to be noticed in a single-process dev
+# setup. It stops being enough the moment there is more than one uvicorn worker
+# or a rolling restart, since each process would mint its own secret and reject
+# every other process's cookies -- logged below so that failure mode shows up
+# in server logs instead of as a wave of silent, confusing 401s.
 _EPHEMERAL_SESSION_SECRET = secrets.token_urlsafe(32)
+if not os.environ.get("OPENEXEC_SESSION_SECRET"):
+    logger.warning(
+        "OPENEXEC_SESSION_SECRET is not set -- using a per-process random secret. "
+        "Every restart invalidates all sessions, and this breaks entirely with more "
+        "than one worker process. Set OPENEXEC_SESSION_SECRET before running more "
+        "than a single-worker dev server."
+    )
 
 DEFAULT_SUPABASE_JWKS_URL = (
     "https://kmnjzxbkvfcyycwcqwhz.supabase.co/auth/v1/.well-known/jwks.json"

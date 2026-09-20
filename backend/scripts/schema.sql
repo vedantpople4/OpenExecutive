@@ -9,9 +9,12 @@ create table if not exists decisions (
     id                text primary key,
     -- Plain text, deliberately not a reference to Supabase's auth.users: this
     -- file also builds the plain postgres:16 that CI and tests/conftest.py use,
-    -- where no auth schema exists. Holds a Supabase user uuid as a string.
-    -- The sentinel default backfills rows written before auth existed; nothing
-    -- filters on user_id yet, so they stay reachable until that lands.
+    -- where no auth schema exists. Holds a Supabase user uuid as a string. The
+    -- sentinel default lets ALTER TABLE succeed against an already-deployed
+    -- table with existing rows; nothing backfills those rows to a real owner,
+    -- because there are none yet (the landing page's "app" link is still a
+    -- coming-soon stub, per frontend/HANDOFF.md) -- tracked as open work for
+    -- whenever that stops being true, not solved here.
     user_id           text        not null default '__unmigrated__',
     status            text        not null,
     created_at        timestamptz not null default now(),

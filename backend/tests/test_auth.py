@@ -37,8 +37,6 @@ def _valid_claims(**overrides) -> dict:
 
 @pytest.fixture(autouse=True)
 def _stub_jwks(monkeypatch):
-    """Point every verification at the local test key, never the network."""
-
     class _Key:
         key = _PUBLIC_KEY
 
@@ -103,7 +101,7 @@ def test_verify_origin_accepts_a_configured_origin():
         "type": "http",
         "headers": [(b"origin", b"http://localhost:5173")],
     }
-    auth.verify_origin(Request(scope))  # no raise
+    auth.verify_origin(Request(scope))
 
 
 def test_verify_origin_rejects_missing_origin():
@@ -139,14 +137,12 @@ def test_create_session_sets_a_locked_down_cookie():
     assert "HttpOnly" in set_cookie
     assert "Secure" in set_cookie
     assert "samesite=strict" in set_cookie.lower()
-    # The raw user id never appears in the cookie value; it's itsdangerous-signed.
     assert "11111111-1111-1111-1111-111111111111" not in set_cookie
 
 
 def test_create_session_rejects_an_invalid_token():
     response = client.post("/auth/session", json={"access_token": "not-a-jwt"})
     assert response.status_code == 401
-    # No part of the submitted value comes back.
     assert "not-a-jwt" not in response.text
 
 
