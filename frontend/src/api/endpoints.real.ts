@@ -7,16 +7,23 @@ import type {
   DecisionHistoryPage,
   DeliberationStreamHandle,
 } from './dto'
-import { API_BASE_URL } from './client'
+import { ApiError, API_BASE_URL } from './client'
 import type { CompareResult, RegisterSummary } from './types'
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
+    // The backend's session lives in an HttpOnly cookie (see backend/app/auth.py), never a
+    // bearer token this code could attach itself — 'include' is what makes every authenticated
+    // route see it, same-origin in production and cross-origin against localhost:8000 in dev.
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json', ...init?.headers },
   })
   if (!response.ok) {
-    throw new Error(`${init?.method ?? 'GET'} ${path} failed: ${response.status} ${response.statusText}`)
+    throw new ApiError(
+      `${init?.method ?? 'GET'} ${path} failed: ${response.status} ${response.statusText}`,
+      response.status,
+    )
   }
   return response.json() as Promise<T>
 }
@@ -75,13 +82,14 @@ export function stopDecision(runId: string): Promise<StopDecisionResponse> {
 export async function deleteDecision(runId: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/decisions/${encodeURIComponent(runId)}`, {
     method: 'DELETE',
+    credentials: 'include',
   })
   if (!response.ok) {
     const detail = await response
       .json()
       .then((body: { detail?: string }) => body.detail)
       .catch(() => undefined)
-    throw new Error(detail ?? `Could not delete this decision (${response.status})`)
+    throw new ApiError(detail ?? `Could not delete this decision (${response.status})`, response.status)
   }
 }
 
@@ -92,7 +100,11 @@ export async function deleteDecision(runId: string): Promise<void> {
  * reporting here just needs .message).
  */
 export function openDeliberationStream(runId: string): DeliberationStreamHandle {
-  const source = new EventSource(`${API_BASE_URL}/decisions/${encodeURIComponent(runId)}/events`)
+  // withCredentials so the session cookie rides along cross-origin too (localhost:5173 against
+  // :8000 in dev); same-origin in production, where it's already sent regardless.
+  const source = new EventSource(`${API_BASE_URL}/decisions/${encodeURIComponent(runId)}/events`, {
+    withCredentials: true,
+  })
   const handle: DeliberationStreamHandle = {
     addEventListener(type, listener) {
       source.addEventListener(type, listener as unknown as EventListener)

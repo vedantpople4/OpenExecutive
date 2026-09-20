@@ -5,15 +5,86 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:8000" },
-    { "key": "runId", "value": "" },
-    { "key": "childRunId", "value": "" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "origin",
+      "value": "http://localhost:5173",
+      "description": "Must match a value in the server's OPENEXEC_CORS_ORIGINS -- verify_origin (app/auth.py's CSRF guard) checks every mutating request against it."
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "description": "A Supabase access token for a signed-in test user. Sign into the app once and copy it from the POST /auth/session request body in the browser's network tab, then run 'Sign in' below before anything else."
+    },
+    {
+      "key": "runId",
+      "value": ""
+    },
+    {
+      "key": "childRunId",
+      "value": ""
+    }
   ],
   "item": [
-    { "name": "Health", "request": { "method": "GET", "url": "{{baseUrl}}/health" } },
-    { "name": "List agents", "request": { "method": "GET", "url": "{{baseUrl}}/agents" } },
-    { "name": "Get team structure", "request": { "method": "GET", "url": "{{baseUrl}}/teams" } },
-    { "name": "Get agent system prompt", "request": { "method": "GET", "url": "{{baseUrl}}/agents/ceo/prompt" } },
+    {
+      "name": "Sign in (POST /auth/session)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('signed in', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/session",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"access_token\": \"{{accessToken}}\"\n}"
+        },
+        "description": "Run this first. Sets the HttpOnly session cookie Postman's cookie jar then attaches to every request below against {{baseUrl}} -- every other request in this collection now requires it."
+      }
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "List agents",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/agents"
+      }
+    },
+    {
+      "name": "Get team structure",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/teams"
+      }
+    },
+    {
+      "name": "Get agent system prompt",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/agents/ceo/prompt"
+      }
+    },
     {
       "name": "Submit decision",
       "event": [
@@ -30,7 +101,12 @@
       "request": {
         "method": "POST",
         "url": "{{baseUrl}}/decisions",
-        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"prompt\": \"Should we open an office in Berlin?\",\n  \"agents\": [\"ceo\", \"cfo\", \"cto\", \"cmo\"],\n  \"teamModeEnabled\": false\n}"
@@ -53,27 +129,91 @@
       "request": {
         "method": "POST",
         "url": "{{baseUrl}}/decisions",
-        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"prompt\": \"Given Berlin, should we also open in Amsterdam?\",\n  \"agents\": [\"ceo\", \"cfo\"],\n  \"teamModeEnabled\": false,\n  \"parentRunId\": \"{{runId}}\"\n}"
         }
       }
     },
-    { "name": "List decisions", "request": { "method": "GET", "url": "{{baseUrl}}/decisions?limit=20" } },
-    { "name": "List decisions (search)", "request": { "method": "GET", "url": "{{baseUrl}}/decisions?q=berlin" } },
-    { "name": "Get decision detail", "request": { "method": "GET", "url": "{{baseUrl}}/decisions/{{runId}}" } },
+    {
+      "name": "List decisions",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/decisions?limit=20"
+      }
+    },
+    {
+      "name": "List decisions (search)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/decisions?q=berlin"
+      }
+    },
+    {
+      "name": "Get decision detail",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/decisions/{{runId}}"
+      }
+    },
     {
       "name": "Stream decision events (SSE)",
       "request": {
         "method": "GET",
         "url": "{{baseUrl}}/decisions/{{runId}}/events",
-        "header": [{ "key": "Accept", "value": "text/event-stream" }]
+        "header": [
+          {
+            "key": "Accept",
+            "value": "text/event-stream"
+          }
+        ]
       }
     },
-    { "name": "Stop decision", "request": { "method": "POST", "url": "{{baseUrl}}/decisions/{{runId}}/stop" } },
-    { "name": "Compare two decisions", "request": { "method": "GET", "url": "{{baseUrl}}/compare?old={{runId}}&new={{childRunId}}" } },
-    { "name": "Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard" } },
-    { "name": "Get decision (404 case)", "request": { "method": "GET", "url": "{{baseUrl}}/decisions/does-not-exist" } }
+    {
+      "name": "Stop decision",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/decisions/{{runId}}/stop"
+      }
+    },
+    {
+      "name": "Compare two decisions",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/compare?old={{runId}}&new={{childRunId}}"
+      }
+    },
+    {
+      "name": "Dashboard",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/dashboard"
+      }
+    },
+    {
+      "name": "Get decision (404 case)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/decisions/does-not-exist"
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Every request now needs this: mutating routes check it against",
+          "// OPENEXEC_CORS_ORIGINS (verify_origin, app/auth.py), same as a real browser would send it.",
+          "pm.request.headers.upsert({key: 'Origin', value: pm.collectionVariables.get('origin')});"
+        ]
+      }
+    }
   ]
 }

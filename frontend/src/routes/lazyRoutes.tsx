@@ -16,3 +16,7 @@ export const RegisterDashboardPage = lazy(() =>
     default: m.RegisterDashboardPage,
   })),
 )
+
+export const LoginPage = lazy(() =>
+  import('../features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
+)

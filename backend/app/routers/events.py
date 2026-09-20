@@ -9,9 +9,10 @@ import asyncio
 import json
 from typing import Any, AsyncIterator
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 
+from app.auth import get_current_user
 from app.repositories import decisions as decisions_repo
 from app.repositories import events as events_repo
 from app.services import event_bus
@@ -70,8 +71,14 @@ async def event_stream(run_id: str, is_running: bool) -> AsyncIterator[str]:
 
 
 @router.get("/decisions/{run_id}/events")
-def stream_events(run_id: str) -> StreamingResponse:
-    decision = decisions_repo.get_decision(run_id)
+def stream_events(run_id: str, user_id: str = Depends(get_current_user)) -> StreamingResponse:
+    # The browser's EventSource cannot set an Authorization header, so this
+    # route authenticates off the same cookie every other route does; nothing
+    # SSE-specific about get_current_user. The dependency resolves and can
+    # 401 here, before StreamingResponse is ever constructed -- a check placed
+    # inside event_stream's generator body instead would run after headers
+    # are already flushed and could never produce a real HTTP error status.
+    decision = decisions_repo.get_owned_decision(run_id, user_id)
     if decision is None:
         raise HTTPException(status_code=404, detail=f"Decision not found: {run_id}")
 

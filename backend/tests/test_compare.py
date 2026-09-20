@@ -1,6 +1,7 @@
 from psycopg.types.json import Json
 
 from app.db import connection
+from tests.conftest import TEST_USER_ID
 
 
 def _put_decision(run_id, prompt, board_decision, action_items, risks, agent_reports):
@@ -8,10 +9,11 @@ def _put_decision(run_id, prompt, board_decision, action_items, risks, agent_rep
     which the repository flattens back out on read."""
     with connection() as conn:
         conn.execute(
-            """INSERT INTO decisions (id, status, created_at, prompt, data)
-               VALUES (%s, 'completed', %s, %s, %s)""",
+            """INSERT INTO decisions (id, user_id, status, created_at, prompt, data)
+               VALUES (%s, %s, 'completed', %s, %s, %s)""",
             (
                 run_id,
+                TEST_USER_ID,
                 "2026-01-01T00:00:00.000Z",
                 prompt,
                 Json(
